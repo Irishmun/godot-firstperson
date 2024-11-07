@@ -1,0 +1,80 @@
+[gd_scene load_steps=13 format=3 uid="uid://cgm5nhqvbbne5"]
+
+[ext_resource type="Script" path="res://scripts/Player.cs" id="1_1hwto"]
+[ext_resource type="Script" path="res://scripts/FlashLight.cs" id="2_xwd2e"]
+[ext_resource type="AudioStream" uid="uid://5kodn1ik0c28" path="res://audio/player/boots1.wav" id="3_smurv"]
+[ext_resource type="AudioStream" uid="uid://bstgr6ya5tgcb" path="res://audio/player/boots2.wav" id="4_tq1ao"]
+[ext_resource type="AudioStream" uid="uid://b28cs70bcjcua" path="res://audio/player/boots3.wav" id="5_pp6fp"]
+[ext_resource type="AudioStream" uid="uid://denw3bcm0uvjd" path="res://audio/player/boots4.wav" id="6_oiq8o"]
+[ext_resource type="Script" path="res://scripts/WalkingSound.cs" id="7_upvhr"]
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_1xpml"]
+height = 1.85
+radius = 0.3
+
+[sub_resource type="CameraAttributesPractical" id="CameraAttributesPractical_7dnyv"]
+auto_exposure_enabled = true
+dof_blur_far_enabled = true
+dof_blur_far_distance = 25.0
+auto_exposure_min_sensitivity = 100.0
+auto_exposure_max_sensitivity = 1000.0
+
+[sub_resource type="Gradient" id="Gradient_62kd1"]
+offsets = PackedFloat32Array(0, 0.112462, 0.182371, 0.270517, 0.361702, 0.449848, 0.744681, 0.93617, 0.972644, 1)
+colors = PackedColorArray(1, 1, 1, 0.262745, 1, 1, 1, 1, 1, 1, 1, 0.705882, 1, 1, 1, 0.682353, 1, 1, 1, 0.286275, 1, 1, 1, 0.627451, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0.278431, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_688g2"]
+gradient = SubResource("Gradient_62kd1")
+width = 256
+height = 256
+use_hdr = true
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(1, 0.5)
+
+[sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_n0omy"]
+streams_count = 4
+stream_0/stream = ExtResource("3_smurv")
+stream_1/stream = ExtResource("4_tq1ao")
+stream_2/stream = ExtResource("5_pp6fp")
+stream_3/stream = ExtResource("6_oiq8o")
+
+[node name="Player" type="CharacterBody3D" node_paths=PackedStringArray("cameraHolder", "camera", "headRay", "collisionBody")]
+script = ExtResource("1_1hwto")
+cameraHolder = NodePath("CameraHolder")
+camera = NodePath("CameraHolder/Camera3D")
+headRay = NodePath("CrouchRaycast")
+collisionBody = NodePath("Body")
+
+[node name="Body" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.925, 0)
+shape = SubResource("CylinderShape3D_1xpml")
+
+[node name="CameraHolder" type="Node3D" parent="."]
+transform = Transform3D(-1, 0, 8.74228e-08, 0, 1, 0, -8.74228e-08, 0, -1, 0, 1.7, 0)
+
+[node name="Camera3D" type="Camera3D" parent="CameraHolder"]
+transform = Transform3D(1, 0, 2.38419e-07, 0, 1, 0, -2.38419e-07, 0, 1, 0, 0, 0)
+attributes = SubResource("CameraAttributesPractical_7dnyv")
+
+[node name="SpotLight3D" type="SpotLight3D" parent="CameraHolder/Camera3D" node_paths=PackedStringArray("followTarget")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 1.6, 0)
+top_level = true
+light_color = Color(1, 0.937255, 0.792157, 1)
+light_projector = SubResource("GradientTexture2D_688g2")
+shadow_enabled = true
+spot_attenuation = 2.0
+spot_angle = 30.0
+script = ExtResource("2_xwd2e")
+followTarget = NodePath("..")
+rotationSpeed = 10.0
+
+[node name="CrouchRaycast" type="RayCast3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.925, 0)
+target_position = Vector3(0, 1, 0)
+
+[node name="AudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="."]
+stream = SubResource("AudioStreamRandomizer_n0omy")
+volume_db = -8.0
+bus = &"Ambient"
+script = ExtResource("7_upvhr")

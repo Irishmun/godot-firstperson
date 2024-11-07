@@ -1,0 +1,31 @@
+[gd_scene load_steps=2 format=3 uid="uid://djvu2ugfu3616"]
+
+[ext_resource type="Script" path="res://scripts/FpsGui.cs" id="1_655k3"]
+
+[node name="Gui" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="Panel" type="Panel" parent="."]
+layout_mode = 0
+offset_left = 4.0
+offset_top = 8.0
+offset_right = 138.0
+offset_bottom = 84.0
+mouse_filter = 2
+
+[node name="Label" type="Label" parent="Panel"]
+layout_mode = 0
+offset_left = 5.0
+offset_right = 132.0
+offset_bottom = 75.0
+text = "FPS:99999
+Phys:99999
+Drawn:99999"
+clip_text = true
+script = ExtResource("1_655k3")

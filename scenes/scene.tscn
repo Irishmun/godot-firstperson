@@ -1,0 +1,76 @@
+[gd_scene load_steps=9 format=3 uid="uid://c373pswu1flix"]
+
+[ext_resource type="PackedScene" uid="uid://bgum0vi5s3rqp" path="res://blend/room.blend" id="1_bho1u"]
+[ext_resource type="LightmapGIData" uid="uid://bjbkg8yaibo6u" path="res://scenes/scene.lmbake" id="2_1r362"]
+[ext_resource type="PackedScene" uid="uid://cgm5nhqvbbne5" path="res://prefab/Player.tscn" id="2_gm5tn"]
+[ext_resource type="AudioStream" uid="uid://47hyb702o1hh" path="res://audio/ambient/tumblr_oxqioy5yGU1rhtvijo1.mp3" id="4_f8an3"]
+[ext_resource type="AudioStream" uid="uid://t1lxbhigjn1p" path="res://audio/ambient/drone.mp3" id="4_wqwg3"]
+
+[sub_resource type="Environment" id="Environment_ng5mf"]
+tonemap_mode = 3
+ssao_enabled = true
+ssil_enabled = true
+sdfgi_enabled = true
+sdfgi_use_occlusion = true
+sdfgi_y_scale = 0
+glow_enabled = true
+fog_mode = 1
+fog_light_energy = 16.0
+fog_density = 1.0
+fog_depth_begin = 0.0
+fog_depth_end = 14.9
+volumetric_fog_enabled = true
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_rw1ov"]
+size = Vector3(10, 1.1, 10.95)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_wja82"]
+size = Vector3(1.1, 1.1, 3.95)
+
+[node name="Node3D" type="Node3D"]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_ng5mf")
+
+[node name="room" parent="." instance=ExtResource("1_bho1u")]
+
+[node name="LightmapGI" type="LightmapGI" parent="."]
+quality = 3
+bounces = 6
+interior = true
+generate_probes_subdiv = 3
+light_data = ExtResource("2_1r362")
+
+[node name="Player" parent="." instance=ExtResource("2_gm5tn")]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -10.4068, 0, -5.21372)
+floor_max_angle = 1.0472
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("4_wqwg3")
+volume_db = -15.0
+autoplay = true
+bus = &"Ambient"
+
+[node name="AudioStreamPlayer2" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("4_f8an3")
+volume_db = -10.0
+bus = &"Ambient"
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(0.0958977, 0.482469, -0.870648, 6.72083e-08, 0.874679, 0.484703, 0.995391, -0.046482, 0.0838797, -17.5932, 6.54698, 9.72152)
+
+[node name="Area3D" type="Area3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.9, 2, 13.5)
+audio_bus_override = true
+audio_bus_name = &"Muffled"
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D"]
+shape = SubResource("BoxShape3D_rw1ov")
+
+[node name="Area3D2" type="Area3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.8, 2, 0)
+audio_bus_override = true
+audio_bus_name = &"Muffled"
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D2"]
+shape = SubResource("BoxShape3D_wja82")
