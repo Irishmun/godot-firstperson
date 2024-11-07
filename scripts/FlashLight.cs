@@ -12,6 +12,7 @@ public partial class FlashLight : SpotLight3D
 
     public override void _Ready()
     {
+        this.TopLevel = true;
         _activeStrenght = this.LightEnergy;
         SetEnabled(startEnabled);
     }

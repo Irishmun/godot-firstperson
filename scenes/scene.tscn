@@ -1,25 +1,14 @@
-[gd_scene load_steps=9 format=3 uid="uid://c373pswu1flix"]
+[gd_scene load_steps=16 format=3 uid="uid://c373pswu1flix"]
 
 [ext_resource type="PackedScene" uid="uid://bgum0vi5s3rqp" path="res://blend/room.blend" id="1_bho1u"]
 [ext_resource type="LightmapGIData" uid="uid://bjbkg8yaibo6u" path="res://scenes/scene.lmbake" id="2_1r362"]
+[ext_resource type="Environment" uid="uid://c86oq6lqxe8bc" path="res://scenes/scene_environment.tres" id="2_erogr"]
 [ext_resource type="PackedScene" uid="uid://cgm5nhqvbbne5" path="res://prefab/Player.tscn" id="2_gm5tn"]
 [ext_resource type="AudioStream" uid="uid://47hyb702o1hh" path="res://audio/ambient/tumblr_oxqioy5yGU1rhtvijo1.mp3" id="4_f8an3"]
 [ext_resource type="AudioStream" uid="uid://t1lxbhigjn1p" path="res://audio/ambient/drone.mp3" id="4_wqwg3"]
-
-[sub_resource type="Environment" id="Environment_ng5mf"]
-tonemap_mode = 3
-ssao_enabled = true
-ssil_enabled = true
-sdfgi_enabled = true
-sdfgi_use_occlusion = true
-sdfgi_y_scale = 0
-glow_enabled = true
-fog_mode = 1
-fog_light_energy = 16.0
-fog_density = 1.0
-fog_depth_begin = 0.0
-fog_depth_end = 14.9
-volumetric_fog_enabled = true
+[ext_resource type="Shader" path="res://scenes/fakeInterior.gdshader" id="7_v23km"]
+[ext_resource type="Texture2D" uid="uid://bqnvoa3q5inck" path="res://assets/textures/rooms_depth.png" id="8_oyo78"]
+[ext_resource type="Texture2D" uid="uid://cem5mrgyr7lgx" path="res://assets/textures/glasswindow037a.png" id="9_4vh5y"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_rw1ov"]
 size = Vector3(10, 1.1, 10.95)
@@ -27,18 +16,50 @@ size = Vector3(10, 1.1, 10.95)
 [sub_resource type="BoxShape3D" id="BoxShape3D_wja82"]
 size = Vector3(1.1, 1.1, 3.95)
 
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_6pep8"]
+render_priority = 0
+shader = ExtResource("7_v23km")
+shader_parameter/rooms = Vector2(6, 1)
+shader_parameter/room_seed = 5.0
+shader_parameter/atlas_rooms = Vector2(3, 2)
+shader_parameter/depth = 0.5
+shader_parameter/emission_cutoff = 0.5
+shader_parameter/emission_strength = 1.0
+shader_parameter/room_texture = ExtResource("8_oyo78")
+shader_parameter/window_texture = ExtResource("9_4vh5y")
+
+[sub_resource type="QuadMesh" id="QuadMesh_a75bl"]
+material = SubResource("ShaderMaterial_6pep8")
+size = Vector2(6, 1)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ygdti"]
+render_priority = 0
+shader = ExtResource("7_v23km")
+shader_parameter/rooms = Vector2(5, 1)
+shader_parameter/room_seed = 5.0
+shader_parameter/atlas_rooms = Vector2(3, 2)
+shader_parameter/depth = 0.5
+shader_parameter/emission_cutoff = 0.5
+shader_parameter/emission_strength = 1.0
+shader_parameter/room_texture = ExtResource("8_oyo78")
+shader_parameter/window_texture = ExtResource("9_4vh5y")
+
+[sub_resource type="QuadMesh" id="QuadMesh_pcr1w"]
+material = SubResource("ShaderMaterial_ygdti")
+size = Vector2(5, 1)
+
 [node name="Node3D" type="Node3D"]
 
-[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
-environment = SubResource("Environment_ng5mf")
-
 [node name="room" parent="." instance=ExtResource("1_bho1u")]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = ExtResource("2_erogr")
 
 [node name="LightmapGI" type="LightmapGI" parent="."]
 quality = 3
 bounces = 6
 interior = true
-generate_probes_subdiv = 3
+generate_probes_subdiv = 0
 light_data = ExtResource("2_1r362")
 
 [node name="Player" parent="." instance=ExtResource("2_gm5tn")]
@@ -74,3 +95,11 @@ audio_bus_name = &"Muffled"
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D2"]
 shape = SubResource("BoxShape3D_wja82")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 1.681, 2, 15.9724)
+mesh = SubResource("QuadMesh_a75bl")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="."]
+transform = Transform3D(1.31134e-07, 0, 1, 0, 1, 0, -1, 0, 1.31134e-07, 0.688107, 2, 16.465)
+mesh = SubResource("QuadMesh_pcr1w")

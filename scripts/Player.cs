@@ -4,7 +4,8 @@ using System;
 public partial class Player : CharacterBody3D
 {
     private const float TERMINAL_VELOCITY = -53.645f;//200mph in m/s according to FAI SKYDIVING COMMISSION
-    private const float MAX_SLOP_ANGLE = 60f;
+    private const float MAX_SLOPE_ANGLE = 60f;
+    private const float DPI_MULTIPLIER = 0.001f;//1000 DPI mouse
 
     [ExportGroup("Movement")]
     [Export] private float acceleration = 10;
@@ -16,7 +17,7 @@ public partial class Player : CharacterBody3D
     [Export] private float crouchChangeSpeed = 10;
     [Export] private float crouchHeight = 0.9f;//meters
     [ExportGroup("Camera")]
-    [Export] private float sensitivity = 0.4f;
+    [Export(PropertyHint.Range, "1,100,")] private int sensitivity = 40;
     [Export] private float cameraLeanInto = 7.5f;//degrees
     [Export] private float cameraVertSpeed = 10f;
     [Export] private float maxLookUp = 55, maxLookDown = -75;
@@ -32,7 +33,7 @@ public partial class Player : CharacterBody3D
     private bool _runningInput = false, _crouchInput = false;
     private bool _isCrouching;
     private bool _justLanded = false, _isFalling = false, _wasOnFloor = true;
-    private Vector2 _inputDir, _camInput;
+    private Vector2 _inputDir;//, _camInput;
     private Vector3 velocity;
     private float _cameraSavedVert = float.NegativeInfinity;
     private float _defaultBodyHeight, _defaultCameraHeight;
@@ -41,11 +42,11 @@ public partial class Player : CharacterBody3D
     private CylinderShape3D _collision;
     //private CapsuleShape3D _collision;
     private float _gravity = ProjectSettings.GetSetting("physics/3d/default_gravity").AsSingle();
-
-
-
+    //==========GAME==========
+    #region GAME
     public override void _Ready()
     {
+        Input.UseAccumulatedInput = false;
         Input.MouseMode = Input.MouseModeEnum.Captured;
         _collision = (CylinderShape3D)collisionBody.Shape;
         //_collision = (CapsuleShape3D)collisionBody.Shape;
@@ -55,25 +56,10 @@ public partial class Player : CharacterBody3D
         pos.Y = crouchHeight;
         headRay.Position = pos;
     }
-
     public override void _Process(double delta)
     {
-        if (Velocity.LengthSquared() > movementSpeed * movementSpeed)
-        {
-            _tilt = ReMap(_camInput.X * sensitivity, -30, 30, -cameraLeanInto, cameraLeanInto);
-            _tilt = Mathf.Clamp(_tilt, -cameraLeanInto, cameraLeanInto);
-            if (_camInput != Vector2.Zero)
-            { TiltCamera(-_tilt); }
-            _camInput = Vector2.Zero;
-        }
-        else if (cameraHolder.RotationDegrees.Z != 0)
-        {
-            float tilt = cameraHolder.RotationDegrees.Z;
-            tilt = Mathf.Lerp(tilt, 0, (float)delta * 20);
-            if (tilt < 0.0001f && tilt > -0.0001f)
-            { tilt = 0; }
-            TiltCamera(-tilt);
-        }
+        FixCameraRoll(delta);
+        //_camInput = Vector2.Zero;
         if (!float.IsNegativeInfinity(_cameraSavedVert))
         {
             Vector3 pos = camera.GlobalPosition;
@@ -90,8 +76,6 @@ public partial class Player : CharacterBody3D
         if (IsOnFloor() && _isFalling == true)
         { _justLanded = true; }
     }
-
-    // Called every frame. 'delta' is the elapsed time since the previous frame.
     public override void _PhysicsProcess(double delta)
     {
         _justLanded = false;
@@ -110,7 +94,9 @@ public partial class Player : CharacterBody3D
         { MoveAndSlide(); }
         _wasOnFloor = IsOnFloor();
     }
-
+    #endregion
+    //==========INPUT==========
+    #region INPUT
     public override void _Input(InputEvent e)
     {
         if (e.IsEcho())
@@ -119,21 +105,63 @@ public partial class Player : CharacterBody3D
         _runningInput = Input.IsActionPressed("Run");
         _crouchInput = Input.IsActionPressed("Crouch");
     }
-
     public override void _UnhandledInput(InputEvent e)
     {
-        if (e is InputEventMouseMotion)
+        if (e is InputEventMouseMotion && Input.MouseMode == Input.MouseModeEnum.Captured)
         {
-            _camInput = (e as InputEventMouseMotion).Relative;
-            RotatePlayer(_camInput);
+            /*
+             *  var viewport_transform: Transform2D = get_tree().root.get_final_transform()
+        mouse_input += event.xformed_by(viewport_transform).relative
+             */
+            Transform2D viewportTransform = GetTree().Root.GetFinalTransform();
+            //_camInput += (e.XformedBy(viewportTransform) as InputEventMouseMotion).Relative;
+            RotatePlayer(e.XformedBy(viewportTransform) as InputEventMouseMotion);
         }
     }
-
-    private void RotatePlayer(Vector2 rotation)
+    #endregion
+    //==========VIEW==========
+    #region VIEW
+    private void RotatePlayer(InputEventMouseMotion rotation)
     {
-        cameraHolder.RotateX(Mathf.DegToRad(rotation.Y * sensitivity));
-        this.RotateY(Mathf.DegToRad(-rotation.X * sensitivity));
-        cameraHolder.RotationDegrees = new Vector3(Mathf.Clamp(cameraHolder.RotationDegrees.X, maxLookDown, maxLookUp), 180, cameraHolder.RotationDegrees.Z);
+        Vector2 motion = rotation.Relative;
+        motion *= DPI_MULTIPLIER * sensitivity;
+        addPitch(motion.Y);
+        addYaw(motion.X);
+        clampPitch();
+        //if (Velocity.LengthSquared() > movementSpeed * movementSpeed)
+        //{
+        //    _tilt = ReMap(yDelta, -30, 30, -cameraLeanInto, cameraLeanInto);
+        //    _tilt = Mathf.Clamp(_tilt, -cameraLeanInto, cameraLeanInto);
+        //    if (motion != Vector2.Zero)
+        //    { TiltCamera(-_tilt); }
+        //    GD.Print($"yDelta: {yDelta}| tilt: {_tilt}");
+        //    motion = Vector2.Zero;
+        //}
+
+        void addPitch(float X)
+        {
+            if (IsApproxZero(X))
+            { return; }
+            cameraHolder.RotateObjectLocal(Vector3.Left, Mathf.DegToRad(X));
+            cameraHolder.Orthonormalize();
+        }
+        void addYaw(float Y)
+        {
+            if (IsApproxZero(Y))
+            { return; }
+            this.RotateObjectLocal(Vector3.Down, Mathf.DegToRad(Y));
+            this.Orthonormalize();
+        }
+        void clampPitch()
+        {
+            if (cameraHolder.Rotation.X > Mathf.DegToRad(maxLookDown) && cameraHolder.Rotation.X < Mathf.DegToRad(maxLookUp))
+            { return; }
+            Vector3 rot = cameraHolder.Rotation;
+            rot.X = Mathf.Clamp(rot.X, Mathf.DegToRad(maxLookDown), Mathf.DegToRad(maxLookUp));
+            cameraHolder.Rotation = rot;
+            cameraHolder.Orthonormalize();
+        }
+
     }
     private void TiltCamera(float tiltDegrees)
     {
@@ -141,7 +169,20 @@ public partial class Player : CharacterBody3D
         rot.Z = tiltDegrees;
         cameraHolder.RotationDegrees = rot;
     }
-
+    private void FixCameraRoll(double delta)
+    {
+        if (cameraHolder.RotationDegrees.Z != 0)
+        {
+            float tilt = cameraHolder.RotationDegrees.Z;
+            tilt = Mathf.Lerp(tilt, 0, (float)delta * 20);
+            if (tilt < 0.0001f && tilt > -0.0001f)
+            { tilt = 0; }
+            TiltCamera(-tilt);
+        }
+    }
+    #endregion
+    //==========MOVEMENT==========
+    #region MOVEMENT
     private bool HandleStep(float delta) //velocity with minStep distance maybe?
     {
         //get where the player would have gone horizontaly        
@@ -163,7 +204,7 @@ public partial class Player : CharacterBody3D
             { return false; }
             Vector3 CollisionPos = testStartPos.Origin + res.GetTravel();
             //GD.Print($"Trying to walk up something at angle: {Mathf.RadToDeg(Mathf.Acos(res.GetNormal().Dot(Vector3.Up)))} ({Mathf.Acos(res.GetNormal().Dot(Vector3.Up))})");
-            if (Mathf.RadToDeg(Mathf.Acos(res.GetNormal().Dot(Vector3.Up))) >= MAX_SLOP_ANGLE)//<--NOTE: this breaks when using a cylinder collider
+            if (Mathf.RadToDeg(Mathf.Acos(res.GetNormal().Dot(Vector3.Up))) >= MAX_SLOPE_ANGLE)//<--NOTE: this breaks when using a cylinder collider
             { return false; }
             //set camera position before global position
             _cameraSavedVert = camera.GlobalPosition.Y;
@@ -174,7 +215,6 @@ public partial class Player : CharacterBody3D
         }
         return false;
     }
-
     private void HandleGravity(float delta)
     {
         if (!IsOnFloor())
@@ -254,6 +294,7 @@ public partial class Player : CharacterBody3D
         { return movementSpeed * sprintMultiplier; }
         return movementSpeed;
     }
+    #endregion
     #region ExtensionMethods
     private float ReMap(float value, float from1, float to1, float from2, float to2)
     {
@@ -263,6 +304,12 @@ public partial class Player : CharacterBody3D
     {
         float pow = Mathf.Pow(10, digit);
         return Mathf.Floor(value * pow) / pow;
+    }
+    private bool IsApproxZero(float value)
+    {
+        if (value < 0.0001f && value > -0.0001f)
+        { return true; }
+        return false;
     }
     #endregion
     public float MovementSpeed => movementSpeed;

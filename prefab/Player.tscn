@@ -41,6 +41,7 @@ stream_3/stream = ExtResource("6_oiq8o")
 
 [node name="Player" type="CharacterBody3D" node_paths=PackedStringArray("cameraHolder", "camera", "headRay", "collisionBody")]
 script = ExtResource("1_1hwto")
+sensitivity = 100
 cameraHolder = NodePath("CameraHolder")
 camera = NodePath("CameraHolder/Camera3D")
 headRay = NodePath("CrouchRaycast")
@@ -58,8 +59,7 @@ transform = Transform3D(1, 0, 2.38419e-07, 0, 1, 0, -2.38419e-07, 0, 1, 0, 0, 0)
 attributes = SubResource("CameraAttributesPractical_7dnyv")
 
 [node name="SpotLight3D" type="SpotLight3D" parent="CameraHolder/Camera3D" node_paths=PackedStringArray("followTarget")]
-transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 1.6, 0)
-top_level = true
+transform = Transform3D(1, 0, -6.35734e-08, 0, 1, 0, 6.35734e-08, 0, 1, 0, -0.1, 0)
 light_color = Color(1, 0.937255, 0.792157, 1)
 light_projector = SubResource("GradientTexture2D_688g2")
 shadow_enabled = true

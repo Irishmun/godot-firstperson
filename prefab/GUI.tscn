@@ -11,21 +11,16 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 
-[node name="Panel" type="Panel" parent="."]
+[node name="Label" type="Label" parent="."]
 layout_mode = 0
-offset_left = 4.0
+offset_left = 9.0
 offset_top = 8.0
-offset_right = 138.0
-offset_bottom = 84.0
-mouse_filter = 2
-
-[node name="Label" type="Label" parent="Panel"]
-layout_mode = 0
-offset_left = 5.0
-offset_right = 132.0
-offset_bottom = 75.0
-text = "FPS:99999
-Phys:99999
-Drawn:99999"
+offset_right = 215.0
+offset_bottom = 109.0
+text = "FPS: 9999
+Draw calls: 9999
+Objects: 9999
+VRAM: 9999 MB
+"
 clip_text = true
 script = ExtResource("1_655k3")
