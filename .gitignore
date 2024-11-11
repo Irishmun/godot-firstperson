@@ -1,3 +1,25 @@
 # Godot 4+ specific ignores
 .godot/
-/android/
+
+# Godot-specific ignores
+.import/
+export.cfg
+export_presets.cfg
+
+# Imported translations (automatically generated from CSV files)
+*.translation
+
+# Mono-specific ignores
+.mono/
+data_*/
+mono_crash.*.json
+
+#visual studio cache
+.vs
+[Pp]roperties/launchSettings.json
+
+#game generated files
+Settings.ini
+
+#Godot addon specifc
+addons/godot-jolt/[Ww]indows/~*.dll
