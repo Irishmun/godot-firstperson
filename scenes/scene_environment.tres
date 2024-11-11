@@ -1,4 +1,4 @@
-[gd_resource type="Environment" load_steps=4 format=3 uid="uid://c86oq6lqxe8bc"]
+[gd_resource type="Environment" load_steps=6 format=3 uid="uid://c86oq6lqxe8bc"]
 
 [sub_resource type="Gradient" id="Gradient_1j2xt"]
 offsets = PackedFloat32Array(0.277259, 1)
@@ -12,7 +12,21 @@ fractal_type = 2
 color_ramp = SubResource("Gradient_1j2xt")
 noise = SubResource("FastNoiseLite_mrl7n")
 
+[sub_resource type="PhysicalSkyMaterial" id="PhysicalSkyMaterial_v5x8p"]
+rayleigh_coefficient = 0.5
+rayleigh_color = Color(0.290196, 0.580392, 0.968627, 1)
+mie_coefficient = 0.07
+mie_eccentricity = -0.76
+mie_color = Color(0.592157, 0.698039, 0.976471, 1)
+ground_color = Color(0.101961, 0.101961, 0.101961, 1)
+energy_multiplier = 4.0
+
+[sub_resource type="Sky" id="Sky_bdfs6"]
+sky_material = SubResource("PhysicalSkyMaterial_v5x8p")
+
 [resource]
+background_mode = 2
+sky = SubResource("Sky_bdfs6")
 ambient_light_source = 3
 ambient_light_color = Color(0.521569, 0.768627, 0.980392, 1)
 ambient_light_sky_contribution = 0.75

@@ -1,0 +1,23 @@
+[gd_resource type="ShaderMaterial" load_steps=6 format=3 uid="uid://c16tj3djldm32"]
+
+[ext_resource type="Shader" path="res://materials/shaders/fakeInterior.gdshader" id="1_tqxg0"]
+[ext_resource type="Texture2D" uid="uid://ur5enbai4qjg" path="res://assets/textures/interior_2d.png" id="2_drlxk"]
+[ext_resource type="Texture2D" uid="uid://usgesdymdi2u" path="res://assets/textures/wall-normal.png" id="3_a4qcg"]
+[ext_resource type="Texture2D" uid="uid://xhr7mwx3sy1t" path="res://assets/textures/wall-smooth.png" id="4_mpowa"]
+[ext_resource type="Texture2D" uid="uid://csx0sx11otve6" path="res://assets/textures/wall.png" id="5_4bo5b"]
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_tqxg0")
+shader_parameter/rooms = Vector2(0.225, 0.43)
+shader_parameter/room_seed = 0.0
+shader_parameter/window_seed = 0.0
+shader_parameter/atlas_rooms = Vector2(1, 1)
+shader_parameter/atlas_windows = Vector2(1, 1)
+shader_parameter/depth = 0.5
+shader_parameter/emission_cutoff = 0.5
+shader_parameter/emission_strength = 1.0
+shader_parameter/room_texture = ExtResource("2_drlxk")
+shader_parameter/window_texture = ExtResource("5_4bo5b")
+shader_parameter/window_normal = ExtResource("3_a4qcg")
+shader_parameter/window_roughness = ExtResource("4_mpowa")

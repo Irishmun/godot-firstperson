@@ -14,7 +14,7 @@ dry = 0.9
 wet = 0.2
 
 [resource]
-bus/1/name = &"Ambient"
+bus/1/name = &"Interior"
 bus/1/solo = false
 bus/1/mute = false
 bus/1/bypass_fx = false

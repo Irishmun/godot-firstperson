@@ -1,0 +1,19 @@
+[gd_resource type="ShaderMaterial" load_steps=5 format=3 uid="uid://cf70fhwe1m3b0"]
+
+[ext_resource type="Shader" path="res://materials/shaders/fakeInterior.gdshader" id="1_acvk7"]
+[ext_resource type="Texture2D" uid="uid://bqnvoa3q5inck" path="res://assets/textures/rooms_depth.png" id="2_78r08"]
+[ext_resource type="Texture2D" uid="uid://dgxuq0d6xnhw4" path="res://assets/textures/glasswindow037a-tall.png" id="3_n72fs"]
+[ext_resource type="Texture2D" uid="uid://ccc6i2x4pt3wi" path="res://assets/textures/glasswindow037a-alpha.png" id="3_ua6s1"]
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_acvk7")
+shader_parameter/rooms = Vector2(2, 1)
+shader_parameter/room_seed = 1.0
+shader_parameter/atlas_rooms = Vector2(3, 2)
+shader_parameter/depth = 0.5
+shader_parameter/emission_cutoff = 0.5
+shader_parameter/emission_strength = 1.0
+shader_parameter/room_texture = ExtResource("2_78r08")
+shader_parameter/window_texture = ExtResource("3_n72fs")
+shader_parameter/stencil = ExtResource("3_ua6s1")

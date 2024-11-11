@@ -1,17 +1,25 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "D:\\github\\firstperson\\",
+  "WorkspaceRootPath": "D:\\github\\godot-firstperson\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{B34BB934-E59D-4E39-9F52-D17414CE44B7}|FirstPerson.csproj|d:\\github\\firstperson\\scripts\\player.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{B34BB934-E59D-4E39-9F52-D17414CE44B7}|FirstPerson.csproj|d:\\github\\godot-firstperson\\scripts\\player.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{B34BB934-E59D-4E39-9F52-D17414CE44B7}|FirstPerson.csproj|solutionrelative:scripts\\player.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{B34BB934-E59D-4E39-9F52-D17414CE44B7}|FirstPerson.csproj|d:\\github\\firstperson\\scripts\\flashlight.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{B34BB934-E59D-4E39-9F52-D17414CE44B7}|FirstPerson.csproj|d:\\github\\godot-firstperson\\scripts\\areasound.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B34BB934-E59D-4E39-9F52-D17414CE44B7}|FirstPerson.csproj|solutionrelative:scripts\\areasound.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B34BB934-E59D-4E39-9F52-D17414CE44B7}|FirstPerson.csproj|d:\\github\\godot-firstperson\\scripts\\fpsgui.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B34BB934-E59D-4E39-9F52-D17414CE44B7}|FirstPerson.csproj|solutionrelative:scripts\\fpsgui.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B34BB934-E59D-4E39-9F52-D17414CE44B7}|FirstPerson.csproj|d:\\github\\godot-firstperson\\scripts\\flashlight.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{B34BB934-E59D-4E39-9F52-D17414CE44B7}|FirstPerson.csproj|solutionrelative:scripts\\flashlight.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{B34BB934-E59D-4E39-9F52-D17414CE44B7}|FirstPerson.csproj|d:\\github\\firstperson\\scripts\\walkingsound.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{B34BB934-E59D-4E39-9F52-D17414CE44B7}|FirstPerson.csproj|d:\\github\\godot-firstperson\\scripts\\walkingsound.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{B34BB934-E59D-4E39-9F52-D17414CE44B7}|FirstPerson.csproj|solutionrelative:scripts\\walkingsound.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
@@ -22,7 +30,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 5,
+          "SelectedChildIndex": 7,
           "Children": [
             {
               "$type": "Bookmark",
@@ -39,23 +47,47 @@
             {
               "$type": "Document",
               "DocumentIndex": 1,
-              "Title": "FlashLight.cs",
-              "DocumentMoniker": "D:\\github\\firstperson\\scripts\\FlashLight.cs",
-              "RelativeDocumentMoniker": "scripts\\FlashLight.cs",
-              "ToolTip": "D:\\github\\firstperson\\scripts\\FlashLight.cs",
-              "RelativeToolTip": "scripts\\FlashLight.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAACAAAAAgAAAA",
+              "Title": "AreaSound.cs",
+              "DocumentMoniker": "D:\\github\\godot-firstperson\\scripts\\AreaSound.cs",
+              "RelativeDocumentMoniker": "scripts\\AreaSound.cs",
+              "ToolTip": "D:\\github\\godot-firstperson\\scripts\\AreaSound.cs",
+              "RelativeToolTip": "scripts\\AreaSound.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAsAAAAhAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-31T01:07:29.629Z",
+              "WhenOpened": "2024-11-10T04:34:03.923Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 2,
+              "Title": "FpsGui.cs",
+              "DocumentMoniker": "D:\\github\\godot-firstperson\\scripts\\FpsGui.cs",
+              "RelativeDocumentMoniker": "scripts\\FpsGui.cs",
+              "ToolTip": "D:\\github\\godot-firstperson\\scripts\\FpsGui.cs",
+              "RelativeToolTip": "scripts\\FpsGui.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAgAAAAwAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-07T20:14:53.26Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "FlashLight.cs",
+              "DocumentMoniker": "D:\\github\\godot-firstperson\\scripts\\FlashLight.cs",
+              "RelativeDocumentMoniker": "scripts\\FlashLight.cs",
+              "ToolTip": "D:\\github\\godot-firstperson\\scripts\\FlashLight.cs",
+              "RelativeToolTip": "scripts\\FlashLight.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAACAAAAAgAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-10-31T01:07:29.629Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
               "Title": "WalkingSound.cs",
-              "DocumentMoniker": "D:\\github\\firstperson\\scripts\\WalkingSound.cs",
+              "DocumentMoniker": "D:\\github\\godot-firstperson\\scripts\\WalkingSound.cs",
               "RelativeDocumentMoniker": "scripts\\WalkingSound.cs",
-              "ToolTip": "D:\\github\\firstperson\\scripts\\WalkingSound.cs",
+              "ToolTip": "D:\\github\\godot-firstperson\\scripts\\WalkingSound.cs",
               "RelativeToolTip": "scripts\\WalkingSound.cs",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAABcAAAAMAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -65,11 +97,11 @@
               "$type": "Document",
               "DocumentIndex": 0,
               "Title": "Player.cs",
-              "DocumentMoniker": "D:\\github\\firstperson\\scripts\\Player.cs",
+              "DocumentMoniker": "D:\\github\\godot-firstperson\\scripts\\Player.cs",
               "RelativeDocumentMoniker": "scripts\\Player.cs",
-              "ToolTip": "D:\\github\\firstperson\\scripts\\Player.cs",
+              "ToolTip": "D:\\github\\godot-firstperson\\scripts\\Player.cs",
               "RelativeToolTip": "scripts\\Player.cs",
-              "ViewState": "AQIAAHQAAAAAAAAAAAAAwIQAAAAFAAAA",
+              "ViewState": "AQIAAEkAAAAAAAAAAAAYwGUAAAAcAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-10-17T00:23:04.23Z",
               "EditorCaption": ""

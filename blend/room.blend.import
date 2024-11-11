@@ -32,6 +32,24 @@ animation/remove_immutable_tracks=true
 animation/import_rest_as_RESET=false
 import_script/path=""
 _subresources={
+"materials": {
+"exterior-floor": {
+"use_external/enabled": true,
+"use_external/path": "res://blend/materials/exterior-floor.tres"
+},
+"exterior-wall": {
+"use_external/enabled": true,
+"use_external/path": "res://blend/materials/exterior-wall.tres"
+},
+"interior": {
+"use_external/enabled": true,
+"use_external/path": "res://blend/materials/interior.tres"
+},
+"light": {
+"use_external/enabled": true,
+"use_external/path": "res://blend/materials/light.tres"
+}
+},
 "meshes": {
 "room_Cube": {
 "generate/lightmap_uv": 1,

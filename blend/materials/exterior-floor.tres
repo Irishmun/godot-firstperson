@@ -1,0 +1,9 @@
+[gd_resource type="StandardMaterial3D" load_steps=2 format=3 uid="uid://c786q1w2u553u"]
+
+[ext_resource type="Texture2D" uid="uid://dufjxg18gqxjk" path="res://blend/textures/orange-texture_02.png" id="1_lrvgp"]
+
+[resource]
+resource_name = "exterior-floor"
+cull_mode = 2
+albedo_texture = ExtResource("1_lrvgp")
+roughness = 0.5

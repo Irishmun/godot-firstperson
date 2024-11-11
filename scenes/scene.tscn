@@ -1,52 +1,39 @@
-[gd_scene load_steps=16 format=3 uid="uid://c373pswu1flix"]
+[gd_scene load_steps=17 format=3 uid="uid://c373pswu1flix"]
 
 [ext_resource type="PackedScene" uid="uid://bgum0vi5s3rqp" path="res://blend/room.blend" id="1_bho1u"]
-[ext_resource type="LightmapGIData" uid="uid://bjbkg8yaibo6u" path="res://scenes/scene.lmbake" id="2_1r362"]
 [ext_resource type="Environment" uid="uid://c86oq6lqxe8bc" path="res://scenes/scene_environment.tres" id="2_erogr"]
 [ext_resource type="PackedScene" uid="uid://cgm5nhqvbbne5" path="res://prefab/Player.tscn" id="2_gm5tn"]
-[ext_resource type="AudioStream" uid="uid://47hyb702o1hh" path="res://audio/ambient/tumblr_oxqioy5yGU1rhtvijo1.mp3" id="4_f8an3"]
-[ext_resource type="AudioStream" uid="uid://t1lxbhigjn1p" path="res://audio/ambient/drone.mp3" id="4_wqwg3"]
-[ext_resource type="Shader" path="res://scenes/fakeInterior.gdshader" id="7_v23km"]
-[ext_resource type="Texture2D" uid="uid://bqnvoa3q5inck" path="res://assets/textures/rooms_depth.png" id="8_oyo78"]
-[ext_resource type="Texture2D" uid="uid://cem5mrgyr7lgx" path="res://assets/textures/glasswindow037a.png" id="9_4vh5y"]
+[ext_resource type="LightmapGIData" uid="uid://bi6icdb3gfd6n" path="res://scenes/scene.lmbake" id="3_enpko"]
+[ext_resource type="AudioStream" uid="uid://47hyb702o1hh" path="res://assets/audio/ambient/tumblr_oxqioy5yGU1rhtvijo1.mp3" id="4_f8an3"]
+[ext_resource type="AudioStream" uid="uid://t1lxbhigjn1p" path="res://assets/audio/ambient/drone.mp3" id="4_wqwg3"]
+[ext_resource type="Script" path="res://scripts/AreaSound.cs" id="6_pit0d"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_rw1ov"]
-size = Vector3(10, 1.1, 10.95)
+size = Vector3(10, 1.1, 6.42141)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_41cgy"]
+size = Vector3(5.44189, 1.1, 10.95)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_wja82"]
 size = Vector3(1.1, 1.1, 3.95)
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_6pep8"]
-render_priority = 0
-shader = ExtResource("7_v23km")
-shader_parameter/rooms = Vector2(6, 1)
-shader_parameter/room_seed = 5.0
-shader_parameter/atlas_rooms = Vector2(3, 2)
-shader_parameter/depth = 0.5
-shader_parameter/emission_cutoff = 0.5
-shader_parameter/emission_strength = 1.0
-shader_parameter/room_texture = ExtResource("8_oyo78")
-shader_parameter/window_texture = ExtResource("9_4vh5y")
+[sub_resource type="BoxShape3D" id="BoxShape3D_sf0b7"]
+size = Vector3(22.6788, 4.37097, 6.49274)
 
-[sub_resource type="QuadMesh" id="QuadMesh_a75bl"]
-material = SubResource("ShaderMaterial_6pep8")
-size = Vector2(6, 1)
+[sub_resource type="BoxShape3D" id="BoxShape3D_odgpl"]
+size = Vector3(3.849, 1, 3.5)
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_ygdti"]
-render_priority = 0
-shader = ExtResource("7_v23km")
-shader_parameter/rooms = Vector2(5, 1)
-shader_parameter/room_seed = 5.0
-shader_parameter/atlas_rooms = Vector2(3, 2)
-shader_parameter/depth = 0.5
-shader_parameter/emission_cutoff = 0.5
-shader_parameter/emission_strength = 1.0
-shader_parameter/room_texture = ExtResource("8_oyo78")
-shader_parameter/window_texture = ExtResource("9_4vh5y")
+[sub_resource type="BoxShape3D" id="BoxShape3D_vdjnl"]
+size = Vector3(1.424, 1, 3.5)
 
-[sub_resource type="QuadMesh" id="QuadMesh_pcr1w"]
-material = SubResource("ShaderMaterial_ygdti")
-size = Vector2(5, 1)
+[sub_resource type="BoxShape3D" id="BoxShape3D_w4ncu"]
+size = Vector3(11.9478, 4.18854, 4.3201)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_2m11s"]
+size = Vector3(15.8411, 4.39032, 6.80811)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_287x5"]
+size = Vector3(11.9307, 4.39032, 6.80811)
 
 [node name="Node3D" type="Node3D"]
 
@@ -58,24 +45,24 @@ environment = ExtResource("2_erogr")
 [node name="LightmapGI" type="LightmapGI" parent="."]
 quality = 3
 bounces = 6
-interior = true
 generate_probes_subdiv = 0
-light_data = ExtResource("2_1r362")
+light_data = ExtResource("3_enpko")
 
 [node name="Player" parent="." instance=ExtResource("2_gm5tn")]
-transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -10.4068, 0, -5.21372)
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -3.88272, 0, -17.0885)
 floor_max_angle = 1.0472
 
-[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="." node_paths=PackedStringArray("area")]
 stream = ExtResource("4_wqwg3")
 volume_db = -15.0
 autoplay = true
-bus = &"Ambient"
+bus = &"Interior"
+script = ExtResource("6_pit0d")
+area = NodePath("../Area3D3")
 
 [node name="AudioStreamPlayer2" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("4_f8an3")
 volume_db = -10.0
-bus = &"Ambient"
 
 [node name="Camera3D" type="Camera3D" parent="."]
 transform = Transform3D(0.0958977, 0.482469, -0.870648, 6.72083e-08, 0.874679, 0.484703, 0.995391, -0.046482, 0.0838797, -17.5932, 6.54698, 9.72152)
@@ -86,7 +73,12 @@ audio_bus_override = true
 audio_bus_name = &"Muffled"
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -2.26429)
 shape = SubResource("BoxShape3D_rw1ov")
+
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="Area3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.27905, 0, 0)
+shape = SubResource("BoxShape3D_41cgy")
 
 [node name="Area3D2" type="Area3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.8, 2, 0)
@@ -96,10 +88,54 @@ audio_bus_name = &"Muffled"
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D2"]
 shape = SubResource("BoxShape3D_wja82")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
-transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 1.681, 2, 15.9724)
-mesh = SubResource("QuadMesh_a75bl")
+[node name="Area3D3" type="Area3D" parent="."]
+audio_bus_override = true
+audio_bus_name = &"Interior"
 
-[node name="MeshInstance3D2" type="MeshInstance3D" parent="."]
-transform = Transform3D(1.31134e-07, 0, 1, 0, 1, 0, -1, 0, 1.31134e-07, 0.688107, 2, 16.465)
-mesh = SubResource("QuadMesh_pcr1w")
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.05811, 2.08549, -4.8791)
+shape = SubResource("BoxShape3D_sf0b7")
+
+[node name="CollisionShape3D3" type="CollisionShape3D" parent="Area3D3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.03839, 0.4, 0.0586259)
+shape = SubResource("BoxShape3D_odgpl")
+
+[node name="CollisionShape3D6" type="CollisionShape3D" parent="Area3D3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.81455, 0.4, 0.0586259)
+shape = SubResource("BoxShape3D_vdjnl")
+
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="Area3D3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.05811, 2.01825, 5.0132)
+shape = SubResource("BoxShape3D_sf0b7")
+
+[node name="CollisionShape3D4" type="CollisionShape3D" parent="Area3D3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.3074, 3.51997, 20.9881)
+shape = SubResource("BoxShape3D_w4ncu")
+
+[node name="CollisionShape3D5" type="CollisionShape3D" parent="Area3D3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.31516, 2.00982, 11.5493)
+shape = SubResource("BoxShape3D_2m11s")
+
+[node name="CollisionShape3D7" type="CollisionShape3D" parent="Area3D3"]
+transform = Transform3D(1, 0, 0, 0, 0.939693, 0.34202, 0, -0.34202, 0.939693, 3.27036, 2.58872, 16.888)
+shape = SubResource("BoxShape3D_287x5")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.707539, 0.55178, 0.441506, 0, -0.624766, 0.780812, 0.706675, -0.552455, -0.442046, 0, 10, 0)
+light_bake_mode = 1
+shadow_enabled = true
+
+[node name="CSGBox3D" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, -18)
+use_collision = true
+size = Vector3(1, 1, 3)
+
+[node name="CSGBox3D2" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, -18)
+use_collision = true
+size = Vector3(1, 2, 3)
+
+[node name="CSGBox3D3" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 1.5, -18)
+use_collision = true
+size = Vector3(1, 3, 3)
