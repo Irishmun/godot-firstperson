@@ -34,7 +34,7 @@ fill = 1
 fill_from = Vector2(0.5, 0.5)
 fill_to = Vector2(1, 0.5)
 
-[sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_n0omy"]
+[sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_4ico0"]
 streams_count = 4
 stream_0/stream = ExtResource("3_smurv")
 stream_1/stream = ExtResource("4_tq1ao")
@@ -78,6 +78,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.925, 0)
 target_position = Vector3(0, 1, 0)
 
 [node name="AudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="."]
-stream = SubResource("AudioStreamRandomizer_n0omy")
+stream = SubResource("AudioStreamRandomizer_4ico0")
 volume_db = -8.0
 script = ExtResource("7_upvhr")

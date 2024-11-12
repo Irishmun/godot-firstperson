@@ -96,7 +96,7 @@ public partial class Player : CharacterBody3D
         HandleGravity((float)delta);
         //check steps
         _jumpInput = Input.IsActionJustPressed("Jump");
-        GD.Print($"Jump:{_jumpInput} and onfloor:{IsOnFloor()} or falling:{_isFalling}");
+        //GD.Print($"Jump:{_jumpInput} and onfloor:{IsOnFloor()} or falling:{_isFalling}");
         if (_jumpInput && (IsOnFloor() || !_isFalling || _jumpCount < maxJumps))//(IsOnFloor() || (!_wasOnFloor && !_isFalling)))
         {
             _jumpCount += 1;
@@ -242,7 +242,15 @@ public partial class Player : CharacterBody3D
                 { _isFalling = false; }
             }
             _cameraSavedPos = camera.GlobalPosition;
-            velocity.Y -= _gravity * Mass * delta;
+            if (velocity.Y > 0)//jumping
+            {
+                GD.Print("Going Up");
+                velocity.Y -= (_gravity * Mass) * 0.5f * delta;
+            }
+            else
+            {
+                velocity.Y -= _gravity * Mass * delta;
+            }
             velocity.Y = Mathf.Clamp(velocity.Y, TERMINAL_VELOCITY, -TERMINAL_VELOCITY);
             ApplyFloorSnap();//snap to floor to prevent floating
         }
@@ -308,7 +316,7 @@ public partial class Player : CharacterBody3D
     private float CalcJumpForce()
     {//initial_velocity^2 =  final_velocity^2 - 2*acceleration*displacement
         //Sqrt(2*Gravity*JumpHeight*Mass);//account for gravity applied to player
-        return Mathf.Sqrt(2 * _gravity * (_isCrouching ? jumpHeight * 0.5f + 0.1f : jumpHeight + 0.1f) * Mass);
+        return Mathf.Sqrt(2 * (_gravity * 0.5f) * (_isCrouching ? jumpHeight * 0.5f + 0.1f : jumpHeight + 0.1f) * Mass);
     }
     #endregion
     #region ExtensionMethods
@@ -332,4 +340,5 @@ public partial class Player : CharacterBody3D
     public bool JustLanded => _justLanded;
     public bool WasOnFloor => _wasOnFloor;
     public bool IsInAir => _isFalling || velocity.Y > 0;
+    public bool StartJump => _jumpInput == true && _jumpCount == 1;
 }
