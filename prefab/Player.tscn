@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://cgm5nhqvbbne5"]
+[gd_scene load_steps=15 format=3 uid="uid://cgm5nhqvbbne5"]
 
 [ext_resource type="Script" path="res://scripts/Player.cs" id="1_1hwto"]
 [ext_resource type="Script" path="res://scripts/FlashLight.cs" id="2_xwd2e"]
@@ -7,6 +7,7 @@
 [ext_resource type="AudioStream" uid="uid://b28cs70bcjcua" path="res://assets/audio/player/boots3.wav" id="5_pp6fp"]
 [ext_resource type="AudioStream" uid="uid://denw3bcm0uvjd" path="res://assets/audio/player/boots4.wav" id="6_oiq8o"]
 [ext_resource type="Script" path="res://scripts/WalkingSound.cs" id="7_upvhr"]
+[ext_resource type="Script" path="res://scripts/Mantling.cs" id="8_vp37e"]
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_1xpml"]
 height = 1.85
@@ -41,7 +42,13 @@ stream_1/stream = ExtResource("4_tq1ao")
 stream_2/stream = ExtResource("5_pp6fp")
 stream_3/stream = ExtResource("6_oiq8o")
 
-[node name="Player" type="CharacterBody3D" node_paths=PackedStringArray("cameraHolder", "camera", "headRay", "collisionBody")]
+[sub_resource type="SphereMesh" id="SphereMesh_ll1j0"]
+radius = 0.125
+height = 0.25
+radial_segments = 16
+rings = 8
+
+[node name="Player" type="CharacterBody3D" node_paths=PackedStringArray("cameraHolder", "camera", "headRay", "collisionBody", "mantlingNode")]
 script = ExtResource("1_1hwto")
 jumpHeight = 1.5
 sensitivity = 100
@@ -49,6 +56,7 @@ cameraHolder = NodePath("CameraHolder")
 camera = NodePath("CameraHolder/Camera3D")
 headRay = NodePath("CrouchRaycast")
 collisionBody = NodePath("Body")
+mantlingNode = NodePath("LedgeCast")
 
 [node name="Body" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.925, 0)
@@ -81,3 +89,26 @@ target_position = Vector3(0, 1, 0)
 stream = SubResource("AudioStreamRandomizer_4ico0")
 volume_db = -8.0
 script = ExtResource("7_upvhr")
+
+[node name="LedgeCast" type="Node3D" parent="." node_paths=PackedStringArray("wallRay", "floorRay", "edgeRay", "mantleHit")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.2, 0)
+script = ExtResource("8_vp37e")
+wallRay = NodePath("WallRay")
+floorRay = NodePath("FloorRay")
+edgeRay = NodePath("EdgeRay")
+mantleHit = NodePath("MeshInstance3D")
+
+[node name="FloorRay" type="RayCast3D" parent="LedgeCast"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.7)
+
+[node name="WallRay" type="RayCast3D" parent="LedgeCast"]
+target_position = Vector3(0, 0, 0.7)
+
+[node name="EdgeRay" type="RayCast3D" parent="LedgeCast"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 0)
+target_position = Vector3(0, 0, 0.7)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="LedgeCast"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -2.2, 0)
+mesh = SubResource("SphereMesh_ll1j0")
+skeleton = NodePath("../..")

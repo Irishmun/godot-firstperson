@@ -32,6 +32,7 @@ public partial class Player : CharacterBody3D
     [Export] private Camera3D camera;
     [Export] private RayCast3D headRay;
     [Export] private CollisionShape3D collisionBody;
+    [Export] private Mantling mantlingNode;
 
     private bool _runningInput = false, _crouchInput = false, _jumpInput = false;
     private bool _isCrouching;
@@ -94,14 +95,8 @@ public partial class Player : CharacterBody3D
         //Vector3 velocity = new Vector3(_currentSpeed * direction.X, this.Velocity.Y, _currentSpeed * direction.Z);
         velocity = velocity.Lerp(direction, (float)delta * acceleration);
         HandleGravity((float)delta);
+        HandleJump();
         //check steps
-        _jumpInput = Input.IsActionJustPressed("Jump");
-        //GD.Print($"Jump:{_jumpInput} and onfloor:{IsOnFloor()} or falling:{_isFalling}");
-        if (_jumpInput && (IsOnFloor() || !_isFalling || _jumpCount < maxJumps))//(IsOnFloor() || (!_wasOnFloor && !_isFalling)))
-        {
-            _jumpCount += 1;
-            velocity.Y = CalcJumpForce();
-        }
         if (!HandleStep((float)delta))
         {
             this.Velocity = velocity;
@@ -196,6 +191,17 @@ public partial class Player : CharacterBody3D
     #endregion
     //==========MOVEMENT==========
     #region MOVEMENT
+    private void HandleJump()
+    {
+        _jumpInput = Input.IsActionJustPressed("Jump");
+        //GD.Print($"Jump:{_jumpInput} and onfloor:{IsOnFloor()} or falling:{_isFalling}");
+        if (_jumpInput && (IsOnFloor() || !_isFalling || _jumpCount < maxJumps))//(IsOnFloor() || (!_wasOnFloor && !_isFalling)))
+        {
+            _jumpCount += 1;
+            velocity.Y = CalcJumpForce();
+        }
+    }
+
     private bool HandleStep(float delta) //velocity with minStep distance maybe?
     {
         //get where the player would have gone horizontaly        
@@ -215,14 +221,14 @@ public partial class Player : CharacterBody3D
             //if distance to step too high,        too low,       or step to high, don't move player there
             if (stepHeight > maxStepHeight || stepHeight <= 0.01f || (res.GetPosition() - this.GlobalPosition).Y > maxStepHeight)
             { return false; }
-            Vector3 CollisionPos = testStartPos.Origin + res.GetTravel();
+            Vector3 collisionPos = testStartPos.Origin + res.GetTravel();
             //GD.Print($"Trying to walk up something at angle: {Mathf.RadToDeg(Mathf.Acos(res.GetNormal().Dot(Vector3.Up)))} ({Mathf.Acos(res.GetNormal().Dot(Vector3.Up))})");
             if (Mathf.RadToDeg(Mathf.Acos(res.GetNormal().Dot(Vector3.Up))) >= MAX_SLOPE_ANGLE)//<--NOTE: this breaks when using a cylinder collider
             { return false; }
             //set camera position before global position
             _cameraSavedPos = camera.GlobalPosition;
             //set global position
-            this.GlobalPosition = CollisionPos;
+            this.GlobalPosition = collisionPos;
             ApplyFloorSnap();//snap to floor to prevent floating
             return true;
         }
@@ -244,7 +250,6 @@ public partial class Player : CharacterBody3D
             _cameraSavedPos = camera.GlobalPosition;
             if (velocity.Y > 0)//jumping
             {
-                GD.Print("Going Up");
                 velocity.Y -= (_gravity * Mass) * 0.5f * delta;
             }
             else
@@ -252,6 +257,12 @@ public partial class Player : CharacterBody3D
                 velocity.Y -= _gravity * Mass * delta;
             }
             velocity.Y = Mathf.Clamp(velocity.Y, TERMINAL_VELOCITY, -TERMINAL_VELOCITY);
+            if (Input.IsActionPressed("Jump") && mantlingNode.HandleMantle(delta, out Vector3 pos))
+            {
+                GD.Print("mantle: " + pos);
+                _cameraSavedPos = camera.GlobalPosition;
+            }
+
             ApplyFloorSnap();//snap to floor to prevent floating
         }
         else
