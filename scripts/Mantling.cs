@@ -6,6 +6,7 @@ public partial class Mantling : Node
     [Export] private float mantleSpeed = 0.5f;
     [Export] private RayCast3D wallRay;
     [Export] private RayCast3D floorRay;
+    [Export] private RayCast3D ceilingRay;
     [Export] private RayCast3D edgeRay;
     [Export] private Node3D mantleHit;
 
@@ -45,30 +46,35 @@ public partial class Mantling : Node
             mantlePos.Y = floorRay.GetCollisionPoint().Y;
 
             if (mantleHit != null)
-            { mantleHit.GlobalPosition = mantlePos; }
+            { mantleHit.GlobalPosition = floorRay.GetCollisionPoint(); }
             if (ApplyMantle == true)
             {
                 if (_tween != null)
                 { return true; }
-                GD.Print("Mantling to position");
-                MantleToPosition(mantlePos);
+                ceilingRay.GlobalPosition = floorRay.GetCollisionPoint();
+                ceilingRay.TargetPosition = Vector3.Up * _player.StandingHeight;
+                ceilingRay.ForceRaycastUpdate();
+                hit = ceilingRay.GetCollider();
+                MantleToPosition(mantlePos, hit is StaticBody3D || hit is CsgShape3D);
             }
             return true;
         }
         return false;
     }
 
-    public void MantleToPosition(Vector3 globalPosition)
+    public void MantleToPosition(Vector3 globalPosition, bool forceCrouch = false)
     {
         _player.CanMove = false;
-        _player.ForceCrouch = true;
         _tween = GetTree().CreateTween();
         GD.Print("Start Tween");
-        _tween.SetEase(Tween.EaseType.In);
-        _tween.SetTrans(Tween.TransitionType.Back);
-        _tween.SetParallel(false);
+        if (forceCrouch == false)
+        {
+            _tween.SetEase(Tween.EaseType.In);
+            _tween.SetTrans(Tween.TransitionType.Back);
+        }
         _tween.Finished += _tween_Finished;
         _tween.TweenProperty(_player, "global_position", globalPosition, 0.5f);
+        _player.ForceCrouch = forceCrouch;
         GD.Print("Finished Tween");
     }
 

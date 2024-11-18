@@ -90,15 +90,20 @@ stream = SubResource("AudioStreamRandomizer_4ico0")
 volume_db = -8.0
 script = ExtResource("7_upvhr")
 
-[node name="LedgeCast" type="Node3D" parent="." node_paths=PackedStringArray("wallRay", "floorRay", "edgeRay")]
+[node name="LedgeCast" type="Node3D" parent="." node_paths=PackedStringArray("wallRay", "floorRay", "ceilingRay", "edgeRay")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.2, 0)
 script = ExtResource("8_vp37e")
 wallRay = NodePath("WallRay")
 floorRay = NodePath("FloorRay")
+ceilingRay = NodePath("CeilingRay")
 edgeRay = NodePath("EdgeRay")
 
 [node name="FloorRay" type="RayCast3D" parent="LedgeCast"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.7)
+
+[node name="CeilingRay" type="RayCast3D" parent="LedgeCast"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.7)
+target_position = Vector3(0, 1, 0)
 
 [node name="WallRay" type="RayCast3D" parent="LedgeCast"]
 target_position = Vector3(0, 0, 0.7)

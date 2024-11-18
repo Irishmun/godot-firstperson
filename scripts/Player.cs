@@ -1,5 +1,6 @@
 using Godot;
 using System;
+using System.Runtime.InteropServices;
 
 public partial class Player : CharacterBody3D
 {
@@ -42,7 +43,7 @@ public partial class Player : CharacterBody3D
     private Vector3 velocity;
     private Vector3 _cameraSavedPos = Vector3.Inf;
     private int _jumpCount = 0;
-    private float _defaultBodyHeight, _defaultCameraHeight;
+    private float _standingHeight, _defaultCameraHeight;
     private float _crouchVal = 0, _tilt = 0;
     private float _coyoteTime = 0;
     private CylinderShape3D _collision;
@@ -56,7 +57,7 @@ public partial class Player : CharacterBody3D
         Input.MouseMode = Input.MouseModeEnum.Captured;
         _collision = (CylinderShape3D)collisionBody.Shape;
         //_collision = (CapsuleShape3D)collisionBody.Shape;
-        _defaultBodyHeight = _collision.Height;
+        _standingHeight = _collision.Height;
         _defaultCameraHeight = cameraHolder.Position.Y;//local, for global: camera.GlobalPosition.Y-this.GlobalPosition.Y
         Vector3 pos = headRay.Position;
         pos.Y = crouchHeight;
@@ -315,8 +316,8 @@ public partial class Player : CharacterBody3D
         void UpdateLerp()
         {
             _crouchVal = Mathf.Clamp(_crouchVal, 0, 1);
-            curCrouch = Mathf.Lerp(_defaultBodyHeight, crouchHeight, _crouchVal);
-            curCam = Mathf.Lerp(_defaultCameraHeight, _defaultCameraHeight - (_defaultBodyHeight - crouchHeight), _crouchVal);
+            curCrouch = Mathf.Lerp(_standingHeight, crouchHeight, _crouchVal);
+            curCam = Mathf.Lerp(_defaultCameraHeight, _defaultCameraHeight - (_standingHeight - crouchHeight), _crouchVal);
         }
     }
     private float DecideMoveSpeed()
@@ -362,6 +363,8 @@ public partial class Player : CharacterBody3D
     }
     #endregion
     public float MovementSpeed => movementSpeed;
+    public float CrouchHeight => crouchHeight;
+    public float StandingHeight => _standingHeight;
     public bool JustLanded => _justLanded;
     public bool WasOnFloor => _wasOnFloor;
     public bool IsInAir => _isFalling || velocity.Y > 0;
