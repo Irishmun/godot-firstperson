@@ -1,7 +1,7 @@
 using Godot;
 using System;
 
-public partial class Mantling : Node
+public partial class Mantling : Node3D
 {
     [Export] private float mantleSpeed = 0.5f;
     [Export] private RayCast3D wallRay;
@@ -12,6 +12,7 @@ public partial class Mantling : Node
 
     private Player _player;
     private Tween _tween;
+    private float _headOffset;
 
     public override void _Ready()
     {
@@ -21,10 +22,18 @@ public partial class Mantling : Node
             mantleHit.TopLevel = true;
         }
         _player = this.GetParent<Player>();
+
+        _headOffset = Position.Y;
+        GD.Print(_headOffset);
     }
 
     public bool HandleMantle(float delta, out Vector3 mantlePos, bool ApplyMantle = true)
     {
+        Vector3 pos = this.Position;
+        float offset = _headOffset - _player.StandingHeight;
+        pos.Y = _player.IsCrouching ? _player.CrouchHeight + offset : _player.StandingHeight + offset;
+        GD.Print($"offset: {pos.Y}");
+        this.Position = pos;
         mantlePos = Vector3.Inf;
         wallRay.ForceRaycastUpdate();
         GodotObject hit = wallRay.GetCollider();

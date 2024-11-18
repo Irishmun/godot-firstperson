@@ -365,6 +365,7 @@ public partial class Player : CharacterBody3D
     public float MovementSpeed => movementSpeed;
     public float CrouchHeight => crouchHeight;
     public float StandingHeight => _standingHeight;
+    public bool IsCrouching => _isCrouching;
     public bool JustLanded => _justLanded;
     public bool WasOnFloor => _wasOnFloor;
     public bool IsInAir => _isFalling || velocity.Y > 0;

@@ -15,7 +15,6 @@ radius = 0.3
 
 [sub_resource type="CameraAttributesPractical" id="CameraAttributesPractical_7dnyv"]
 auto_exposure_enabled = true
-dof_blur_far_enabled = true
 dof_blur_far_distance = 20.0
 dof_blur_far_transition = 10.0
 dof_blur_amount = 0.02
