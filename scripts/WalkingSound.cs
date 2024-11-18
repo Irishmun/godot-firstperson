@@ -18,6 +18,8 @@ public partial class WalkingSound : AudioStreamPlayer3D
     // Called every frame. 'delta' is the elapsed time since the previous frame.
     public override void _Process(double delta)
     {
+        if (_player.CanMove == false)
+        { return; }
         if (_player.StartJump && _t < normalStepInterval - 0.001f)
         {
             playStep();

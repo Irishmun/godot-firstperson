@@ -34,6 +34,7 @@ public partial class Player : CharacterBody3D
     [Export] private CollisionShape3D collisionBody;
     [Export] private Mantling mantlingNode;
 
+    private bool _canMove = true, _canLook = true;
     private bool _runningInput = false, _crouchInput = false, _jumpInput = false;
     private bool _isCrouching;
     private bool _justLanded = false, _isFalling = false, _wasOnFloor = true;
@@ -78,9 +79,8 @@ public partial class Player : CharacterBody3D
             //if (_cameraSavedVert < holderY + 0.0001f && _cameraSavedVert > holderY - 0.0001f)
             //{ _cameraSavedVert = holderY; }
         }
-
-
-
+        if (_canMove == false)
+        { return; }
         if (IsOnFloor() && _isFalling == true)
         { _justLanded = true; }
     }
@@ -88,6 +88,8 @@ public partial class Player : CharacterBody3D
     {
         _justLanded = false;
         ChangeCrouchState(_crouchInput, (float)delta);
+        if (_canMove == false)
+        { return; }
         velocity = this.Velocity;
         Vector3 direction = new Vector3(_inputDir.X, 0, _inputDir.Y).Normalized();
         direction = direction.Rotated(Vector3.Up, GlobalRotation.Y) * DecideMoveSpeed();
@@ -111,7 +113,7 @@ public partial class Player : CharacterBody3D
     #region INPUT
     public override void _Input(InputEvent e)
     {
-        if (e.IsEcho())
+        if (e.IsEcho() || _canMove == false)
         { return; }
         _inputDir = Input.GetVector("Right", "Left", "Backward", "Forward");
         _runningInput = Input.IsActionPressed("Run");
@@ -119,12 +121,14 @@ public partial class Player : CharacterBody3D
     }
     public override void _UnhandledInput(InputEvent e)
     {
-        if (e is InputEventMouseMotion && Input.MouseMode == Input.MouseModeEnum.Captured)
+        if (_canLook == true && (e is InputEventMouseMotion && Input.MouseMode == Input.MouseModeEnum.Captured))
         {
             Transform2D viewportTransform = GetTree().Root.GetFinalTransform();
             RotatePlayer(e.XformedBy(viewportTransform) as InputEventMouseMotion);
             GetViewport().SetInputAsHandled();
         }
+        /*if (_handleInputs == false)
+        { return; }*/
     }
     #endregion
     //==========VIEW==========
@@ -201,7 +205,6 @@ public partial class Player : CharacterBody3D
             velocity.Y = CalcJumpForce();
         }
     }
-
     private bool HandleStep(float delta) //velocity with minStep distance maybe?
     {
         //get where the player would have gone horizontaly        
@@ -259,7 +262,6 @@ public partial class Player : CharacterBody3D
             velocity.Y = Mathf.Clamp(velocity.Y, TERMINAL_VELOCITY, -TERMINAL_VELOCITY);
             if (Input.IsActionPressed("Jump") && mantlingNode.HandleMantle(delta, out Vector3 pos))
             {
-                GD.Print("mantle: " + pos);
                 _cameraSavedPos = camera.GlobalPosition;
             }
 
@@ -274,9 +276,10 @@ public partial class Player : CharacterBody3D
     }
     private void ChangeCrouchState(bool newState, float delta)
     {
+        bool state = ForceCrouch == false ? newState : true;
         float curCrouch;
         float curCam;
-        if (newState == true && (_isCrouching == false || (_isCrouching == true && _crouchVal < 1)))
+        if (state == true && (_isCrouching == false || (_isCrouching == true && _crouchVal < 1)))
         {
             _crouchVal += delta * crouchChangeSpeed;
             UpdateLerp();
@@ -290,7 +293,7 @@ public partial class Player : CharacterBody3D
             _isCrouching = _crouchVal >= 1;
             return;
         }
-        if (newState == false && (_isCrouching == true || (_isCrouching == false && _crouchVal > 0)))
+        if (state == false && (_isCrouching == true || (_isCrouching == false && _crouchVal > 0)))
         {
             headRay.ForceRaycastUpdate();
             GodotObject hit = headRay.GetCollider();
@@ -330,6 +333,17 @@ public partial class Player : CharacterBody3D
         return Mathf.Sqrt(2 * (_gravity * 0.5f) * (_isCrouching ? jumpHeight * 0.5f + 0.1f : jumpHeight + 0.1f) * Mass);
     }
     #endregion
+    //==========PUBLIC METHODS==========
+    #region Public Methods
+    public void ForcePosition(Vector3 position)
+    {
+        this.GlobalPosition = position;
+    }
+    public void ForceRotation(Vector3 rotation)
+    {
+        this.GlobalRotation = rotation;
+    }
+    #endregion
     #region ExtensionMethods
     private float ReMap(float value, float from1, float to1, float from2, float to2)
     {
@@ -352,4 +366,9 @@ public partial class Player : CharacterBody3D
     public bool WasOnFloor => _wasOnFloor;
     public bool IsInAir => _isFalling || velocity.Y > 0;
     public bool StartJump => _jumpInput == true && _jumpCount == 1;
+    public CollisionShape3D CollisionBody => collisionBody;
+    public bool CanMove { get => _canMove; set => _canMove = value; }
+    public bool CanLook { get => _canLook; set => _canLook = value; }
+
+    public bool ForceCrouch { get; set; }
 }
