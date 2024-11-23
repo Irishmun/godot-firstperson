@@ -28,6 +28,7 @@ public partial class Player : CharacterBody3D
     [ExportGroup("Physics")]
     [Export] private float Mass = 10;
     [Export] private float timeBeforeFalling = 0.1f;//coyote time
+    [Export] private float jumpBufferTime = 0.1f;
     [ExportGroup("Nodes")]
     [Export] private Node3D cameraHolder;
     [Export] private Camera3D camera;
@@ -39,6 +40,7 @@ public partial class Player : CharacterBody3D
     private bool _runningInput = false, _crouchInput = false, _jumpInput = false;
     private bool _isCrouching;
     private bool _justLanded = false, _isFalling = false, _wasOnFloor = true;
+    private bool _jumpBuffer = false;
     private Vector2 _inputDir;//, _camInput;
     private Vector3 velocity;
     private Vector3 _cameraSavedPos = Vector3.Inf;
@@ -84,6 +86,13 @@ public partial class Player : CharacterBody3D
         { return; }
         if (IsOnFloor() && _isFalling == true)
         { _justLanded = true; }
+        if (IsOnFloor())
+        {
+            StartJumpSound = false;
+            _jumpCount = 0;
+            _isFalling = false;
+            _coyoteTime = 0;
+        }
     }
     public override void _PhysicsProcess(double delta)
     {
@@ -114,8 +123,15 @@ public partial class Player : CharacterBody3D
     #region INPUT
     public override void _Input(InputEvent e)
     {
-        if (e.IsEcho() || _canMove == false)
+        if (e.IsEcho())
         { return; }
+        if (_canMove == false)
+        {
+            _inputDir = Vector2.Zero;
+            _runningInput = false;
+            _crouchInput = false;
+            return;
+        }
         _inputDir = Input.GetVector("Right", "Left", "Backward", "Forward");
         _runningInput = Input.IsActionPressed("Run");
         _crouchInput = Input.IsActionPressed("Crouch");
@@ -200,10 +216,18 @@ public partial class Player : CharacterBody3D
     {
         _jumpInput = Input.IsActionJustPressed("Jump");
         //GD.Print($"Jump:{_jumpInput} and onfloor:{IsOnFloor()} or falling:{_isFalling}");
-        if (_jumpInput && (IsOnFloor() || !_isFalling || _jumpCount < maxJumps))//(IsOnFloor() || (!_wasOnFloor && !_isFalling)))
+        if ((_jumpInput || _jumpBuffer) && (_jumpCount < maxJumps || (IsOnFloor() || !_isFalling)))//(IsOnFloor() || (!_wasOnFloor && !_isFalling)))
         {
+            if (_jumpCount == 0)
+            { StartJumpSound = true; }
+            _jumpBuffer = false;
             _jumpCount += 1;
             velocity.Y = CalcJumpForce();
+        }
+        else if (_jumpInput && (!IsOnFloor() || _isFalling))
+        {
+            _jumpBuffer = true;
+            GetTree().CreateTimer(jumpBufferTime).Timeout += JumpBuffer_Timeout;
         }
     }
     private bool HandleStep(float delta) //velocity with minStep distance maybe?
@@ -254,11 +278,11 @@ public partial class Player : CharacterBody3D
             _cameraSavedPos = camera.GlobalPosition;
             if (velocity.Y > 0)//jumping
             {
-                velocity.Y -= (_gravity * Mass) * 0.5f * delta;
+                velocity.Y -= _gravity * (Mass * 0.5f) * delta;
             }
             else
             {
-                velocity.Y -= _gravity * Mass * delta;
+                velocity.Y -= _gravity * (Mass * 0.5f) * delta;
             }
             velocity.Y = Mathf.Clamp(velocity.Y, TERMINAL_VELOCITY, -TERMINAL_VELOCITY);
             if (Input.IsActionPressed("Jump") && mantlingNode.HandleMantle(delta, out Vector3 pos))
@@ -270,6 +294,7 @@ public partial class Player : CharacterBody3D
         }
         else
         {
+            StartJumpSound = false;
             _jumpCount = 0;
             _isFalling = false;
             _coyoteTime = 0;
@@ -344,7 +369,30 @@ public partial class Player : CharacterBody3D
     {
         this.GlobalRotation = rotation;
     }
+    public void ForceVelocity(Vector3 velocity)
+    {
+        this.Velocity = velocity;
+    }
     #endregion
+    //==========EVENTS==========
+    #region EVENTS
+    private void JumpBuffer_Timeout()
+    {
+        _jumpBuffer = false;
+    }
+    #endregion
+    public float MovementSpeed => movementSpeed;
+    public float CrouchHeight => crouchHeight;
+    public float StandingHeight => _standingHeight;
+    public bool IsCrouching => _isCrouching;
+    public bool JustLanded => _justLanded;
+    public bool WasOnFloor => _wasOnFloor;
+    public bool IsInAir => _isFalling || Velocity.Y > 0;
+    public bool StartJumpSound { get; set; }
+    public CollisionShape3D CollisionBody => collisionBody;
+    public bool CanMove { get => _canMove; set => _canMove = value; }
+    public bool CanLook { get => _canLook; set => _canLook = value; }
+    public bool ForceCrouch { get; set; }
     #region ExtensionMethods
     private float ReMap(float value, float from1, float to1, float from2, float to2)
     {
@@ -362,17 +410,4 @@ public partial class Player : CharacterBody3D
         return false;
     }
     #endregion
-    public float MovementSpeed => movementSpeed;
-    public float CrouchHeight => crouchHeight;
-    public float StandingHeight => _standingHeight;
-    public bool IsCrouching => _isCrouching;
-    public bool JustLanded => _justLanded;
-    public bool WasOnFloor => _wasOnFloor;
-    public bool IsInAir => _isFalling || velocity.Y > 0;
-    public bool StartJump => _jumpInput == true && _jumpCount == 1;
-    public CollisionShape3D CollisionBody => collisionBody;
-    public bool CanMove { get => _canMove; set => _canMove = value; }
-    public bool CanLook { get => _canLook; set => _canLook = value; }
-
-    public bool ForceCrouch { get; set; }
 }

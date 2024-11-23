@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3 uid="uid://c373pswu1flix"]
+[gd_scene load_steps=20 format=3 uid="uid://c373pswu1flix"]
 
 [ext_resource type="PackedScene" uid="uid://bgum0vi5s3rqp" path="res://blend/room.blend" id="1_bho1u"]
 [ext_resource type="Environment" uid="uid://c86oq6lqxe8bc" path="res://scenes/scene_environment.tres" id="2_erogr"]
@@ -7,6 +7,8 @@
 [ext_resource type="AudioStream" uid="uid://47hyb702o1hh" path="res://assets/audio/ambient/tumblr_oxqioy5yGU1rhtvijo1.mp3" id="4_f8an3"]
 [ext_resource type="AudioStream" uid="uid://t1lxbhigjn1p" path="res://assets/audio/ambient/drone.mp3" id="4_wqwg3"]
 [ext_resource type="Script" path="res://scripts/AreaSound.cs" id="6_pit0d"]
+[ext_resource type="PackedScene" uid="uid://bvau4ock08381" path="res://prefab/ent_movingplatform.tscn" id="8_8d4ab"]
+[ext_resource type="Script" path="res://scripts/PathFollower.cs" id="9_1vecl"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_rw1ov"]
 size = Vector3(10, 1.1, 6.42141)
@@ -35,9 +37,19 @@ size = Vector3(15.8411, 4.39032, 6.80811)
 [sub_resource type="BoxShape3D" id="BoxShape3D_287x5"]
 size = Vector3(11.9307, 4.39032, 6.80811)
 
+[sub_resource type="Curve3D" id="Curve3D_dtoh2"]
+_data = {
+"points": PackedVector3Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 15, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+"tilts": PackedFloat32Array(0, 0, 0)
+}
+point_count = 3
+
 [node name="Node3D" type="Node3D"]
 
-[node name="room" parent="." instance=ExtResource("1_bho1u")]
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.707539, 0.55178, 0.441506, 0, -0.624766, 0.780812, 0.706675, -0.552455, -0.442046, 0, 10, 0)
+light_bake_mode = 1
+shadow_enabled = true
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = ExtResource("2_erogr")
@@ -49,7 +61,7 @@ generate_probes_subdiv = 0
 light_data = ExtResource("3_enpko")
 
 [node name="Player" parent="." instance=ExtResource("2_gm5tn")]
-transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -2.19923, 4.76837e-07, -25.1944)
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -2.199, 6, 19.806)
 floor_max_angle = 1.0472
 
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="." node_paths=PackedStringArray("area")]
@@ -66,6 +78,8 @@ volume_db = -10.0
 
 [node name="Camera3D" type="Camera3D" parent="."]
 transform = Transform3D(0.0958977, 0.482469, -0.870648, 6.72083e-08, 0.874679, 0.484703, 0.995391, -0.046482, 0.0838797, -6.43891, 6.54698, -23.3878)
+
+[node name="room" parent="." instance=ExtResource("1_bho1u")]
 
 [node name="Area3D" type="Area3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.9, 2, 13.5)
@@ -120,23 +134,22 @@ shape = SubResource("BoxShape3D_2m11s")
 transform = Transform3D(1, 0, 0, 0, 0.939693, 0.34202, 0, -0.34202, 0.939693, 3.27036, 2.58872, 16.888)
 shape = SubResource("BoxShape3D_287x5")
 
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
-transform = Transform3D(0.707539, 0.55178, 0.441506, 0, -0.624766, 0.780812, 0.706675, -0.552455, -0.442046, 0, 10, 0)
-light_bake_mode = 1
-shadow_enabled = true
+[node name="CSGCombiner3D" type="CSGCombiner3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5, 1.5, -13.5)
+use_collision = true
 
-[node name="CSGBox3D" type="CSGBox3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, -13.5)
+[node name="CSGBox3D" type="CSGBox3D" parent="CSGCombiner3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.5, -1, 0)
 use_collision = true
 size = Vector3(1, 1, 3)
 
-[node name="CSGBox3D2" type="CSGBox3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, -13.5)
+[node name="CSGBox3D2" type="CSGBox3D" parent="CSGCombiner3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, -0.5, 0)
 use_collision = true
 size = Vector3(1, 2, 3)
 
-[node name="CSGBox3D3" type="CSGBox3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.5, 1.5, -13.5)
+[node name="CSGBox3D3" type="CSGBox3D" parent="CSGCombiner3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0)
 use_collision = true
 size = Vector3(2, 3, 3)
 
@@ -144,3 +157,27 @@ size = Vector3(2, 3, 3)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 1.5, -20.5)
 use_collision = true
 size = Vector3(3, 3, 3)
+
+[node name="CSGBox3D5" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11.1, 0.5, -18.3)
+use_collision = true
+size = Vector3(10, 1, 3)
+
+[node name="ent_movingplatform" parent="." instance=ExtResource("8_8d4ab")]
+transform = Transform3D(0.999995, 0, 8.74224e-08, 0, 0.999997, 0, -8.74223e-08, 0, 0.999996, 7.7, 2.9, -25.9)
+
+[node name="Path3D" type="Path3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.7, 2.9, -25.9)
+curve = SubResource("Curve3D_dtoh2")
+
+[node name="PathFollow3D" type="PathFollow3D" parent="Path3D"]
+transform = Transform3D(0.999995, 0, 8.74224e-08, 0, 0.999997, 0, -8.74223e-08, 0, 0.999996, 0, 0, 0)
+use_model_front = true
+cubic_interp = false
+tilt_enabled = false
+script = ExtResource("9_1vecl")
+
+[node name="RemoteTransform3D" type="RemoteTransform3D" parent="Path3D/PathFollow3D"]
+remote_path = NodePath("../../../ent_movingplatform")
+update_rotation = false
+update_scale = false

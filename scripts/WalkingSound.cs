@@ -20,8 +20,9 @@ public partial class WalkingSound : AudioStreamPlayer3D
     {
         if (_player.CanMove == false)
         { return; }
-        if (_player.StartJump && _t < normalStepInterval - 0.001f)
+        if (_player.StartJumpSound && _t < normalStepInterval - 0.001f)
         {
+            _player.StartJumpSound = false;
             playStep();
             return;
         }
