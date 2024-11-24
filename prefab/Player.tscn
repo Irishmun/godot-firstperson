@@ -52,6 +52,7 @@ platform_on_leave = 2
 script = ExtResource("1_1hwto")
 jumpHeight = 1.5
 sensitivity = 100
+Mass = 5.0
 cameraHolder = NodePath("CameraHolder")
 camera = NodePath("CameraHolder/Camera3D")
 headRay = NodePath("CrouchRaycast")
@@ -90,14 +91,13 @@ stream = SubResource("AudioStreamRandomizer_4ico0")
 volume_db = -8.0
 script = ExtResource("7_upvhr")
 
-[node name="LedgeCast" type="Node3D" parent="." node_paths=PackedStringArray("wallRay", "floorRay", "ceilingRay", "edgeRay", "mantleHit")]
+[node name="LedgeCast" type="Node3D" parent="." node_paths=PackedStringArray("wallRay", "floorRay", "ceilingRay", "edgeRay")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.2, 0)
 script = ExtResource("8_vp37e")
 wallRay = NodePath("WallRay")
 floorRay = NodePath("FloorRay")
 ceilingRay = NodePath("CeilingRay")
 edgeRay = NodePath("EdgeRay")
-mantleHit = NodePath("MeshInstance3D")
 
 [node name="FloorRay" type="RayCast3D" parent="LedgeCast"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.7)
@@ -114,6 +114,8 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 0)
 target_position = Vector3(0, 0, 0.7)
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="LedgeCast"]
+process_mode = 4
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -2.2, 0)
+visible = false
 mesh = SubResource("SphereMesh_ll1j0")
 skeleton = NodePath("../..")

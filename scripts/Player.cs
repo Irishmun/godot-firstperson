@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 
 public partial class Player : CharacterBody3D
 {
-    private const float TERMINAL_VELOCITY = -53.645f;//200mph in m/s according to FAI SKYDIVING COMMISSION
+    private const float TERMINAL_VELOCITY = -53.645f;//120mph in m/s according to FAI SKYDIVING COMMISSION
     private const float MAX_SLOPE_ANGLE = 60f;
     private const float DPI_MULTIPLIER = 0.001f;//1000 DPI mouse
 
@@ -118,6 +118,8 @@ public partial class Player : CharacterBody3D
         //GD.Print("[physics]velocity:" + Velocity.ToString("0.0"));
 
     }
+
+
     #endregion
     //==========INPUT==========
     #region INPUT
@@ -216,8 +218,10 @@ public partial class Player : CharacterBody3D
     {
         _jumpInput = Input.IsActionJustPressed("Jump");
         //GD.Print($"Jump:{_jumpInput} and onfloor:{IsOnFloor()} or falling:{_isFalling}");
-        if ((_jumpInput || _jumpBuffer) && (_jumpCount < maxJumps || (IsOnFloor() || !_isFalling)))//(IsOnFloor() || (!_wasOnFloor && !_isFalling)))
+        if ((_jumpInput || _jumpBuffer) && (IsOnFloor() || !_isFalling))//(IsOnFloor() || (!_wasOnFloor && !_isFalling)))
         {
+            if (_jumpCount >= maxJumps)
+            { return; }
             if (_jumpCount == 0)
             { StartJumpSound = true; }
             _jumpBuffer = false;
@@ -278,11 +282,11 @@ public partial class Player : CharacterBody3D
             _cameraSavedPos = camera.GlobalPosition;
             if (velocity.Y > 0)//jumping
             {
-                velocity.Y -= _gravity * (Mass * 0.5f) * delta;
+                velocity.Y -= _gravity * (Mass) * delta;
             }
             else
             {
-                velocity.Y -= _gravity * (Mass * 0.5f) * delta;
+                velocity.Y -= _gravity * (Mass) * delta;
             }
             velocity.Y = Mathf.Clamp(velocity.Y, TERMINAL_VELOCITY, -TERMINAL_VELOCITY);
             if (Input.IsActionPressed("Jump") && mantlingNode.HandleMantle(delta, out Vector3 pos))
@@ -356,7 +360,8 @@ public partial class Player : CharacterBody3D
     private float CalcJumpForce()
     {//initial_velocity^2 =  final_velocity^2 - 2*acceleration*displacement
         //Sqrt(2*Gravity*JumpHeight*Mass);//account for gravity applied to player
-        return Mathf.Sqrt(2 * (_gravity * 0.5f) * (_isCrouching ? jumpHeight * 0.5f + 0.1f : jumpHeight + 0.1f) * Mass);
+        float height = _isCrouching ? jumpHeight * 0.5f + 0.1f : jumpHeight + 0.1f;
+        return Mathf.Sqrt(2 * (_gravity) * height * Mass);
     }
     #endregion
     //==========PUBLIC METHODS==========
