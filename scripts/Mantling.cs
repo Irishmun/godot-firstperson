@@ -75,7 +75,6 @@ public partial class Mantling : Node3D
     public void MantleToPosition(Vector3 globalPosition, Node mantleObject, bool forceCrouch = false)
     {
         _player.CanMove = false;
-        //_player.ForceVelocity(Vector3.Zero);
         ReparentPlayer(mantleObject, _player.GetParent());
         ReparentMantle(mantleObject);
         _tween = GetTree().CreateTween();
@@ -89,6 +88,7 @@ public partial class Mantling : Node3D
 
     private void _tween_Finished()
     {
+        _player.ForceVelocity(Vector3.Zero);
         ReparentPlayer(_playerBaseParent, _player.GetParent());
         _player.ForceCrouch = false;
         _player.CanMove = true;
