@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://cgm5nhqvbbne5"]
+[gd_scene load_steps=16 format=3 uid="uid://cgm5nhqvbbne5"]
 
 [ext_resource type="Script" path="res://scripts/Player.cs" id="1_1hwto"]
 [ext_resource type="Script" path="res://scripts/FlashLight.cs" id="2_xwd2e"]
@@ -8,6 +8,10 @@
 [ext_resource type="AudioStream" uid="uid://denw3bcm0uvjd" path="res://assets/audio/player/boots4.wav" id="6_oiq8o"]
 [ext_resource type="Script" path="res://scripts/WalkingSound.cs" id="7_upvhr"]
 [ext_resource type="Script" path="res://scripts/Mantling.cs" id="8_vp37e"]
+
+[sub_resource type="Curve" id="Curve_5efeo"]
+_data = [Vector2(0, 0.05), 0.0, 1.5, 0, 0, Vector2(0.3, 1), 8.0, 0.0, 0, 0]
+point_count = 2
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_1xpml"]
 height = 1.85
@@ -53,6 +57,7 @@ script = ExtResource("1_1hwto")
 jumpHeight = 1.5
 sensitivity = 100
 Mass = 5.0
+fallGravityCurve = SubResource("Curve_5efeo")
 cameraHolder = NodePath("CameraHolder")
 camera = NodePath("CameraHolder/Camera3D")
 headRay = NodePath("CrouchRaycast")

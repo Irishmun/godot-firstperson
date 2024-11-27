@@ -32,6 +32,7 @@ public partial class Player : CharacterBody3D
     [Export] private float Mass = 10;
     [Export] private float timeBeforeFalling = 0.1f;//coyote time
     [Export] private float jumpBufferTime = 0.1f;
+    [Export] private Curve fallGravityCurve;
     //[Export] private float friction = 3.5f;
     [ExportGroup("Nodes")]
     [Export] private Node3D cameraHolder;
@@ -52,7 +53,7 @@ public partial class Player : CharacterBody3D
     private int _jumpCount = 0;
     private float _standingHeight, _defaultCameraHeight;
     private float _crouchVal = 0, _tilt = 0;
-    private float _coyoteTime = 0;
+    private float _coyoteTime = 0, _fallT = 0;
     private CylinderShape3D _collision;
     //private CapsuleShape3D _collision;
     #endregion
@@ -98,6 +99,7 @@ public partial class Player : CharacterBody3D
             _jumpCount = 0;
             _isFalling = false;
             _coyoteTime = 0;
+            _fallT = 0;
         }
     }
     public override void _PhysicsProcess(double delta)
@@ -116,7 +118,7 @@ public partial class Player : CharacterBody3D
         //{ HandleAirMovement((float)delta, direction); }        
         HandleMovement((float)delta, direction);//comment this if using the quake movement
         HandleJump();
-        GD.Print("Velocity: " + _velocity.Length());
+        //GD.Print("Velocity: " + _velocity.Length());
         //check steps
         if (!HandleStep((float)delta))
         {
@@ -339,15 +341,16 @@ public partial class Player : CharacterBody3D
                 { _isFalling = false; }
             }
             _cameraSavedPos = camera.GlobalPosition;
-            _velocity.Y -= _gravity * Mass * delta;
-            /*if (_velocity.Y > 0)//jumping
+            //_velocity.Y -= _gravity * Mass * delta;
+            if (_velocity.Y > 0)//jumping
             {
                 _velocity.Y -= _gravity * (Mass) * delta;
             }
             else
             {
-                _velocity.Y -= _gravity * (Mass) * delta;
-            }*/
+                _fallT += delta;
+                _velocity.Y -= _gravity * (Mass * fallGravityCurve.Sample(_fallT)) * delta;
+            }
             _velocity.Y = Mathf.Clamp(_velocity.Y, TERMINAL_VELOCITY, -TERMINAL_VELOCITY);
             if (Input.IsActionPressed("Jump") && mantlingNode.HandleMantle(delta, out Vector3 pos))
             {
@@ -362,6 +365,7 @@ public partial class Player : CharacterBody3D
             _jumpCount = 0;
             _isFalling = false;
             _coyoteTime = 0;
+            _fallT = 0;
         }
     }
     private void ChangeCrouchState(bool newState, float delta)
