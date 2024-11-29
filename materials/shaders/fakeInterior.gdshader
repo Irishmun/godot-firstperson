@@ -18,7 +18,7 @@ uniform sampler2D stencil :hint_default_white,filter_linear_mipmap;
 
 varying vec3 tangent_view_dir;
 
-//pseudo random 
+//pseudo random
 vec2 f_random(float co, float seed){
 	return fract(sin((co + seed) * vec2(12.9898, 78.233)) * 43758.5453);
 }
@@ -40,7 +40,7 @@ void vertex() {
 		dot(view_dir, TANGENT),
 		dot(view_dir, bitangent),
 		dot(view_dir, NORMAL)
-	);	
+	);
 }
 
 void fragment() {
@@ -56,7 +56,7 @@ void fragment() {
 	//get room depth from atlas, use depth otherwise
 	float far_frac = textureLod(room_texture, (room_index_uv + 0.5) / atlas_rooms, 0.0).a;
 	if(far_frac == 1.0) far_frac = depth;
-	
+
 	float depth_scale = 1.0 / (1.0 - far_frac) - 1.0;
 	//trace box from view dir
 	vec3 pos = vec3(room_uv * 2.0 - 1.0, -1.0);
@@ -90,7 +90,7 @@ void fragment() {
 	vec2 pixelated_uv = round(stretched_uv * rooms) / rooms;
 	float is_emit = dot(textureLod(emission_texture, pixelated_uv, 0.0).rgb, vec3(0.299, 0.587, 0.114));
 	is_emit = is_emit >= emission_cutoff ? 1.0 : 0.0;
-	//get window texture for mixing	
+	//get window texture for mixing
 	//vec4 window =textureLod(window_texture, UV, 0.0);
 	//apply final result
 	//ALBEDO = screen(room * (1.0 - is_emit),textureLod(window_texture, UV, 0.0).rgba).rgb;

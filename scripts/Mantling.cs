@@ -3,7 +3,7 @@ using System;
 
 public partial class Mantling : Node3D
 {
-    [Export] private float mantleSpeed = 0.5f;
+    [Export] private float mantleDuration = 0.5f;
     [Export] private RayCast3D wallRay;
     [Export] private RayCast3D floorRay;
     [Export] private RayCast3D ceilingRay;
@@ -25,7 +25,7 @@ public partial class Mantling : Node3D
         _player = this.GetParent<Player>();
         _playerBaseParent = _player.GetParent();
         _headOffset = Position.Y;
-        GD.Print(_headOffset);
+        EnableRays(false);
     }
 
     public bool HandleMantle(float delta, out Vector3 mantlePos, bool ApplyMantle = true)
@@ -35,6 +35,7 @@ public partial class Mantling : Node3D
         pos.Y = _player.IsCrouching ? _player.CrouchHeight + offset : _player.StandingHeight + offset;
         this.Position = pos;
         mantlePos = Vector3.Inf;
+        EnableRays(true);
         wallRay.ForceRaycastUpdate();
         GodotObject hit = wallRay.GetCollider();
         if (hit is StaticBody3D || hit is CsgShape3D)
@@ -51,11 +52,11 @@ public partial class Mantling : Node3D
             GodotObject edgeHit = edgeRay.GetCollider();
             if (edgeHit != hit)
             { return false; }
-            mantlePos = edgeRay.GetCollisionPoint();
+
+            mantlePos = edgeRay.GetCollisionPoint() + ((edgeRay.GlobalBasis * edgeRay.TargetPosition).Normalized() * 0.1f);
             mantlePos.Y = floorRay.GetCollisionPoint().Y + 0.01f;
 
-            if (mantleHit != null)
-            { mantleHit.GlobalPosition = floorRay.GetCollisionPoint(); }
+            if (mantleHit != null) { mantleHit.GlobalPosition = mantlePos; }
             if (ApplyMantle == true)
             {
                 if (_tween != null)
@@ -67,8 +68,10 @@ public partial class Mantling : Node3D
                 mantlePos = mantlePos - ((Node3D)hit).GlobalPosition;
                 MantleToPosition(mantlePos, (Node)hit, crouchHit is StaticBody3D || crouchHit is CsgShape3D);
             }
+            EnableRays(false);
             return true;
         }
+        EnableRays(false);
         return false;
     }
 
@@ -82,16 +85,17 @@ public partial class Mantling : Node3D
         if (forceCrouch == false)
         { _tween.SetTrans(Tween.TransitionType.Back); }
         _tween.Finished += _tween_Finished;
-        _tween.TweenProperty(_player, "position", globalPosition, 0.5f);
+        _tween.TweenProperty(_player, "position", globalPosition, mantleDuration);
         _player.ForceCrouch = forceCrouch;
     }
 
     private void _tween_Finished()
     {
-        _player.ForceVelocity(Vector3.Zero);
+        _player.OverrideVelocity(Vector3.Zero);
         ReparentPlayer(_playerBaseParent, _player.GetParent());
         _player.ForceCrouch = false;
         _player.CanMove = true;
+        _player.ForceInputCheck();
         _tween.Kill();
         _tween = null;
     }
@@ -119,5 +123,13 @@ public partial class Mantling : Node3D
         mantleHit.GetParent()?.RemoveChild(mantleHit);
         newParrent.AddChild(mantleHit);
         mantleHit.GlobalPosition = mantlePos;
+    }
+
+    private void EnableRays(bool enabled)
+    {
+        wallRay.Enabled = enabled;
+        floorRay.Enabled = enabled;
+        ceilingRay.Enabled = enabled;
+        edgeRay.Enabled = enabled;
     }
 }
