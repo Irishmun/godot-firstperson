@@ -28,10 +28,9 @@ public partial class Player : CharacterBody3D
     [Export] private float cameraVertSpeed = 20f;
     [Export] private float maxLookUp = 55, maxLookDown = -75;
     [ExportGroup("Physics")]
-    [Export] private float Mass = 10;
+    [Export] private float GravityMultiplier = 2;
     [Export] private float timeBeforeFalling = 0.1f;//coyote time
     [Export] private float jumpBufferTime = 0.1f;
-    [Export] private Curve fallGravityCurve;
     //[Export] private float friction = 3.5f;
     #endregion
     #region private fields
@@ -352,15 +351,7 @@ public partial class Player : CharacterBody3D
         }
         _cameraSavedPos = _camera.GlobalPosition;
         //_velocity.Y -= _gravity * Mass * delta;
-        if (_velocity.Y > 0)//jumping
-        {
-            _velocity.Y -= _gravity * (Mass) * delta;
-        }
-        else
-        {
-            _velocity.Y -= _gravity * (Mass * fallGravityCurve.SampleBaked(_fallT)) * delta;
-            _fallT += delta;
-        }
+        _velocity.Y -= _gravity * GravityMultiplier * delta;
         _velocity.Y = Mathf.Clamp(_velocity.Y, TERMINAL_VELOCITY, -TERMINAL_VELOCITY);
         if (Input.IsActionPressed("Jump") && _mantling.HandleMantle(delta, out Vector3 pos))
         {
@@ -414,7 +405,7 @@ public partial class Player : CharacterBody3D
 
         void UpdateLerp()
         {
-            _crouchVal = Mathf.Clamp(_crouchVal,0,1);//clamp value
+            _crouchVal = Mathf.Clamp(_crouchVal, 0, 1);//clamp value
             curCrouch = Mathf.Lerp(_standingHeight, crouchHeight, _crouchVal);
             curCam = Mathf.Lerp(_defaultCameraHeight, _defaultCameraHeight - (_standingHeight - crouchHeight), _crouchVal);
         }
@@ -431,7 +422,7 @@ public partial class Player : CharacterBody3D
     {//initial_velocity^2 =  final_velocity^2 - 2*acceleration*displacement
         //Sqrt(2*Gravity*JumpHeight*Mass);//account for gravity applied to player
         float height = _isCrouching ? jumpHeight * 0.5f + 0.1f : jumpHeight + 0.1f;
-        return Mathf.Sqrt(2 * (_gravity) * height * Mass);
+        return Mathf.Sqrt(2 * (_gravity) * height * GravityMultiplier);
     }
     #endregion
     //==========PRIVATE METHODS==========

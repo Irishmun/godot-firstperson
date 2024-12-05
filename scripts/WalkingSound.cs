@@ -20,21 +20,53 @@ public partial class WalkingSound : AudioStreamPlayer3D
     {
         if (_player.CanMove == false)
         { return; }
+        if (HandleJump()) { return; }
+        if (_player.IsInAir)
+        { return; }
+        if (HandleLand()) { return; }
+        if (HandleGrounded(delta)) { return; }
+    }
+
+    /// <summary>Handles sounds when player might land</summary>
+    /// <returns>True if sound played</returns>
+    private bool HandleLand()
+    {
+        if (_player.JustLanded == false)
+        { return false; }
+        PlayStep();
+        return true;
+    }
+
+    /// <summary>Handles sounds when walking on ground</summary>
+    /// <returns>True if sound played</returns>
+    private bool HandleGrounded(double delta)
+    {
+        UpdateWalkTimer(delta);
+        if (_t < normalStepInterval)
+        { return false; }
+        PlayStep();
+        return true;
+    }
+    /// <summary>Handles sounds when jumping</summary>
+    /// <returns>True if sound played</returns>
+    private bool HandleJump()
+    {
         if (_player.StartJumpSound && _t < normalStepInterval - 0.001f)
         {
             _player.StartJumpSound = false;
-            playStep();
-            return;
+            PlayStep();
+            return true;
         }
-        if (_player.IsInAir && !_player.WasOnFloor)
-        { return; }
+        return false;
+    }
+
+    private void UpdateWalkTimer(double delta)
+    {
         _t += ((float)delta * _player.Velocity.Length()) / _normalMovementSpeed;
-        if (_player.JustLanded == true || _t >= normalStepInterval)
-        { playStep(); }
-        void playStep()
-        {
-            this.Play();
-            _t = 0;
-        }
+    }
+    private void PlayStep()
+    {
+        this.Play();
+        _t = 0;
     }
 }

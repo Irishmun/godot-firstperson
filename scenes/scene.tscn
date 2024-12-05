@@ -1,4 +1,4 @@
-[gd_scene load_steps=23 format=3 uid="uid://c373pswu1flix"]
+[gd_scene load_steps=24 format=3 uid="uid://c373pswu1flix"]
 
 [ext_resource type="PackedScene" uid="uid://bgum0vi5s3rqp" path="res://blend/room.blend" id="1_bho1u"]
 [ext_resource type="VoxelGIData" uid="uid://bgem65m5ca2qo" path="res://scenes/scene.VoxelGI_data.res" id="1_nsxg6"]
@@ -47,16 +47,19 @@ _data = {
 }
 point_count = 3
 
+[sub_resource type="PrismMesh" id="PrismMesh_qkv4o"]
+left_to_right = 1.0
+size = Vector3(15, 15, 2)
+
 [node name="Node3D" type="Node3D"]
 
 [node name="VoxelGI" type="VoxelGI" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.95557, 3.50092, 0)
-size = Vector3(43.5, 7.3, 58)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.95557, 8.35848, 0)
+size = Vector3(43.5, 17.0151, 58)
 data = ExtResource("1_nsxg6")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(0.707539, 0.55178, 0.441506, 0, -0.624766, 0.780812, 0.706675, -0.552455, -0.442046, 0, 10, 0)
-light_bake_mode = 1
 shadow_enabled = true
 shadow_bias = 0.02
 
@@ -66,11 +69,11 @@ environment = ExtResource("2_erogr")
 [node name="LightmapGI" type="LightmapGI" parent="."]
 quality = 3
 bounces = 6
-generate_probes_subdiv = 3
+generate_probes_subdiv = 0
 light_data = ExtResource("3_enpko")
 
 [node name="Player" parent="." instance=ExtResource("2_gm5tn")]
-transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -9.64253, -2.38419e-07, -4.9286)
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -3.80372, -2.38419e-07, -16.5438)
 floor_max_angle = 1.0472
 
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="." node_paths=PackedStringArray("area")]
@@ -203,3 +206,15 @@ script = ExtResource("9_1vecl")
 remote_path = NodePath("../../../ent_movingplatform")
 update_rotation = false
 update_scale = false
+
+[node name="CSGCombiner3D2" type="CSGCombiner3D" parent="."]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, -12.5207, 0, -7.9736)
+use_collision = true
+
+[node name="CSGBox3D" type="CSGBox3D" parent="CSGCombiner3D2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5, 14.5, 0)
+size = Vector3(4, 1, 2)
+
+[node name="CSGMesh3D" type="CSGMesh3D" parent="CSGCombiner3D2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, 7.5, 0)
+mesh = SubResource("PrismMesh_qkv4o")

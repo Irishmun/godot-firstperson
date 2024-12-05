@@ -10,10 +10,6 @@
 [ext_resource type="Script" path="res://scripts/WalkingSound.cs" id="7_upvhr"]
 [ext_resource type="Script" path="res://scripts/Mantling.cs" id="8_vp37e"]
 
-[sub_resource type="Curve" id="Curve_5efeo"]
-_data = [Vector2(0, 0.1), 0.0, 0.0, 0, 0, Vector2(0.225, 1), 7.0, 0.0, 0, 0]
-point_count = 2
-
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_1xpml"]
 height = 1.85
 radius = 0.3
@@ -48,14 +44,18 @@ height = 0.25
 radial_segments = 16
 rings = 8
 
+[sub_resource type="CylinderMesh" id="CylinderMesh_4hjdp"]
+top_radius = 0.3
+bottom_radius = 0.3
+height = 1.85
+radial_segments = 16
+rings = 0
+
 [node name="Player" type="CharacterBody3D"]
 slide_on_ceiling = false
 platform_on_leave = 2
 script = ExtResource("1_1hwto")
 jumpHeight = 1.5
-sensitivity = 100
-Mass = 5.0
-fallGravityCurve = SubResource("Curve_5efeo")
 
 [node name="Body" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.925, 0)
@@ -120,3 +120,9 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -2.2, 0)
 visible = false
 mesh = SubResource("SphereMesh_ll1j0")
 skeleton = NodePath("../..")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+cast_shadow = 3
+gi_mode = 2
+mesh = SubResource("CylinderMesh_4hjdp")
