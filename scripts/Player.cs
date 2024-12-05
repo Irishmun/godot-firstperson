@@ -1,9 +1,8 @@
 using Godot;
-using System;
-using System.Runtime.InteropServices;
 
 public partial class Player : CharacterBody3D
 {
+    public static Player Instance;
     private const float TERMINAL_VELOCITY = -53.645f;//120mph in m/s according to FAI SKYDIVING COMMISSION
     private const float DPI_MULTIPLIER = 0.001f;//1000 DPI mouse
 
@@ -29,6 +28,7 @@ public partial class Player : CharacterBody3D
     [Export] private float maxLookUp = 55, maxLookDown = -75;
     [ExportGroup("Physics")]
     [Export] private float GravityMultiplier = 2;
+    [Export] private float Mass = 80;
     [Export] private float timeBeforeFalling = 0.1f;//coyote time
     [Export] private float jumpBufferTime = 0.1f;
     //[Export] private float friction = 3.5f;
@@ -60,6 +60,7 @@ public partial class Player : CharacterBody3D
     #region GAME
     public override void _Ready()
     {
+        Instance = this;
         Input.UseAccumulatedInput = false;
         Input.MouseMode = Input.MouseModeEnum.Captured;
         GetNodes();
@@ -121,6 +122,7 @@ public partial class Player : CharacterBody3D
         HandleJump();
         //GD.Print("Velocity: " + _velocity.Length());
         //check steps
+        HandleRigidBodies();
         if (!HandleStep((float)delta))
         {
             this.Velocity = _velocity;
@@ -422,7 +424,25 @@ public partial class Player : CharacterBody3D
     {//initial_velocity^2 =  final_velocity^2 - 2*acceleration*displacement
         //Sqrt(2*Gravity*JumpHeight*Mass);//account for gravity applied to player
         float height = _isCrouching ? jumpHeight * 0.5f + 0.1f : jumpHeight + 0.1f;
-        return Mathf.Sqrt(2 * (_gravity) * height * GravityMultiplier);
+        return Mathf.Sqrt(2 * _gravity * height * GravityMultiplier);
+    }
+    private void HandleRigidBodies()
+    {
+        for (int i = 0; i < this.GetSlideCollisionCount(); i++)
+        {
+            KinematicCollision3D col = this.GetSlideCollision(i);
+            if ((col.GetCollider() is RigidBody3D) == false)
+            { continue; }
+            RigidBody3D collider = col.GetCollider() as RigidBody3D;
+            Vector3 pushDir = -col.GetNormal();
+            float pushVelocity = _velocity.Dot(pushDir) - collider.LinearVelocity.Dot(pushDir);
+            pushVelocity = pushVelocity < 0 ? 0 : pushVelocity;
+            float massRatio = Mass / collider.Mass;
+            massRatio = massRatio > 1 ? 1 : massRatio;
+            pushDir.Y = 0;
+            float force = massRatio * 5;
+            collider.ApplyImpulse(pushDir * pushVelocity * force, col.GetPosition() - collider.GlobalPosition);
+        }
     }
     #endregion
     //==========PRIVATE METHODS==========
