@@ -5,4 +5,3 @@
 [resource]
 resource_name = "interior"
 albedo_texture = ExtResource("1_br8sl")
-roughness = 0.5

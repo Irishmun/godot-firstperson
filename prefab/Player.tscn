@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3 uid="uid://cgm5nhqvbbne5"]
+[gd_scene load_steps=16 format=3 uid="uid://cgm5nhqvbbne5"]
 
 [ext_resource type="Script" path="res://scripts/Player.cs" id="1_1hwto"]
 [ext_resource type="CameraAttributesPractical" uid="uid://s5c1cgf018lg" path="res://prefab/components/Player_cameraatributes.tres" id="2_86ksr"]
@@ -44,18 +44,14 @@ height = 0.25
 radial_segments = 16
 rings = 8
 
-[sub_resource type="CylinderMesh" id="CylinderMesh_4hjdp"]
-top_radius = 0.3
-bottom_radius = 0.3
-height = 1.85
-radial_segments = 16
-rings = 0
-
 [node name="Player" type="CharacterBody3D"]
 slide_on_ceiling = false
 platform_on_leave = 2
 script = ExtResource("1_1hwto")
 jumpHeight = 1.5
+sensitivity = 100
+maxLookUp = 75.0
+Mass = 5.0
 
 [node name="Body" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.925, 0)
@@ -65,7 +61,6 @@ shape = SubResource("CylinderShape3D_1xpml")
 transform = Transform3D(-1, 0, 8.74228e-08, 0, 1, 0, -8.74228e-08, 0, -1, 0, 1.7, 0)
 
 [node name="Camera3D" type="Camera3D" parent="CameraHolder"]
-transform = Transform3D(1, 0, 2.38419e-07, 0, 1, 0, -2.38419e-07, 0, 1, 0, 0, 0)
 attributes = ExtResource("2_86ksr")
 far = 1000.0
 
@@ -94,7 +89,7 @@ script = ExtResource("7_upvhr")
 [node name="LedgeCast" type="Node3D" parent="." node_paths=PackedStringArray("wallRay", "floorRay", "ceilingRay", "edgeRay")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.2, 0)
 script = ExtResource("8_vp37e")
-mantleDuration = 0.3
+mantleDuration = 0.25
 wallRay = NodePath("WallRay")
 floorRay = NodePath("FloorRay")
 ceilingRay = NodePath("CeilingRay")
@@ -120,9 +115,3 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -2.2, 0)
 visible = false
 mesh = SubResource("SphereMesh_ll1j0")
 skeleton = NodePath("../..")
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
-cast_shadow = 3
-gi_mode = 2
-mesh = SubResource("CylinderMesh_4hjdp")

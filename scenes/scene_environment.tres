@@ -33,6 +33,7 @@ ambient_light_sky_contribution = 0.75
 reflected_light_source = 2
 tonemap_mode = 3
 tonemap_white = 16.0
+ssr_enabled = true
 ssao_enabled = true
 ssil_enabled = true
 ssil_sharpness = 0.0

@@ -4,7 +4,7 @@ public partial class Player : CharacterBody3D
 {
     public static Player Instance;
     private const float TERMINAL_VELOCITY = -53.645f;//120mph in m/s according to FAI SKYDIVING COMMISSION
-    private const float DPI_MULTIPLIER = 0.001f;//1000 DPI mouse
+    private const float DPI_MULTIPLIER = 0.00125f;//800 DPI mouse
 
     #region exports
     [ExportGroup("Movement")]
