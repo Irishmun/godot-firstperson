@@ -1,5 +1,4 @@
 using Godot;
-using System;
 
 public partial class Mantling : Node3D
 {
@@ -9,6 +8,7 @@ public partial class Mantling : Node3D
     [Export] private RayCast3D ceilingRay;
     [Export] private RayCast3D edgeRay;
     [Export] private Node3D mantleHit;
+    [Export] private Node3D handContact;
 
     private Player _player;
     private Node _playerBaseParent;
@@ -26,53 +26,57 @@ public partial class Mantling : Node3D
         _playerBaseParent = _player.GetParent();
         _headOffset = Position.Y;
         EnableRays(false);
+        EnableHandContacts(false);
     }
 
-    public bool HandleMantle(float delta, out Vector3 mantlePos, bool ApplyMantle = true)
+    public bool HandleMantle(bool ApplyMantle = true)
     {
-        Vector3 pos = this.Position;
+        Vector3 mantlePos, pos;
+        pos = this.Position;
         float offset = _headOffset - _player.StandingHeight;
         pos.Y = _player.IsCrouching ? _player.CrouchHeight + offset : _player.StandingHeight + offset;
         this.Position = pos;
-        mantlePos = Vector3.Inf;
-        EnableRays(true);
+        //EnableRays(true);
         wallRay.ForceRaycastUpdate();
         GodotObject hit = wallRay.GetCollider();
         if (hit is StaticBody3D || hit is CsgShape3D)
         { return false; }
         floorRay.ForceRaycastUpdate();
         hit = floorRay.GetCollider();
-        if (hit is StaticBody3D || hit is CsgShape3D)
+        if (hit is StaticBody3D == false && hit is CsgShape3D == false)
         {
-            //set edge ray height, then force update
-            Vector3 edgePos = edgeRay.GlobalPosition;
-            edgePos.Y = floorRay.GetCollisionPoint().Y - 0.01f;
-            edgeRay.GlobalPosition = edgePos;
-            edgeRay.ForceRaycastUpdate();
-            GodotObject edgeHit = edgeRay.GetCollider();
-            if (edgeHit != hit)
-            { return false; }
-
-            mantlePos = edgeRay.GetCollisionPoint() + ((edgeRay.GlobalBasis * edgeRay.TargetPosition).Normalized() * 0.1f);
-            mantlePos.Y = floorRay.GetCollisionPoint().Y + 0.01f;
-
-            if (mantleHit != null) { mantleHit.GlobalPosition = mantlePos; }
-            if (ApplyMantle == true)
-            {
-                if (_tween != null)
-                { return true; }
-                ceilingRay.GlobalPosition = floorRay.GetCollisionPoint();
-                ceilingRay.TargetPosition = Vector3.Up * _player.StandingHeight;
-                ceilingRay.ForceRaycastUpdate();
-                GodotObject crouchHit = ceilingRay.GetCollider();
-                mantlePos = mantlePos - ((Node3D)hit).GlobalPosition;
-                MantleToPosition(mantlePos, (Node)hit, crouchHit is StaticBody3D || crouchHit is CsgShape3D);
-            }
-            EnableRays(false);
-            return true;
+            //EnableRays(false);
+            return false;
         }
-        EnableRays(false);
-        return false;
+        //set edge ray height, then force update
+        Vector3 edgePos = edgeRay.GlobalPosition;
+        edgePos.Y = floorRay.GetCollisionPoint().Y - 0.01f;
+        edgeRay.GlobalPosition = edgePos;
+        edgeRay.ForceRaycastUpdate();
+        GodotObject edgeHit = edgeRay.GetCollider();
+        if (edgeHit != hit)
+        { return false; }
+
+        mantlePos = edgeRay.GetCollisionPoint() + ((edgeRay.GlobalBasis * edgeRay.TargetPosition).Normalized() * 0.1f);
+        mantlePos.Y = floorRay.GetCollisionPoint().Y + 0.01f;
+
+
+        if (mantleHit != null) { mantleHit.GlobalPosition = mantlePos; }
+        handContact.GlobalPosition = mantlePos;
+        if (ApplyMantle == true)
+        {
+            if (_tween != null)
+            { return true; }
+            ceilingRay.GlobalPosition = floorRay.GetCollisionPoint();
+            ceilingRay.TargetPosition = Vector3.Up * _player.StandingHeight;
+            ceilingRay.ForceRaycastUpdate();
+            GodotObject crouchHit = ceilingRay.GetCollider();
+            mantlePos = mantlePos - ((Node3D)hit).GlobalPosition;
+            EnableHandContacts(true);
+            MantleToPosition(mantlePos, (Node)hit, crouchHit is StaticBody3D || crouchHit is CsgShape3D);
+        }
+        //EnableRays(false);
+        return true;
     }
 
     public void MantleToPosition(Vector3 globalPosition, Node mantleObject, bool forceCrouch = false)
@@ -80,20 +84,25 @@ public partial class Mantling : Node3D
         _player.CanMove = false;
         ReparentPlayer(mantleObject, _player.GetParent());
         ReparentMantle(mantleObject);
+        ReparentHandContacts(mantleObject, false);
         _tween = GetTree().CreateTween();
         _tween.SetEase(Tween.EaseType.In);
         if (forceCrouch == false)
         { _tween.SetTrans(Tween.TransitionType.Back); }
         _tween.Finished += _tween_Finished;
         _tween.TweenProperty(_player, "position", globalPosition, mantleDuration);
-        _player.ForceCrouch = forceCrouch;
+        if (forceCrouch)
+        {
+            _player.ForceCrouch();
+        }
     }
 
     private void _tween_Finished()
     {
         _player.OverrideVelocity(Vector3.Zero);
         ReparentPlayer(_playerBaseParent, _player.GetParent());
-        _player.ForceCrouch = false;
+        EnableHandContacts(false);
+        ReparentHandContacts(floorRay, true);
         _player.CanMove = true;
         _player.ForceInputCheck();
         _tween.Kill();
@@ -131,5 +140,25 @@ public partial class Mantling : Node3D
         floorRay.Enabled = enabled;
         ceilingRay.Enabled = enabled;
         edgeRay.Enabled = enabled;
+    }
+
+    private void EnableHandContacts(bool enabled)
+    {
+        handContact.Visible = enabled;
+    }
+
+    private void ReparentHandContacts(Node newParent, bool resetRotation = false)
+    {
+        Vector3 leftHandPos, leftHandRot;
+        leftHandPos = handContact.GlobalPosition;
+        leftHandRot = handContact.GlobalRotation;
+        handContact.GetParent()?.RemoveChild(handContact);
+        newParent.AddChild(handContact);
+        handContact.GlobalPosition = leftHandPos;
+        handContact.GlobalRotation = leftHandRot;
+        if (resetRotation)
+        {
+            handContact.Rotation = Vector3.Zero;
+        }
     }
 }

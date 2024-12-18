@@ -37,7 +37,6 @@ ssr_enabled = true
 ssao_enabled = true
 ssil_enabled = true
 ssil_sharpness = 0.0
-sdfgi_use_occlusion = true
 glow_enabled = true
 glow_levels/2 = 3.52
 glow_levels/3 = 0.89

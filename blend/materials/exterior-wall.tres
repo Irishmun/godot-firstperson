@@ -1,9 +1,0 @@
-[gd_resource type="StandardMaterial3D" load_steps=2 format=3 uid="uid://cnns54sci5mfh"]
-
-[ext_resource type="Texture2D" uid="uid://cvpt47hwlrd48" path="res://blend/textures/dark-texture_02.png" id="1_y0wnv"]
-
-[resource]
-resource_name = "exterior-wall"
-cull_mode = 2
-albedo_texture = ExtResource("1_y0wnv")
-roughness = 0.5

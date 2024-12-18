@@ -1,0 +1,7 @@
+[gd_resource type="StandardMaterial3D" load_steps=2 format=3 uid="uid://biy4sfm4wmikv"]
+
+[ext_resource type="Texture2D" uid="uid://yxyasmmjqu8c" path="res://assets/blend/textures/gray-texture_02.png" id="1_br8sl"]
+
+[resource]
+resource_name = "interior"
+albedo_texture = ExtResource("1_br8sl")

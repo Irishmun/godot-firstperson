@@ -1,0 +1,11 @@
+[gd_resource type="StandardMaterial3D" load_steps=4 format=3 uid="uid://dkyflnpqmd7rf"]
+
+[ext_resource type="Texture2D" uid="uid://kus5g36vccms" path="res://assets/Models/Hands/hand_diff.png" id="1_ldad4"]
+[ext_resource type="Texture2D" uid="uid://biuargkfrgsnx" path="res://assets/Models/Hands/hand_norm.png" id="2_mav2n"]
+[ext_resource type="Texture2D" uid="uid://315ugxc8bkiy" path="res://assets/Models/Hands/hand_rough.png" id="3_27byo"]
+
+[resource]
+albedo_texture = ExtResource("1_ldad4")
+roughness_texture = ExtResource("3_27byo")
+normal_enabled = true
+normal_texture = ExtResource("2_mav2n")

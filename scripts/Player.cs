@@ -3,6 +3,7 @@ using Godot;
 public partial class Player : CharacterBody3D
 {
     public static Player Instance;
+    private const string ANIM_CROUCH = "Crouch";
     private const float TERMINAL_VELOCITY = -53.645f;//120mph in m/s according to FAI SKYDIVING COMMISSION
     private const float DPI_MULTIPLIER = 0.00125f;//800 DPI mouse
 
@@ -19,8 +20,8 @@ public partial class Player : CharacterBody3D
     [Export] private int maxJumps = 1;
     [ExportGroup("Crouching")]
     [Export] private float crouchMultiplier = 0.75f;
-    [Export] private float crouchChangeSpeed = 10;
-    [Export] private float crouchHeight = 0.9f;//meters
+    [Export] private float crouchSpeed = 4;
+    //[Export] private float crouchHeight = 0.9f;//meters
     [ExportGroup("Camera")]
     [Export(PropertyHint.Range, "1,100,")] private int sensitivity = 40;
     [Export] private float cameraLeanInto = 7.5f;//degrees
@@ -46,14 +47,15 @@ public partial class Player : CharacterBody3D
     private float _standingHeight, _defaultCameraHeight;
     private float _crouchVal = 0, _tilt = 0;
     private float _coyoteTime = 0, _fallT = 0;
-    private CylinderShape3D _collision;
+    //private CylinderShape3D _collision;
     //private CapsuleShape3D _collision;
     //[ExportGroup("Nodes")]
     private Node3D _cameraHolder;
     private Camera3D _camera;
     private ShapeCast3D _headRay;
-    private CollisionShape3D _collisionBody;
+    //private CollisionShape3D _collisionBody;
     private Mantling _mantling;
+    private AnimationPlayer _animator;
     #endregion
     private float _gravity = ProjectSettings.GetSetting("physics/3d/default_gravity").AsSingle();
     //==========GAME==========
@@ -65,11 +67,11 @@ public partial class Player : CharacterBody3D
         Input.MouseMode = Input.MouseModeEnum.Captured;
         GetNodes();
         //_collision = (CapsuleShape3D)collisionBody.Shape;
-        _standingHeight = _collision.Height;
+        //_standingHeight = _collision.Height;
         _defaultCameraHeight = _cameraHolder.Position.Y;//local, for global: camera.GlobalPosition.Y-this.GlobalPosition.Y
-        Vector3 pos = _headRay.Position;
+        /*Vector3 pos = _headRay.Position;
         pos.Y = crouchHeight;
-        _headRay.Position = pos;
+        _headRay.Position = pos;*/
     }
     public override void _Process(double delta)
     {
@@ -106,7 +108,6 @@ public partial class Player : CharacterBody3D
     {
         _justLanded = false;
         //always adjust crouch state, might have been set when the player couldn't move
-        ChangeCrouchState(_crouchInput, (float)delta);
         if (_canMove == false)
         { return; }
         _velocity = this.Velocity;
@@ -355,21 +356,40 @@ public partial class Player : CharacterBody3D
         //_velocity.Y -= _gravity * Mass * delta;
         _velocity.Y -= _gravity * GravityMultiplier * delta;
         _velocity.Y = Mathf.Clamp(_velocity.Y, TERMINAL_VELOCITY, -TERMINAL_VELOCITY);
-        if (Input.IsActionPressed("Jump") && _mantling.HandleMantle(delta, out Vector3 pos))
+        if (Input.IsActionPressed("Jump") && _mantling.HandleMantle())
         {
             _cameraSavedPos = _camera.GlobalPosition;
         }
         ApplyFloorSnap();//snap to floor to prevent floating
     }
-    private void ChangeCrouchState(bool newState, float delta)
+    private void ChangeCrouchState(bool newState)
     {
         //change crouch based on newState OR if ForceCrouch is true
-        bool state = ForceCrouch == false ? newState : true;
-        float curCrouch;
+        if (_isCrouching == false && newState == true)
+        {
+            _animator.Play(ANIM_CROUCH, -1, crouchSpeed);
+            _isCrouching = true;
+        }
+        else if (_isCrouching == true && newState == false)
+        {
+            _headRay.Enabled = true;
+            _headRay.ForceShapecastUpdate();
+            _headRay.Enabled = false;
+            if (_headRay.GetCollisionCount() > 0)
+            {//something's in the way, check if it should stop the player
+                GodotObject hit = _headRay.GetCollider(0);
+                if (hit is StaticBody3D || hit is CsgShape3D)//hit blocking
+                { return; }
+            }
+            _animator.Play(ANIM_CROUCH, -1, -crouchSpeed, true);
+            _isCrouching = false;
+        }
+
+        /*float curCrouch;
         float curCam;
         if (state == true && (_isCrouching == false || (_isCrouching == true && _crouchVal < 1)))
         {//start crouch
-            _crouchVal += delta * crouchChangeSpeed;
+            _crouchVal += delta * crouchTime;
             UpdateLerp();
             _collision.Height = curCrouch;
             Vector3 pos = _collisionBody.Position;
@@ -391,7 +411,7 @@ public partial class Player : CharacterBody3D
                 if (hit is StaticBody3D || hit is CsgShape3D)//hit blocking
                 { return; }
             }
-            _crouchVal -= delta * crouchChangeSpeed;
+            _crouchVal -= delta * crouchTime;
             UpdateLerp();
             Vector3 pos = _collisionBody.Position;
             pos.Y = curCrouch * 0.5f;
@@ -410,7 +430,7 @@ public partial class Player : CharacterBody3D
             _crouchVal = Mathf.Clamp(_crouchVal, 0, 1);//clamp value
             curCrouch = Mathf.Lerp(_standingHeight, crouchHeight, _crouchVal);
             curCam = Mathf.Lerp(_defaultCameraHeight, _defaultCameraHeight - (_standingHeight - crouchHeight), _crouchVal);
-        }
+        }*/
     }
     private float GetMoveSpeed()
     {//decide movement speed based on if we're crouching, running or walking
@@ -449,12 +469,13 @@ public partial class Player : CharacterBody3D
     #region PRIVATE METHODS
     private void GetNodes()
     {
-        _collisionBody = GetChildWithComponent<CollisionShape3D>();
-        _collision = (CylinderShape3D)_collisionBody.Shape;
+        //_collisionBody = GetChildWithComponent<CollisionShape3D>();
+        //_collision = (CylinderShape3D)_collisionBody.Shape;
         _cameraHolder = GetChildWithComponent<Node3D>(name: "CameraHolder");
         _camera = GetChildWithComponent<Camera3D>(_cameraHolder);
         _headRay = GetChildWithComponent<ShapeCast3D>();
         _mantling = GetChildWithComponent<Mantling>();
+        _animator = GetChildWithComponent<AnimationPlayer>();
     }
     #endregion
     //==========PUBLIC METHODS==========
@@ -483,6 +504,7 @@ public partial class Player : CharacterBody3D
         _inputDir = Input.GetVector("Right", "Left", "Backward", "Forward");
         _runningInput = Input.IsActionPressed("Run");
         _crouchInput = Input.IsActionPressed("Crouch");
+        ChangeCrouchState(_crouchInput);
     }
     #endregion
     //==========EVENTS==========
@@ -494,8 +516,8 @@ public partial class Player : CharacterBody3D
     #endregion
     #region Properties
     public float MovementSpeed => movementSpeed;
-    public float CrouchHeight => crouchHeight;
-    public float StandingHeight => _standingHeight;
+    public float CrouchHeight => 0.9f;//get from animation somehow
+    public float StandingHeight => 1.85f;
     public bool IsCrouching => _isCrouching;
     public bool JustLanded => _justLanded;
     public bool WasOnFloor => _wasOnFloor;
@@ -503,7 +525,7 @@ public partial class Player : CharacterBody3D
     public bool StartJumpSound { get; set; }
     public bool CanMove { get => _canMove; set => _canMove = value; }
     public bool CanLook { get => _canLook; set => _canLook = value; }
-    public bool ForceCrouch { get; set; }
+    public void ForceCrouch() => ChangeCrouchState(true);
     #endregion
     #region ExtensionMethods
     //these methods would go into an extension methods class

@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://cgm5nhqvbbne5"]
+[gd_scene load_steps=21 format=3 uid="uid://cgm5nhqvbbne5"]
 
 [ext_resource type="Script" path="res://scripts/Player.cs" id="1_1hwto"]
 [ext_resource type="CameraAttributesPractical" uid="uid://s5c1cgf018lg" path="res://prefab/components/Player_cameraatributes.tres" id="2_86ksr"]
@@ -9,6 +9,7 @@
 [ext_resource type="AudioStream" uid="uid://denw3bcm0uvjd" path="res://assets/audio/player/boots4.wav" id="6_oiq8o"]
 [ext_resource type="Script" path="res://scripts/WalkingSound.cs" id="7_upvhr"]
 [ext_resource type="Script" path="res://scripts/Mantling.cs" id="8_vp37e"]
+[ext_resource type="PackedScene" uid="uid://dtqm0lvia4lhy" path="res://assets/Models/Hands/hands.tscn" id="10_f4mqp"]
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_1xpml"]
 height = 1.85
@@ -38,11 +39,106 @@ stream_1/stream = ExtResource("4_tq1ao")
 stream_2/stream = ExtResource("5_pp6fp")
 stream_3/stream = ExtResource("6_oiq8o")
 
-[sub_resource type="SphereMesh" id="SphereMesh_ll1j0"]
-radius = 0.125
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_r7yvw"]
+shading_mode = 0
+specular_mode = 2
+disable_ambient_light = true
+disable_fog = true
+albedo_color = Color(0.823529, 0.121569, 0.235294, 1)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_a7ss0"]
+material = SubResource("StandardMaterial3D_r7yvw")
+top_radius = 0.125
+bottom_radius = 0.0
 height = 0.25
-radial_segments = 16
-rings = 8
+radial_segments = 12
+rings = 0
+cap_bottom = false
+
+[sub_resource type="Animation" id="Animation_u2k3g"]
+resource_name = "crouch"
+step = 0.05
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("CameraHolder:position")
+tracks/0/interp = 2
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector3(0, 1.7, 0), Vector3(0, 0.75, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Body:shape:height")
+tracks/1/interp = 2
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [1.85, 0.9]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Body:position")
+tracks/2/interp = 2
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector3(0, 0.925, 0), Vector3(0, 0.45, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_1upom"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("CameraHolder:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(0, 1.7, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Body:shape:height")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [1.85]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Body:position")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(0, 0.925, 0)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_bo4sf"]
+_data = {
+"Crouch": SubResource("Animation_u2k3g"),
+"RESET": SubResource("Animation_1upom")
+}
 
 [node name="Player" type="CharacterBody3D"]
 slide_on_ceiling = false
@@ -86,21 +182,23 @@ stream = SubResource("AudioStreamRandomizer_4ico0")
 volume_db = -8.0
 script = ExtResource("7_upvhr")
 
-[node name="LedgeCast" type="Node3D" parent="." node_paths=PackedStringArray("wallRay", "floorRay", "ceilingRay", "edgeRay")]
+[node name="LedgeCast" type="Node3D" parent="." node_paths=PackedStringArray("wallRay", "floorRay", "ceilingRay", "edgeRay", "handContact")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.2, 0)
 script = ExtResource("8_vp37e")
-mantleDuration = 0.25
 wallRay = NodePath("WallRay")
 floorRay = NodePath("FloorRay")
 ceilingRay = NodePath("CeilingRay")
 edgeRay = NodePath("EdgeRay")
+handContact = NodePath("hands")
 
 [node name="FloorRay" type="RayCast3D" parent="LedgeCast"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.7)
 
 [node name="CeilingRay" type="RayCast3D" parent="LedgeCast"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.7)
+exclude_parent = false
 target_position = Vector3(0, 1, 0)
+hit_from_inside = true
 
 [node name="WallRay" type="RayCast3D" parent="LedgeCast"]
 target_position = Vector3(0, 0, 0.7)
@@ -109,9 +207,17 @@ target_position = Vector3(0, 0, 0.7)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 0)
 target_position = Vector3(0, 0, 0.7)
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="LedgeCast"]
-process_mode = 4
+[node name="Node3D" type="Node3D" parent="LedgeCast"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -2.2, 0)
-visible = false
-mesh = SubResource("SphereMesh_ll1j0")
-skeleton = NodePath("../..")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="LedgeCast/Node3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.125, 0)
+mesh = SubResource("CylinderMesh_a7ss0")
+skeleton = NodePath("../../..")
+
+[node name="hands" parent="LedgeCast" instance=ExtResource("10_f4mqp")]
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_bo4sf")
+}
