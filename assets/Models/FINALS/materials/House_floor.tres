@@ -1,0 +1,8 @@
+[gd_resource type="StandardMaterial3D" load_steps=2 format=3 uid="uid://bi3io2n7hip2t"]
+
+[ext_resource type="Texture2D" uid="uid://cgp5afoprm3vo" path="res://assets/Models/FINALS/FINALS-practice-area_finals_house_floor.png" id="1_tq106"]
+
+[resource]
+resource_name = "House_floor"
+cull_mode = 2
+albedo_texture = ExtResource("1_tq106")

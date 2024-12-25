@@ -1,0 +1,174 @@
+using Godot;
+using System;
+
+public partial class RayGrab : RayCast3D
+{
+    private const float POSITION_TWEEN = 0.1f, ROTATION_TWEEN = 0.25f;
+
+    [Export] private float throwForce = 50;
+    [Export] private Vector3 heldOffset = Vector3.Zero;
+    [Export] private Node3D followNode;
+
+    private RigidBody3D _heldItem;
+    private Node _heldParent;
+    private uint _heldCollisionLayer;
+    private Tween _tween;
+
+    public override void _PhysicsProcess(double delta)
+    {
+        this.GlobalPosition = followNode.GlobalPosition;
+        this.GlobalRotation = followNode.GlobalRotation;
+
+        if (!this.IsColliding())
+        {
+            if (CrossHairs.Instance.CurrentRadius == 1)
+            { return; }
+            if (CrossHairs.Instance.IsTweening)
+            { return; }
+            CrossHairs.Instance.ChangeRadius(1);
+            return;
+        }
+        if (this.IsColliding())
+        {
+            if (this.GetCollider() is RigidBody3D)
+            {
+                if (CrossHairs.Instance.CurrentRadius == 5)
+                { return; }
+                if (CrossHairs.Instance.IsTweening)
+                { return; }
+                CrossHairs.Instance.ChangeRadius(5);
+            }
+            else
+            {
+                if (CrossHairs.Instance.CurrentRadius == 1)
+                { return; }
+                if (CrossHairs.Instance.IsTweening)
+                { return; }
+                CrossHairs.Instance.ChangeRadius(1);
+            }
+        }
+    }
+
+    public override void _Input(InputEvent @event)
+    {
+        if (Input.IsActionJustPressed("Use"))
+        {
+            GrabRelease();
+            return;
+        }
+        if (_heldItem == null)
+        { return; }
+        if (Input.IsActionJustPressed("Mouse_1"))
+        {
+            ThrowHeld();
+            return;
+        }
+        if (Input.IsActionJustPressed("Mouse_2"))
+        {
+            DropHeld();
+            return;
+        }
+    }
+
+    private void GrabRelease()
+    {
+        if (_heldItem == null)
+        {
+            this.ForceRaycastUpdate();
+            if (this.GetCollider() is RigidBody3D)
+            {
+                GrabItem(this.GetCollider() as RigidBody3D);
+            }
+        }
+        else
+        {
+            DropHeld();
+        }
+    }
+
+    private void GrabItem(RigidBody3D item)
+    {
+        _heldItem = item;
+        _heldParent = item.GetParent();
+        _heldCollisionLayer = item.CollisionLayer;
+
+        item.CollisionLayer = 0;
+        item.GravityScale = 0;
+        item.SetCollisionLayerValue(16, true);
+        item.Freeze = true;
+        ReparentHeld(_heldParent, this);
+        SetHeld();
+    }
+
+    /// <summary>Throws the held item, applying a centlral impulse in the facing direction</summary>
+    private void ThrowHeld()
+    {
+        if (CanRelease() == false)
+        { return; }
+        RigidBody3D held = _heldItem;
+        ReleaseHeld();
+        //(raycast.global_basis * raycast.target_position).normalized()
+        GD.Print("Throw");
+        float force = throwForce;
+        GD.Print("player:" + Player.Instance.HorizontalVelocity.Length());
+        if (Player.Instance.HorizontalVelocity.LengthSquared() > 0.0001f)
+        {
+            force += Player.Instance.Velocity.Length();
+        }
+        held.ApplyCentralImpulse((this.GlobalBasis * this.TargetPosition).Normalized() * force);
+    }
+
+    /// <summary>Drops the held item, releasing it</summary>
+    private void DropHeld()
+    {
+        if (CanRelease() == false)
+        { return; }
+        ReleaseHeld();
+    }
+
+    private bool CanRelease()
+    {
+        this.ForceRaycastUpdate();
+        GD.Print($"colliding ({this.IsColliding()}) with: {(this.GetCollider() as Node)?.Name}");
+        return !this.IsColliding();
+    }
+
+    private void ReleaseHeld()
+    {
+        ReparentHeld(this, _heldParent);
+        _heldItem.Freeze = false;
+        _heldItem.CollisionLayer = _heldCollisionLayer;
+        _heldItem = null;
+    }
+
+    private void ReparentHeld(Node oldParent, Node newParent)
+    {
+        if (_heldItem.GetParent() == newParent)
+        { return; }
+        Vector3 heldPos = _heldItem.GlobalPosition;
+        Vector3 heldRot = _heldItem.GlobalRotation;
+        //GD.Print($"Player Old Rotation: (Global){playerRot} (Local){_player.Rotation}");
+        oldParent?.RemoveChild(_heldItem);
+        newParent.AddChild(_heldItem);
+        _heldItem.GlobalPosition = heldPos;
+        _heldItem.GlobalRotation = heldRot;
+        //GD.Print($"Player New Rotation: (Global){playerRot} (Local){_player.Rotation}");
+    }
+
+
+    public void SetHeld()
+    {
+        _tween = GetTree().CreateTween();
+        _tween.Finished += _tween_Finished;
+        //_tween.TweenProperty(this, "dotRadius", radius, time);
+        _tween.TweenProperty(_heldItem, "position:x", heldOffset.X, POSITION_TWEEN);
+        _tween.SetParallel();
+        _tween.TweenProperty(_heldItem, "position:y", heldOffset.Y, POSITION_TWEEN);
+        _tween.TweenProperty(_heldItem, "rotation", Vector3.Zero, ROTATION_TWEEN);
+    }
+    private void _tween_Finished()
+    {
+        _tween.Kill();
+        _tween = null;
+    }
+}

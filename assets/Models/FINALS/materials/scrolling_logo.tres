@@ -1,0 +1,12 @@
+[gd_resource type="StandardMaterial3D" load_steps=3 format=3 uid="uid://cfbu8q5n1yqo7"]
+
+[ext_resource type="Texture2D" uid="uid://jv6q6x8kreeu" path="res://assets/Models/FINALS/FINALS-practice-area_THE_FINALS_Logo_Horizontal_White.png" id="1_8nx8u"]
+[ext_resource type="Texture2D" uid="uid://b3xdb3fj2wxjr" path="res://assets/Models/FINALS/FINALS-practice-area_THE_FINALS_Logo_Horizontal_White-emission.png" id="2_83woq"]
+
+[resource]
+resource_name = "scrolling_logo"
+albedo_texture = ExtResource("1_8nx8u")
+roughness = 0.0
+emission_enabled = true
+emission_energy_multiplier = 2.0
+emission_texture = ExtResource("2_83woq")

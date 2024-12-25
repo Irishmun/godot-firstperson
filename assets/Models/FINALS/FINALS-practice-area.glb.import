@@ -1,0 +1,111 @@
+[remap]
+
+importer="scene"
+importer_version=1
+type="PackedScene"
+uid="uid://dxhdbnevcv37n"
+path="res://.godot/imported/FINALS-practice-area.glb-00346eb7f28fb5bc43cf8b3ee456333f.scn"
+
+[deps]
+
+source_file="res://assets/Models/FINALS/FINALS-practice-area.glb"
+dest_files=["res://.godot/imported/FINALS-practice-area.glb-00346eb7f28fb5bc43cf8b3ee456333f.scn"]
+
+[params]
+
+nodes/root_type=""
+nodes/root_name=""
+nodes/apply_root_scale=true
+nodes/root_scale=1.0
+nodes/import_as_skeleton_bones=false
+meshes/ensure_tangents=true
+meshes/generate_lods=true
+meshes/create_shadow_meshes=true
+meshes/light_baking=2
+meshes/lightmap_texel_size=0.2
+meshes/force_disable_compression=false
+skins/use_named_skins=true
+animation/import=false
+animation/fps=30
+animation/trimming=false
+animation/remove_immutable_tracks=true
+animation/import_rest_as_RESET=false
+import_script/path=""
+_subresources={
+"materials": {
+"Black": {
+"use_external/enabled": true,
+"use_external/path": "res://assets/Models/FINALS/materials/Black.tres"
+},
+"House_Interior": {
+"use_external/enabled": true,
+"use_external/path": "res://assets/Models/FINALS/materials/House_Interior.tres"
+},
+"House_ceiling": {
+"use_external/enabled": true,
+"use_external/path": "res://assets/Models/FINALS/materials/House_ceiling.tres"
+},
+"House_exterior": {
+"use_external/enabled": true,
+"use_external/path": "res://assets/Models/FINALS/materials/House_exterior.tres"
+},
+"House_floor": {
+"use_external/enabled": true,
+"use_external/path": "res://assets/Models/FINALS/materials/House_floor.tres"
+},
+"House_roof": {
+"use_external/enabled": true,
+"use_external/path": "res://assets/Models/FINALS/materials/House_roof.tres"
+},
+"Light": {
+"use_external/enabled": true,
+"use_external/path": "res://assets/Models/FINALS/materials/Light.tres"
+},
+"Logo": {
+"use_external/enabled": true,
+"use_external/path": "res://assets/Models/FINALS/materials/Logo.tres"
+},
+"Rubber": {
+"use_external/enabled": true,
+"use_external/path": "res://assets/Models/FINALS/materials/Rubber.tres"
+},
+"black-dent": {
+"use_external/enabled": true,
+"use_external/path": "res://assets/Models/FINALS/materials/black-dent.tres"
+},
+"black_dent_cross": {
+"use_external/enabled": true,
+"use_external/path": "res://assets/Models/FINALS/materials/black_dent_cross.tres"
+},
+"cobblestone": {
+"use_external/enabled": true,
+"use_external/path": "res://assets/Models/FINALS/materials/cobblestone.tres"
+},
+"forest": {
+"use_external/enabled": true,
+"use_external/path": "res://assets/Models/FINALS/materials/forest.tres"
+},
+"scrolling_logo": {
+"use_external/enabled": true,
+"use_external/path": "res://assets/Models/FINALS/materials/scrolling_logo.tres"
+},
+"wall": {
+"use_external/enabled": true,
+"use_external/path": "res://assets/Models/FINALS/materials/wall.tres"
+},
+"wall_dent": {
+"use_external/enabled": true,
+"use_external/path": "res://assets/Models/FINALS/materials/wall_dent.tres"
+},
+"yellow": {
+"use_external/enabled": true,
+"use_external/path": "res://assets/Models/FINALS/materials/yellow.tres"
+},
+"yellow-dent": {
+"use_external/enabled": true,
+"use_external/path": "res://assets/Models/FINALS/materials/yellow-dent.tres"
+}
+}
+}
+gltf/naming_version=1
+gltf/embedded_image_handling=1

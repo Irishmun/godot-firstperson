@@ -1,14 +1,15 @@
-[gd_scene load_steps=21 format=3 uid="uid://cgm5nhqvbbne5"]
+[gd_scene load_steps=22 format=3 uid="uid://cgm5nhqvbbne5"]
 
-[ext_resource type="Script" path="res://scripts/Player.cs" id="1_1hwto"]
+[ext_resource type="Script" path="res://scripts/Player/Player.cs" id="1_1hwto"]
 [ext_resource type="CameraAttributesPractical" uid="uid://s5c1cgf018lg" path="res://prefab/components/Player_cameraatributes.tres" id="2_86ksr"]
 [ext_resource type="Script" path="res://scripts/FlashLight.cs" id="2_xwd2e"]
 [ext_resource type="AudioStream" uid="uid://5kodn1ik0c28" path="res://assets/audio/player/boots1.wav" id="3_smurv"]
+[ext_resource type="Script" path="res://scripts/Player/RayGrab.cs" id="4_74qyv"]
 [ext_resource type="AudioStream" uid="uid://bstgr6ya5tgcb" path="res://assets/audio/player/boots2.wav" id="4_tq1ao"]
 [ext_resource type="AudioStream" uid="uid://b28cs70bcjcua" path="res://assets/audio/player/boots3.wav" id="5_pp6fp"]
 [ext_resource type="AudioStream" uid="uid://denw3bcm0uvjd" path="res://assets/audio/player/boots4.wav" id="6_oiq8o"]
-[ext_resource type="Script" path="res://scripts/WalkingSound.cs" id="7_upvhr"]
-[ext_resource type="Script" path="res://scripts/Mantling.cs" id="8_vp37e"]
+[ext_resource type="Script" path="res://scripts/Player/WalkingSound.cs" id="7_upvhr"]
+[ext_resource type="Script" path="res://scripts/Player/Mantling.cs" id="8_vp37e"]
 [ext_resource type="PackedScene" uid="uid://dtqm0lvia4lhy" path="res://assets/Models/Hands/hands.tscn" id="10_f4mqp"]
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_1xpml"]
@@ -147,7 +148,6 @@ script = ExtResource("1_1hwto")
 jumpHeight = 1.5
 sensitivity = 100
 maxLookUp = 75.0
-Mass = 5.0
 
 [node name="Body" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.925, 0)
@@ -209,6 +209,7 @@ target_position = Vector3(0, 0, 0.7)
 
 [node name="Node3D" type="Node3D" parent="LedgeCast"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -2.2, 0)
+visible = false
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="LedgeCast/Node3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.125, 0)
@@ -221,3 +222,12 @@ skeleton = NodePath("../../..")
 libraries = {
 "": SubResource("AnimationLibrary_bo4sf")
 }
+
+[node name="RayCast3D" type="RayCast3D" parent="." node_paths=PackedStringArray("followNode")]
+transform = Transform3D(-1, 0, 8.74228e-08, 0, 1, 0, -8.74228e-08, 0, -1, 0, 1.7, 0)
+target_position = Vector3(0, 0, -2)
+hit_back_faces = false
+script = ExtResource("4_74qyv")
+throwForce = 100.0
+heldOffset = Vector3(0.5, -0.5, -0.5)
+followNode = NodePath("../CameraHolder/Camera3D")

@@ -1,0 +1,9 @@
+[gd_resource type="StandardMaterial3D" load_steps=2 format=3 uid="uid://nocrg5awgoqv"]
+
+[ext_resource type="Texture2D" uid="uid://hq02f546iiqk" path="res://assets/Models/FINALS/FINALS-practice-area_finals_house_roof.png" id="1_gqobq"]
+
+[resource]
+resource_name = "House_roof"
+cull_mode = 2
+albedo_texture = ExtResource("1_gqobq")
+roughness = 0.5

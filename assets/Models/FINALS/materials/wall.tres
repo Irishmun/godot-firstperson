@@ -1,0 +1,8 @@
+[gd_resource type="StandardMaterial3D" format=3 uid="uid://c5w72g0ut5r8f"]
+
+[resource]
+resource_name = "wall"
+albedo_color = Color(0.898037, 0.901961, 0.909804, 1)
+metallic_specular = 0.67
+roughness = 0.0
+clearcoat_roughness = 0.0

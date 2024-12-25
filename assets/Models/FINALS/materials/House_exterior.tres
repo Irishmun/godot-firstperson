@@ -1,0 +1,12 @@
+[gd_resource type="StandardMaterial3D" load_steps=3 format=3 uid="uid://cr3q0pquup0uc"]
+
+[ext_resource type="Texture2D" uid="uid://b665qhclqfmuj" path="res://assets/Models/FINALS/FINALS-practice-area_atlas.png" id="1_uahye"]
+[ext_resource type="Texture2D" uid="uid://esqp31g8agc4" path="res://assets/Models/FINALS/FINALS-practice-area_atlas_emissive.png" id="2_7pieb"]
+
+[resource]
+resource_name = "House_exterior"
+transparency = 4
+albedo_texture = ExtResource("1_uahye")
+roughness = 0.5
+emission_enabled = true
+emission_texture = ExtResource("2_7pieb")

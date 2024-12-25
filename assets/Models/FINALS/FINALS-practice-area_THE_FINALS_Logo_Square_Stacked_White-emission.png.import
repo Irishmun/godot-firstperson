@@ -1,0 +1,38 @@
+[remap]
+
+importer="texture"
+type="CompressedTexture2D"
+uid="uid://sb257b5vn46p"
+path.s3tc="res://.godot/imported/FINALS-practice-area_THE_FINALS_Logo_Square_Stacked_White-emission.png-bf450082a61ca08950a16c9ae0a4e16c.s3tc.ctex"
+metadata={
+"imported_formats": ["s3tc_bptc"],
+"vram_texture": true
+}
+generator_parameters={
+"md5": "0db82a7fc9c5543d52874787721cbaac"
+}
+
+[deps]
+
+source_file="res://assets/Models/FINALS/FINALS-practice-area_THE_FINALS_Logo_Square_Stacked_White-emission.png"
+dest_files=["res://.godot/imported/FINALS-practice-area_THE_FINALS_Logo_Square_Stacked_White-emission.png-bf450082a61ca08950a16c9ae0a4e16c.s3tc.ctex"]
+
+[params]
+
+compress/mode=2
+compress/high_quality=false
+compress/lossy_quality=0.7
+compress/hdr_compression=1
+compress/normal_map=0
+compress/channel_pack=0
+mipmaps/generate=true
+mipmaps/limit=-1
+roughness/mode=0
+roughness/src_normal=""
+process/fix_alpha_border=true
+process/premult_alpha=false
+process/normal_map_invert_y=false
+process/hdr_as_srgb=false
+process/hdr_clamp_exposure=false
+process/size_limit=0
+detect_3d/compress_to=0

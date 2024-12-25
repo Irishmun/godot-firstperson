@@ -1,0 +1,11 @@
+[gd_resource type="StandardMaterial3D" load_steps=2 format=3 uid="uid://b8auybmbjvjtw"]
+
+[ext_resource type="Texture2D" uid="uid://b8ktdiscyrcii" path="res://assets/Models/FINALS/FINALS-practice-area_dent-normal.png" id="1_cyn4d"]
+
+[resource]
+resource_name = "black-dent"
+albedo_color = Color(0.113725, 0.101961, 0.12549, 1)
+metallic = 1.0
+roughness = 0.25
+normal_enabled = true
+normal_texture = ExtResource("1_cyn4d")
