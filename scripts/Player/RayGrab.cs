@@ -3,7 +3,7 @@ using System;
 
 public partial class RayGrab : RayCast3D
 {
-    private const float POSITION_TWEEN = 0.1f, ROTATION_TWEEN = 0.25f;
+    private const float POSITION_TWEEN = 0.25f, ROTATION_TWEEN = 0.1f;
 
     [Export] private float throwForce = 50;
     [Export] private Vector3 heldOffset = Vector3.Zero;
@@ -14,11 +14,15 @@ public partial class RayGrab : RayCast3D
     private uint _heldCollisionLayer;
     private Tween _tween;
 
-    public override void _PhysicsProcess(double delta)
+    public override void _Process(double delta)
     {
+        //this prevents it from casting against the player, whilst still following the camera
         this.GlobalPosition = followNode.GlobalPosition;
         this.GlobalRotation = followNode.GlobalRotation;
+    }
 
+    public override void _PhysicsProcess(double delta)
+    {
         if (!this.IsColliding())
         {
             if (CrossHairs.Instance.CurrentRadius == 1)
@@ -93,11 +97,13 @@ public partial class RayGrab : RayCast3D
         _heldCollisionLayer = item.CollisionLayer;
 
         item.CollisionLayer = 0;
-        item.GravityScale = 0;
         item.SetCollisionLayerValue(16, true);
         item.Freeze = true;
         ReparentHeld(_heldParent, this);
-        SetHeld();
+        /*Vector3 Zpos = item.GlobalPosition - this.GetCollisionPoint();
+        GD.Print(Zpos.Length());
+        SetHeld(new Vector3(heldOffset.X, heldOffset.Y, heldOffset.Z - Zpos.Length()));*/
+        SetHeld(heldOffset);
     }
 
     /// <summary>Throws the held item, applying a centlral impulse in the facing direction</summary>
@@ -156,15 +162,16 @@ public partial class RayGrab : RayCast3D
     }
 
 
-    public void SetHeld()
+    public void SetHeld(Vector3 heldPosition)
     {
         _tween = GetTree().CreateTween();
         _tween.Finished += _tween_Finished;
         //_tween.TweenProperty(this, "dotRadius", radius, time);
-        _tween.TweenProperty(_heldItem, "position:x", heldOffset.X, POSITION_TWEEN);
-        _tween.SetParallel();
-        _tween.TweenProperty(_heldItem, "position:y", heldOffset.Y, POSITION_TWEEN);
         _tween.TweenProperty(_heldItem, "rotation", Vector3.Zero, ROTATION_TWEEN);
+        _tween.SetParallel();
+        _tween.TweenProperty(_heldItem, "position:x", heldPosition.X, POSITION_TWEEN);
+        _tween.TweenProperty(_heldItem, "position:y", heldPosition.Y, POSITION_TWEEN);
+        _tween.TweenProperty(_heldItem, "position:z", heldPosition.Z, POSITION_TWEEN);
     }
     private void _tween_Finished()
     {

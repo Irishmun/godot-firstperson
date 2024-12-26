@@ -11,16 +11,18 @@ public partial class CrossHairs : CenterContainer
     private Tween _tween;
 
     private Vector2 shadowOffset = new Vector2(1, 1);
+    private Vector2 _center;
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
     {
+        _center = this.Size * 0.5f;
         Instance = this;
         ResizeReticle(dotRadius);
     }
     public override void _Draw()
     {
-        DrawCircle(Vector2.Zero, _currentRadius + 1, Colors.Black, false, -1);
-        DrawCircle(Vector2.Zero, _currentRadius, crossHairColor, false, -1);
+        DrawCircle(_center, _currentRadius + 1, Colors.Black, false, -1, true);
+        DrawCircle(_center, _currentRadius, crossHairColor, false, -1, true);
     }
 
     public void ChangeRadius(float radius = 1, float time = 0.1f)

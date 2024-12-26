@@ -352,7 +352,7 @@ public partial class Player : CharacterBody3D
             { return false; }
             Vector3 collisionPos = testStartPos.Origin + res.GetTravel();
             //GD.Print($"Trying to walk up something at angle: {Mathf.RadToDeg(Mathf.Acos(res.GetNormal().Dot(Vector3.Up)))} ({Mathf.Acos(res.GetNormal().Dot(Vector3.Up))})");
-            if (Mathf.RadToDeg(Mathf.Acos(res.GetNormal().Dot(Vector3.Up))) >= this.FloorMaxAngle)//<--NOTE: this breaks when using a cylinder collider
+            if (Mathf.Acos(res.GetNormal().Dot(Vector3.Up)) >= this.FloorMaxAngle)//<--NOTE: this breaks when using a cylinder collider
             { return false; }
             //set camera position before global position
             _cameraSavedPos = _camera.GlobalPosition;

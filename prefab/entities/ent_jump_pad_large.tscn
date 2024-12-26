@@ -21,6 +21,9 @@ shape = SubResource("CylinderShape3D_cqtcs")
 [node name="Jump_Pad_Large" parent="FINALS-practice-area-jump_pad_large" index="0"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 
+[node name="CollisionShape3D" parent="FINALS-practice-area-jump_pad_large/Jump_Pad_Large/StaticBody3D" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0151989, 0)
+
 [node name="AudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.30315, 0)
 stream = ExtResource("3_sc6fq")

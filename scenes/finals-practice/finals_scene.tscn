@@ -7,7 +7,6 @@
 [ext_resource type="PackedScene" uid="uid://d0knlfouhgvjm" path="res://prefab/entities/ent_jump_pad_directional.tscn" id="5_uphwa"]
 [ext_resource type="PackedScene" uid="uid://yu158hdsh3kd" path="res://prefab/entities/ent_jump_pad_large.tscn" id="6_rgy83"]
 [ext_resource type="PackedScene" uid="uid://cci787cnsnmwo" path="res://prefab/entities/ent_physcube.tscn" id="7_dnsxd"]
-[ext_resource type="Script" path="res://scripts/DebugVelocity.cs" id="8_3l8sq"]
 [ext_resource type="Material" uid="uid://c5w72g0ut5r8f" path="res://assets/Models/FINALS/materials/wall.tres" id="8_d7qcu"]
 [ext_resource type="VoxelGIData" uid="uid://bkm1phafrlryn" path="res://scenes/finals-practice/finals_scene.VoxelGI_data.res" id="9_puper"]
 
@@ -54,10 +53,13 @@ volumetric_fog_gi_inject = 0.3
 volumetric_fog_length = 8.0
 volumetric_fog_sky_affect = 0.0
 
+[sub_resource type="Compositor" id="Compositor_wxisx"]
+
 [node name="Node3D" type="Node3D"]
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_3654o")
+compositor = SubResource("Compositor_wxisx")
 
 [node name="LightmapGI" type="LightmapGI" parent="."]
 bounces = 6
@@ -126,18 +128,19 @@ omni_range = 10.0
 
 [node name="EntJumpPadDirectional" parent="." instance=ExtResource("5_uphwa")]
 transform = Transform3D(0.707107, 0, 0.707107, 0, 1, 0, -0.707107, 0, 0.707107, 14.1784, -0.0509896, -14.4975)
+collision_layer = 2
 jumpForward = 9.0
 
 [node name="EntJumpPadLarge" parent="." instance=ExtResource("6_rgy83")]
-transform = Transform3D(0.866025, 0, 0.5, 0, 1, 0, -0.5, 0, 0.866025, 3.93084, 0, 20.7415)
+transform = Transform3D(0.866025, 0, 0.5, 0, 1, 0, -0.5, 0, 0.866025, 3.93084, -0.0529616, 20.7415)
+collision_layer = 2
 jumpHeight = 17.0
 
 [node name="ent_physcube" parent="." instance=ExtResource("7_dnsxd")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.990051, 0.450002, 17.3964)
 
 [node name="ent_physcube2" parent="." instance=ExtResource("7_dnsxd")]
-transform = Transform3D(0.707107, 0, 0.707107, 0, 1, 0, -0.707107, 0, 0.707107, 12.6473, 4.76174, -13.0092)
-script = ExtResource("8_3l8sq")
+transform = Transform3D(0.707107, 0, 0.707107, 0, 1, 0, -0.707107, 0, 0.707107, 12.6473, 2.06174, -13.0092)
 
 [node name="CSGBox3D" type="CSGBox3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7, 15, 28.5112)
@@ -168,5 +171,8 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 55.1068, 0.885743, 0)
 size = Vector3(50, 7.83, 20)
 box_projection = true
 interior = true
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(0.229608, 0, -0.973283, 0, 1, 0, 0.973283, 0, 0.229608, 0, 4.28009, -15.7344)
 
 [editable path="FINALS-practice-area"]

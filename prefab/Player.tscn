@@ -223,11 +223,14 @@ libraries = {
 "": SubResource("AnimationLibrary_bo4sf")
 }
 
-[node name="RayCast3D" type="RayCast3D" parent="." node_paths=PackedStringArray("followNode")]
+[node name="GrabRay" type="RayCast3D" parent="." node_paths=PackedStringArray("followNode")]
 transform = Transform3D(-1, 0, 8.74228e-08, 0, 1, 0, -8.74228e-08, 0, -1, 0, 1.7, 0)
-target_position = Vector3(0, 0, -2)
+target_position = Vector3(0, 0, -3)
 hit_back_faces = false
 script = ExtResource("4_74qyv")
 throwForce = 100.0
-heldOffset = Vector3(0.5, -0.5, -0.5)
+heldOffset = Vector3(0.6, -0.6, -1.5)
 followNode = NodePath("../CameraHolder/Camera3D")
+
+[node name="Marker3D" type="Marker3D" parent="GrabRay"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, -0.5, -1)
