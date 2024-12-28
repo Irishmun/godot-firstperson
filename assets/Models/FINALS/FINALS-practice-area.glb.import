@@ -87,7 +87,7 @@ _subresources={
 },
 "scrolling_logo": {
 "use_external/enabled": true,
-"use_external/path": "res://assets/Models/FINALS/materials/scrolling_logo.tres"
+"use_external/path": "res://assets/materials/scrolling_logo.tres"
 },
 "wall": {
 "use_external/enabled": true,

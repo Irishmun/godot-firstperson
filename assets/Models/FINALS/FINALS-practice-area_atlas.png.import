@@ -3,10 +3,9 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://b665qhclqfmuj"
-path.s3tc="res://.godot/imported/FINALS-practice-area_atlas.png-4ee1485f8582029769ec85318450652a.s3tc.ctex"
+path="res://.godot/imported/FINALS-practice-area_atlas.png-4ee1485f8582029769ec85318450652a.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
-"vram_texture": true
+"vram_texture": false
 }
 generator_parameters={
 "md5": "e7b0157e87528a7e59dcbb466edf771f"
@@ -15,11 +14,11 @@ generator_parameters={
 [deps]
 
 source_file="res://assets/Models/FINALS/FINALS-practice-area_atlas.png"
-dest_files=["res://.godot/imported/FINALS-practice-area_atlas.png-4ee1485f8582029769ec85318450652a.s3tc.ctex"]
+dest_files=["res://.godot/imported/FINALS-practice-area_atlas.png-4ee1485f8582029769ec85318450652a.ctex"]
 
 [params]
 
-compress/mode=2
+compress/mode=4
 compress/high_quality=false
 compress/lossy_quality=0.7
 compress/hdr_compression=1

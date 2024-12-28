@@ -5,7 +5,8 @@ public partial class RayGrab : RayCast3D
 {
     private const float POSITION_TWEEN = 0.25f, ROTATION_TWEEN = 0.1f;
 
-    [Export] private float throwForce = 50;
+    [Export] private float throwForce = 15;
+    //[Export] private Curve forceMultiplier;
     [Export] private Vector3 heldOffset = Vector3.Zero;
     [Export] private Node3D followNode;
 
@@ -114,14 +115,14 @@ public partial class RayGrab : RayCast3D
         RigidBody3D held = _heldItem;
         ReleaseHeld();
         //(raycast.global_basis * raycast.target_position).normalized()
-        GD.Print("Throw");
-        float force = throwForce;
+        float force = throwForce * CalcThrowForce(held.Mass);
+        GD.Print($"({held.Mass}kg)(X{CalcThrowForce(held.Mass)})Throw: " + force * held.Mass);
         GD.Print("player:" + Player.Instance.HorizontalVelocity.Length());
         if (Player.Instance.HorizontalVelocity.LengthSquared() > 0.0001f)
         {
             force += Player.Instance.Velocity.Length();
         }
-        held.ApplyCentralImpulse((this.GlobalBasis * this.TargetPosition).Normalized() * force);
+        held.ApplyCentralImpulse((this.GlobalBasis * this.TargetPosition).Normalized() * (force * held.Mass));
     }
 
     /// <summary>Drops the held item, releasing it</summary>
@@ -177,5 +178,10 @@ public partial class RayGrab : RayCast3D
     {
         _tween.Kill();
         _tween = null;
+    }
+
+    private float CalcThrowForce(float mass)
+    {
+        return 1f - (mass * 0.01f);//0.01f to (in practice) have a 100kg limit on throwing stuff
     }
 }

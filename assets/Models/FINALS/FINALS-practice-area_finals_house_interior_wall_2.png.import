@@ -3,10 +3,9 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://byasyw6fkw4f1"
-path.s3tc="res://.godot/imported/FINALS-practice-area_finals_house_interior_wall_2.png-4bd32e1de730599d2dbc18fd81a82208.s3tc.ctex"
+path="res://.godot/imported/FINALS-practice-area_finals_house_interior_wall_2.png-4bd32e1de730599d2dbc18fd81a82208.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
-"vram_texture": true
+"vram_texture": false
 }
 generator_parameters={
 "md5": "7f57bda835092780ea517538577d724b"
@@ -15,11 +14,11 @@ generator_parameters={
 [deps]
 
 source_file="res://assets/Models/FINALS/FINALS-practice-area_finals_house_interior_wall_2.png"
-dest_files=["res://.godot/imported/FINALS-practice-area_finals_house_interior_wall_2.png-4bd32e1de730599d2dbc18fd81a82208.s3tc.ctex"]
+dest_files=["res://.godot/imported/FINALS-practice-area_finals_house_interior_wall_2.png-4bd32e1de730599d2dbc18fd81a82208.ctex"]
 
 [params]
 
-compress/mode=2
+compress/mode=4
 compress/high_quality=false
 compress/lossy_quality=0.7
 compress/hdr_compression=1

@@ -1,7 +1,7 @@
 [gd_scene load_steps=5 format=3 uid="uid://d0knlfouhgvjm"]
 
 [ext_resource type="PackedScene" uid="uid://cfyrydp8lu6j8" path="res://assets/Models/entities/jumppads/FINALS-practice-area-jump_pad_directional.glb" id="1_1dxwh"]
-[ext_resource type="Script" path="res://prefab/entities/DirectionalJumpPad.cs" id="1_m012r"]
+[ext_resource type="Script" path="res://scripts/entities/DirectionalJumpPad.cs" id="1_m012r"]
 [ext_resource type="AudioStream" uid="uid://djaxnyjwyssvl" path="res://assets/audio/entities/jumppad/jump-pad-small.wav" id="2_fqsv6"]
 
 [sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_yh1xk"]
@@ -15,6 +15,9 @@ transform = Transform3D(0.707107, 0, -0.707107, 0, 1, 0, 0.707107, 0, 0.707107, 
 
 [node name="Jump_Pad_Directional" parent="FINALS-practice-area-jump_pad_directional" index="0"]
 transform = Transform3D(0.707107, 0, 0.707107, 0, 1, 0, -0.707107, 0, 0.707107, 0, 0, 0)
+
+[node name="CollisionShape3D" parent="FINALS-practice-area-jump_pad_directional/Jump_Pad_Directional/StaticBody3D" index="0"]
+disabled = true
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0196817, 0)

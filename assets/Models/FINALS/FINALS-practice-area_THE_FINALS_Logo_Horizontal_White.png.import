@@ -3,10 +3,9 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://jv6q6x8kreeu"
-path.s3tc="res://.godot/imported/FINALS-practice-area_THE_FINALS_Logo_Horizontal_White.png-17f5c1aabb0ab489d0b3b27ae27fe570.s3tc.ctex"
+path="res://.godot/imported/FINALS-practice-area_THE_FINALS_Logo_Horizontal_White.png-17f5c1aabb0ab489d0b3b27ae27fe570.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
-"vram_texture": true
+"vram_texture": false
 }
 generator_parameters={
 "md5": "457dde1f6d1adb43083928584b931cc4"
@@ -15,11 +14,11 @@ generator_parameters={
 [deps]
 
 source_file="res://assets/Models/FINALS/FINALS-practice-area_THE_FINALS_Logo_Horizontal_White.png"
-dest_files=["res://.godot/imported/FINALS-practice-area_THE_FINALS_Logo_Horizontal_White.png-17f5c1aabb0ab489d0b3b27ae27fe570.s3tc.ctex"]
+dest_files=["res://.godot/imported/FINALS-practice-area_THE_FINALS_Logo_Horizontal_White.png-17f5c1aabb0ab489d0b3b27ae27fe570.ctex"]
 
 [params]
 
-compress/mode=2
+compress/mode=4
 compress/high_quality=false
 compress/lossy_quality=0.7
 compress/hdr_compression=1

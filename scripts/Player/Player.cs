@@ -6,6 +6,7 @@ public partial class Player : CharacterBody3D
     private const string ANIM_CROUCH = "Crouch";
     private const float TERMINAL_VELOCITY = -53.645f;//120mph in m/s according to FAI SKYDIVING COMMISSION
     private const float DPI_MULTIPLIER = 0.00125f;//800 DPI mouse
+    private const float FOV_TIME = 0.1f;//800 DPI mouse
     private readonly Vector3 HORIZONTAL = new Vector3(1, 0, 1);
     #region exports
     [ExportGroup("Movement")]
@@ -28,6 +29,7 @@ public partial class Player : CharacterBody3D
     [Export] private float cameraLeanInto = 7.5f;//degrees
     [Export] private float cameraVertSpeed = 20f;
     [Export] private float maxLookUp = 55, maxLookDown = -75;
+    [Export] private float minFOV = 80, maxFOV = 90;//adjust this to be a multiplication of the set FOV
     [ExportGroup("Physics")]
     [Export] private float GravityMultiplier = 2;
     [Export] private float mass = 80;
@@ -44,6 +46,7 @@ public partial class Player : CharacterBody3D
     private Vector2 _inputDir;//, _camInput;
     private Vector3 _velocity;
     private Vector3 _cameraSavedPos = Vector3.Inf;
+    private Tween _tween;
     private int _jumpCount = 0;
     private float _standingHeight, _defaultCameraHeight;
     private float _crouchVal = 0, _tilt = 0;
@@ -92,6 +95,8 @@ public partial class Player : CharacterBody3D
             //if (_cameraSavedVert < holderY + 0.0001f && _cameraSavedVert > holderY - 0.0001f)
             //{ _cameraSavedVert = holderY; }
         }
+        //_camera.Fov = Mathf.Clamp(ReMap((Velocity * HORIZONTAL).Length(), movementSpeed, movementSpeed * sprintMultiplier, minFOV, minFOV * sprintMultiplier), minFOV, minFOV * sprintMultiplier);
+
         if (_canMove == false)
         { return; }
         if (IsOnFloor())
@@ -115,27 +120,44 @@ public partial class Player : CharacterBody3D
         Vector3 direction = new Vector3(_inputDir.X, 0, _inputDir.Y).Normalized();
         direction = direction.Rotated(Vector3.Up, GlobalRotation.Y);
         #region QUAKE MOVEMENT (Not used)
+        //GD.Print($"pre move velocity: {Velocity}");
         if (IsOnFloor())
         {
             HandleMovement((float)delta, direction);//comment this if using the quake movement
                                                     //HandleGroundMovement((float)delta, direction);
+                                                    //HandleMovement((float)delta, direction);//comment this if using the quake movement
+            HandleJump();
+            //GD.Print("Velocity: " + _velocity.Length());
+            //check steps
+            HandleRigidBodies();
+            this.Velocity = _velocity;
+            if (!HandleStep((float)delta))
+            {
+                MoveAndSlide();
+            }
         }
         else
         {
             HandleAir((float)delta, direction);
             //HandleAirMovement((float)delta, direction); 
-        }
-        #endregion
-        //HandleMovement((float)delta, direction);//comment this if using the quake movement
-        HandleJump();
-        //GD.Print("Velocity: " + _velocity.Length());
-        //check steps
-        HandleRigidBodies();
-        if (!HandleStep((float)delta))
-        {
+            HandleJump();
+            //GD.Print("Velocity: " + _velocity.Length());
+            //check steps
+            HandleRigidBodies();
             this.Velocity = _velocity;
             MoveAndSlide();
         }
+        if (_runningInput == true && _camera.Fov < maxFOV && (Velocity * HORIZONTAL).Length() > movementSpeed)
+        {
+            TweenFOV(maxFOV);
+        }
+        else if (_runningInput == false && _camera.Fov > minFOV)
+        {
+            TweenFOV(minFOV);
+        }
+        //GD.Print($"post move velocity: {Velocity}");
+        #endregion
+
         _wasOnFloor = IsOnFloor();
         //GD.Print("[physics]velocity:" + Velocity.ToString("0.0"));
     }
@@ -145,8 +167,6 @@ public partial class Player : CharacterBody3D
     public override void _Input(InputEvent e)
     {
         //update input values if not an "Echo" AND if the player can move
-        if (e.IsEcho())
-        { return; }
         if (_canMove == false)
         {//player can't move, clear all inputs, allways
             _inputDir = Vector2.Zero;
@@ -235,6 +255,18 @@ public partial class Player : CharacterBody3D
             TiltCamera(-tilt);
         }
     }
+    private void TweenFOV(float fov)
+    {
+        if (_tween != null && _tween.IsRunning())
+        { return; }
+        _tween = GetTree().CreateTween();
+        _tween.SetEase(Tween.EaseType.Out);
+        _tween.SetTrans(Tween.TransitionType.Linear);
+        _tween.Finished += _tween_Finished;
+        //_tween.TweenProperty(this, "dotRadius", radius, time);
+        _tween.TweenProperty(_camera, "fov", fov, FOV_TIME);
+    }
+
     #endregion
     //==========MOVEMENT==========
     #region MOVEMENT
@@ -245,7 +277,7 @@ public partial class Player : CharacterBody3D
         //velocity affecting movement
         Vector3 addSpeed = direction - _velocity;
         addSpeed *= delta * groundAcceleration;
-        addSpeed *= HORIZONTAL;
+        //addSpeed *= HORIZONTAL;
         _velocity += addSpeed;
         //lerp to speed in direction, does not get affected by external forces well
         //_velocity = _velocity.Lerp(direction, delta * acceleration);
@@ -321,6 +353,7 @@ public partial class Player : CharacterBody3D
             _jumpBuffer = false;
             _jumpCount += 1;
             _velocity.Y = CalcJumpForce();
+            //GD.Print(_velocity.Y);
         }
         else if (_jumpInput && (!IsOnFloor() || _isFalling))
         {//buffer jump for if the player pressed the jump button before landing
@@ -351,7 +384,7 @@ public partial class Player : CharacterBody3D
             if (stepHeight > maxStepHeight || stepHeight <= 0.01f || (res.GetPosition() - this.GlobalPosition).Y > maxStepHeight)
             { return false; }
             Vector3 collisionPos = testStartPos.Origin + res.GetTravel();
-            //GD.Print($"Trying to walk up something at angle: {Mathf.RadToDeg(Mathf.Acos(res.GetNormal().Dot(Vector3.Up)))} ({Mathf.Acos(res.GetNormal().Dot(Vector3.Up))})");
+            //GD.Print($"({Mathf.Acos(res.GetNormal().Dot(Vector3.Up)) >= this.FloorMaxAngle})Trying to walk up something at angle: {Mathf.RadToDeg(Mathf.Acos(res.GetNormal().Dot(Vector3.Up)))} ({Mathf.Acos(res.GetNormal().Dot(Vector3.Up))})");
             if (Mathf.Acos(res.GetNormal().Dot(Vector3.Up)) >= this.FloorMaxAngle)//<--NOTE: this breaks when using a cylinder collider
             { return false; }
             //set camera position before global position
@@ -467,7 +500,7 @@ public partial class Player : CharacterBody3D
     }
     private float CalcJumpForce()
     {//initial_velocity^2 =  final_velocity^2 - 2*acceleration*displacement
-        //Sqrt(2*Gravity*JumpHeight*Mass);//account for gravity applied to player
+     //Sqrt(2*Gravity*JumpHeight*Mass);//account for gravity applied to player
         float height = _isCrouching ? jumpHeight * 0.5f + 0.1f : jumpHeight + 0.1f;
         return Mathf.Sqrt(2 * _gravity * height * GravityMultiplier);
     }
@@ -537,6 +570,12 @@ public partial class Player : CharacterBody3D
     private void JumpBuffer_Timeout()
     {
         _jumpBuffer = false;
+    }
+    private void _tween_Finished()
+    {
+        GD.Print(_camera.Fov);
+        _tween.Kill();
+        _tween = null;
     }
     #endregion
     #region Properties

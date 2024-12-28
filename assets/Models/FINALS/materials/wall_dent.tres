@@ -1,10 +1,11 @@
-[gd_resource type="StandardMaterial3D" load_steps=2 format=3 uid="uid://batmsxvhxf27d"]
+[gd_resource type="StandardMaterial3D" load_steps=3 format=3 uid="uid://batmsxvhxf27d"]
 
 [ext_resource type="Texture2D" uid="uid://b8ktdiscyrcii" path="res://assets/Models/FINALS/FINALS-practice-area_dent-normal.png" id="1_een7g"]
+[ext_resource type="Texture2D" uid="uid://c30d5sijrqqu8" path="res://assets/Models/FINALS/FINALS-practice-area_dent.png" id="1_pqv48"]
 
 [resource]
 resource_name = "wall_dent"
-albedo_color = Color(0.898037, 0.901961, 0.909804, 1)
+albedo_texture = ExtResource("1_pqv48")
 metallic_specular = 0.67
 roughness = 0.0
 normal_enabled = true

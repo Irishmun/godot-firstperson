@@ -17,9 +17,9 @@ mouse_filter = 2
 [node name="DebugScreen" type="Label" parent="."]
 layout_mode = 0
 offset_left = 9.0
-offset_top = 8.0
-offset_right = 273.0
-offset_bottom = 109.0
+offset_top = 9.0
+offset_right = 457.0
+offset_bottom = 110.0
 text = "FPS: 9999
 Draw calls: 9999
 Objects: 9999

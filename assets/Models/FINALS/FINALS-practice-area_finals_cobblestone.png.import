@@ -3,10 +3,9 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://cpnonnx421olm"
-path.s3tc="res://.godot/imported/FINALS-practice-area_finals_cobblestone.png-d395f91eec00f7177c7295d579705cef.s3tc.ctex"
+path="res://.godot/imported/FINALS-practice-area_finals_cobblestone.png-d395f91eec00f7177c7295d579705cef.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
-"vram_texture": true
+"vram_texture": false
 }
 generator_parameters={
 "md5": "3569228fc002b4968913da618a3576da"
@@ -15,11 +14,11 @@ generator_parameters={
 [deps]
 
 source_file="res://assets/Models/FINALS/FINALS-practice-area_finals_cobblestone.png"
-dest_files=["res://.godot/imported/FINALS-practice-area_finals_cobblestone.png-d395f91eec00f7177c7295d579705cef.s3tc.ctex"]
+dest_files=["res://.godot/imported/FINALS-practice-area_finals_cobblestone.png-d395f91eec00f7177c7295d579705cef.ctex"]
 
 [params]
 
-compress/mode=2
+compress/mode=4
 compress/high_quality=false
 compress/lossy_quality=0.7
 compress/hdr_compression=1

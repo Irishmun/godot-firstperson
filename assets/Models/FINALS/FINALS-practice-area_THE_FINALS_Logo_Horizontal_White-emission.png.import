@@ -3,10 +3,9 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://b3xdb3fj2wxjr"
-path.s3tc="res://.godot/imported/FINALS-practice-area_THE_FINALS_Logo_Horizontal_White-emission.png-a21000555454e9f78e5d5b6f422ad22d.s3tc.ctex"
+path="res://.godot/imported/FINALS-practice-area_THE_FINALS_Logo_Horizontal_White-emission.png-a21000555454e9f78e5d5b6f422ad22d.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
-"vram_texture": true
+"vram_texture": false
 }
 generator_parameters={
 "md5": "77b10cedfb00ce8afb56b6826fcf5887"
@@ -15,11 +14,11 @@ generator_parameters={
 [deps]
 
 source_file="res://assets/Models/FINALS/FINALS-practice-area_THE_FINALS_Logo_Horizontal_White-emission.png"
-dest_files=["res://.godot/imported/FINALS-practice-area_THE_FINALS_Logo_Horizontal_White-emission.png-a21000555454e9f78e5d5b6f422ad22d.s3tc.ctex"]
+dest_files=["res://.godot/imported/FINALS-practice-area_THE_FINALS_Logo_Horizontal_White-emission.png-a21000555454e9f78e5d5b6f422ad22d.ctex"]
 
 [params]
 
-compress/mode=2
+compress/mode=4
 compress/high_quality=false
 compress/lossy_quality=0.7
 compress/hdr_compression=1

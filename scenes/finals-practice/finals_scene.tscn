@@ -1,6 +1,6 @@
 [gd_scene load_steps=15 format=3 uid="uid://c2tn6an00cit6"]
 
-[ext_resource type="LightmapGIData" uid="uid://ciywxnwx4yxq7" path="res://scenes/finals-practice/finals_scene.lmbake" id="1_6dohy"]
+[ext_resource type="LightmapGIData" uid="uid://bk3u70ecaf8ch" path="res://scenes/finals-practice/finals_scene.lmbake" id="1_6dohy"]
 [ext_resource type="PackedScene" uid="uid://dxhdbnevcv37n" path="res://assets/Models/FINALS/FINALS-practice-area.glb" id="3_cjpsj"]
 [ext_resource type="PackedScene" uid="uid://cgm5nhqvbbne5" path="res://prefab/Player.tscn" id="4_sw8hm"]
 [ext_resource type="AudioStream" uid="uid://t1lxbhigjn1p" path="res://assets/audio/ambient/drone.mp3" id="5_mmi30"]
@@ -30,7 +30,7 @@ ssao_enabled = true
 ssil_enabled = true
 ssil_sharpness = 0.0
 sdfgi_use_occlusion = true
-sdfgi_y_scale = 0
+sdfgi_read_sky_light = false
 glow_enabled = true
 glow_levels/2 = 3.52
 glow_levels/3 = 0.89
@@ -53,23 +53,26 @@ volumetric_fog_gi_inject = 0.3
 volumetric_fog_length = 8.0
 volumetric_fog_sky_affect = 0.0
 
-[sub_resource type="Compositor" id="Compositor_wxisx"]
+[sub_resource type="SphereMesh" id="SphereMesh_36mqf"]
+radius = 0.2
+height = 0.4
 
 [node name="Node3D" type="Node3D"]
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_3654o")
-compositor = SubResource("Compositor_wxisx")
 
 [node name="LightmapGI" type="LightmapGI" parent="."]
+quality = 3
 bounces = 6
 interior = true
 denoiser_strength = 0.2
+texel_scale = 4.0
 generate_probes_subdiv = 0
 light_data = ExtResource("1_6dohy")
 
 [node name="Player" parent="." instance=ExtResource("4_sw8hm")]
-transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 10.1112, 0.551121, -15.0844)
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 4.85003, 0.551121, 15.0263)
 floor_max_angle = 1.0472
 airSpeed = 2.7
 
@@ -80,6 +83,11 @@ autoplay = true
 bus = &"Interior"
 
 [node name="FINALS-practice-area" parent="." instance=ExtResource("3_cjpsj")]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="FINALS-practice-area/house" index="1"]
+transform = Transform3D(0.707107, 0, -0.707107, 0, 1, 0, 0.707107, 0, 0.707107, 10.4, 2.7, -16)
+mesh = SubResource("SphereMesh_36mqf")
+skeleton = NodePath("../../..")
 
 [node name="Point" parent="FINALS-practice-area" index="7"]
 light_color = Color(1, 0.937255, 0.792157, 1)
@@ -134,6 +142,7 @@ jumpForward = 9.0
 [node name="EntJumpPadLarge" parent="." instance=ExtResource("6_rgy83")]
 transform = Transform3D(0.866025, 0, 0.5, 0, 1, 0, -0.5, 0, 0.866025, 3.93084, -0.0529616, 20.7415)
 collision_layer = 2
+randomIntensity = 0.0
 jumpHeight = 17.0
 
 [node name="ent_physcube" parent="." instance=ExtResource("7_dnsxd")]
@@ -156,7 +165,6 @@ material = ExtResource("8_d7qcu")
 
 [node name="VoxelGI" type="VoxelGI" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16.408, 9.00256, 11.0569)
-subdiv = 3
 size = Vector3(128.583, 24.3632, 83.0464)
 data = ExtResource("9_puper")
 
@@ -166,9 +174,41 @@ size = Vector3(17.1344, 4, 10.89)
 box_projection = true
 interior = true
 
+[node name="ReflectionProbe3" type="ReflectionProbe" parent="."]
+transform = Transform3D(0.707107, 0, 0.707107, 0, 1, 0, -0.707107, 0, 0.707107, 19.3942, 9.2247, 11.5122)
+intensity = 0.1
+size = Vector3(54.4373, 23.645, 22.645)
+interior = true
+
+[node name="ReflectionProbe4" type="ReflectionProbe" parent="."]
+transform = Transform3D(0.707107, 0, 0.707107, 0, 1, 0, -0.707107, 0, 0.707107, -16.3813, 9.2247, -14.9378)
+intensity = 0.1
+size = Vector3(68.7727, 23.645, 22.645)
+interior = true
+
+[node name="ReflectionProbe5" type="ReflectionProbe" parent="."]
+transform = Transform3D(0.707107, 0, -0.707107, 0, 1, 0, 0.707107, 0, 0.707107, 15.4044, 9.2247, -14.9896)
+intensity = 0.1
+size = Vector3(65.228, 23.645, 22.645)
+interior = true
+
+[node name="ReflectionProbe6" type="ReflectionProbe" parent="."]
+transform = Transform3D(0.707107, 0, -0.707107, 0, 1, 0, 0.707107, 0, 0.707107, -10.9889, 9.2247, 17.6825)
+intensity = 0.1
+size = Vector3(75.1936, 23.645, 26.176)
+interior = true
+
+[node name="ReflectionProbe7" type="ReflectionProbe" parent="."]
+transform = Transform3D(0.707107, 0, -0.707107, 0, 1, 0, 0.707107, 0, 0.707107, -23.4408, 5.04388, 41.6092)
+intensity = 0.1
+size = Vector3(52.733, 11.252, 27.734)
+origin_offset = Vector3(0, 0.985, 0)
+interior = true
+
 [node name="ReflectionProbe2" type="ReflectionProbe" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 55.1068, 0.885743, 0)
-size = Vector3(50, 7.83, 20)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 55.0394, 0.885743, 0)
+size = Vector3(49.5643, 7.83, 20)
+origin_offset = Vector3(0, 2.155, 0)
 box_projection = true
 interior = true
 

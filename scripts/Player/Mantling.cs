@@ -3,6 +3,7 @@ using Godot;
 public partial class Mantling : Node3D
 {
     [Export] private float mantleDuration = 0.5f;
+    [Export] private float mantleBuffer = 0.1f;
     [Export] private RayCast3D wallRay;
     [Export] private RayCast3D floorRay;
     [Export] private RayCast3D ceilingRay;
@@ -57,7 +58,7 @@ public partial class Mantling : Node3D
         if (edgeHit != hit)
         { return false; }
 
-        mantlePos = edgeRay.GetCollisionPoint() + ((edgeRay.GlobalBasis * edgeRay.TargetPosition).Normalized() * 0.1f);
+        mantlePos = edgeRay.GetCollisionPoint();// + ((edgeRay.GlobalBasis * edgeRay.TargetPosition).Normalized() * 0.1f);
         mantlePos.Y = floorRay.GetCollisionPoint().Y + 0.01f;
 
 
@@ -81,6 +82,7 @@ public partial class Mantling : Node3D
 
     public void MantleToPosition(Vector3 globalPosition, Node mantleObject, bool forceCrouch = false)
     {
+        //GD.Print($"Mantling to: {globalPosition} on {mantleObject.Name}");
         _player.CanMove = false;
         ReparentPlayer(mantleObject, _player.GetParent());
         ReparentMantle(mantleObject);

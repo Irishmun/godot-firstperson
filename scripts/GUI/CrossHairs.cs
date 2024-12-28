@@ -21,8 +21,8 @@ public partial class CrossHairs : CenterContainer
     }
     public override void _Draw()
     {
-        DrawCircle(_center, _currentRadius + 1, Colors.Black, false, -1, true);
-        DrawCircle(_center, _currentRadius, crossHairColor, false, -1, true);
+        DrawCircle(_center, _currentRadius + 1, Colors.Black, false, -1);
+        DrawCircle(_center, _currentRadius, crossHairColor, false, -1);
     }
 
     public void ChangeRadius(float radius = 1, float time = 0.1f)

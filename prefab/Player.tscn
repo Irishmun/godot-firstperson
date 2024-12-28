@@ -145,6 +145,8 @@ _data = {
 slide_on_ceiling = false
 platform_on_leave = 2
 script = ExtResource("1_1hwto")
+movementSpeed = 4.8
+sprintMultiplier = 1.2
 jumpHeight = 1.5
 sensitivity = 100
 maxLookUp = 75.0
@@ -158,6 +160,7 @@ transform = Transform3D(-1, 0, 8.74228e-08, 0, 1, 0, -8.74228e-08, 0, -1, 0, 1.7
 
 [node name="Camera3D" type="Camera3D" parent="CameraHolder"]
 attributes = ExtResource("2_86ksr")
+fov = 80.0
 far = 1000.0
 
 [node name="SpotLight3D" type="SpotLight3D" parent="CameraHolder/Camera3D" node_paths=PackedStringArray("followTarget")]
@@ -181,14 +184,16 @@ max_results = 1
 stream = SubResource("AudioStreamRandomizer_4ico0")
 volume_db = -8.0
 script = ExtResource("7_upvhr")
+normalStepInterval = 0.375
 
-[node name="LedgeCast" type="Node3D" parent="." node_paths=PackedStringArray("wallRay", "floorRay", "ceilingRay", "edgeRay", "handContact")]
+[node name="LedgeCast" type="Node3D" parent="." node_paths=PackedStringArray("wallRay", "floorRay", "ceilingRay", "edgeRay", "mantleHit", "handContact")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.2, 0)
 script = ExtResource("8_vp37e")
 wallRay = NodePath("WallRay")
 floorRay = NodePath("FloorRay")
 ceilingRay = NodePath("CeilingRay")
 edgeRay = NodePath("EdgeRay")
+mantleHit = NodePath("Node3D")
 handContact = NodePath("hands")
 
 [node name="FloorRay" type="RayCast3D" parent="LedgeCast"]
@@ -209,7 +214,6 @@ target_position = Vector3(0, 0, 0.7)
 
 [node name="Node3D" type="Node3D" parent="LedgeCast"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -2.2, 0)
-visible = false
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="LedgeCast/Node3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.125, 0)
@@ -228,7 +232,6 @@ transform = Transform3D(-1, 0, 8.74228e-08, 0, 1, 0, -8.74228e-08, 0, -1, 0, 1.7
 target_position = Vector3(0, 0, -3)
 hit_back_faces = false
 script = ExtResource("4_74qyv")
-throwForce = 100.0
 heldOffset = Vector3(0.6, -0.6, -1.5)
 followNode = NodePath("../CameraHolder/Camera3D")
 

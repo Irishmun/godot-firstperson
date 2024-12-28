@@ -3,10 +3,9 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://uevxjixmg1d1"
-path.s3tc="res://.godot/imported/FINALS-practice-area_Painted_Wall_Plaster_xepkaecs_1K_BaseColor.jpg-529eb2fd09f38e486c886c2c856c77c1.s3tc.ctex"
+path="res://.godot/imported/FINALS-practice-area_Painted_Wall_Plaster_xepkaecs_1K_BaseColor.jpg-529eb2fd09f38e486c886c2c856c77c1.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
-"vram_texture": true
+"vram_texture": false
 }
 generator_parameters={
 "md5": "c421ef31aa919d7407d5ffd0136175b7"
@@ -15,11 +14,11 @@ generator_parameters={
 [deps]
 
 source_file="res://assets/Models/FINALS/FINALS-practice-area_Painted_Wall_Plaster_xepkaecs_1K_BaseColor.jpg"
-dest_files=["res://.godot/imported/FINALS-practice-area_Painted_Wall_Plaster_xepkaecs_1K_BaseColor.jpg-529eb2fd09f38e486c886c2c856c77c1.s3tc.ctex"]
+dest_files=["res://.godot/imported/FINALS-practice-area_Painted_Wall_Plaster_xepkaecs_1K_BaseColor.jpg-529eb2fd09f38e486c886c2c856c77c1.ctex"]
 
 [params]
 
-compress/mode=2
+compress/mode=4
 compress/high_quality=false
 compress/lossy_quality=0.7
 compress/hdr_compression=1

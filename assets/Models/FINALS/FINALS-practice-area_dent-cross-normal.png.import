@@ -3,10 +3,9 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bmiktqr86iqo4"
-path.s3tc="res://.godot/imported/FINALS-practice-area_dent-cross-normal.png-0baf59f4ef283b297e25c0b109557ccc.s3tc.ctex"
+path="res://.godot/imported/FINALS-practice-area_dent-cross-normal.png-0baf59f4ef283b297e25c0b109557ccc.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
-"vram_texture": true
+"vram_texture": false
 }
 generator_parameters={
 "md5": "98987b39fbec4dfd7897732cfeea8611"
@@ -15,11 +14,11 @@ generator_parameters={
 [deps]
 
 source_file="res://assets/Models/FINALS/FINALS-practice-area_dent-cross-normal.png"
-dest_files=["res://.godot/imported/FINALS-practice-area_dent-cross-normal.png-0baf59f4ef283b297e25c0b109557ccc.s3tc.ctex"]
+dest_files=["res://.godot/imported/FINALS-practice-area_dent-cross-normal.png-0baf59f4ef283b297e25c0b109557ccc.ctex"]
 
 [params]
 
-compress/mode=2
+compress/mode=4
 compress/high_quality=false
 compress/lossy_quality=0.7
 compress/hdr_compression=1

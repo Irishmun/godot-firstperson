@@ -1,4 +1,4 @@
-[gd_scene load_steps=22 format=3 uid="uid://c373pswu1flix"]
+[gd_scene load_steps=29 format=3 uid="uid://c373pswu1flix"]
 
 [ext_resource type="PackedScene" uid="uid://bgum0vi5s3rqp" path="res://assets/blend/room.blend" id="1_bho1u"]
 [ext_resource type="VoxelGIData" uid="uid://rfpsecpt5abo" path="res://scenes/dev_scene/scene.VoxelGI_data.res" id="1_fmpn5"]
@@ -11,6 +11,11 @@
 [ext_resource type="PackedScene" uid="uid://bvau4ock08381" path="res://prefab/entities/ent_movingplatform.tscn" id="8_8d4ab"]
 [ext_resource type="Script" path="res://scripts/PathFollower.cs" id="9_1vecl"]
 [ext_resource type="Material" uid="uid://cbaid0weva0qy" path="res://assets/materials/new_standard_material_3d.tres" id="10_4g573"]
+[ext_resource type="PackedScene" uid="uid://cci787cnsnmwo" path="res://prefab/entities/ent_physcube.tscn" id="12_61ufy"]
+[ext_resource type="PackedScene" uid="uid://yu158hdsh3kd" path="res://prefab/entities/ent_jump_pad_large.tscn" id="13_optfk"]
+[ext_resource type="Material" uid="uid://kft5p2trwepl" path="res://assets/materials/physCube.tres" id="13_thd0c"]
+[ext_resource type="PackedScene" uid="uid://bv2j27eby2edx" path="res://prefab/entities/ent_killplane.tscn" id="14_ch56x"]
+[ext_resource type="PackedScene" uid="uid://d0knlfouhgvjm" path="res://prefab/entities/ent_jump_pad_directional.tscn" id="15_pi8h8"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_rw1ov"]
 size = Vector3(10, 1.1, 6.42141)
@@ -46,11 +51,19 @@ _data = {
 }
 point_count = 3
 
+[sub_resource type="BoxMesh" id="BoxMesh_aa8v6"]
+material = ExtResource("13_thd0c")
+size = Vector3(0.5, 0.5, 0.5)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_2712p"]
+size = Vector3(0.5, 0.5, 0.5)
+
 [node name="Node3D" type="Node3D"]
 
 [node name="VoxelGI" type="VoxelGI" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.03232, 3.44415, -18.4596)
-size = Vector3(43.6601, 7.60608, 20.7192)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.03232, 3.44415, 0.00342178)
+subdiv = 2
+size = Vector3(43.6601, 7.60608, 57.6452)
 data = ExtResource("1_fmpn5")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
@@ -74,7 +87,7 @@ generate_probes_subdiv = 0
 light_data = ExtResource("3_enpko")
 
 [node name="Player" parent="." instance=ExtResource("2_gm5tn")]
-transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -9.64253, -2.38419e-07, -4.9286)
+transform = Transform3D(1, 0, 1.06581e-14, 0, 1, 0, -1.06581e-14, 0, 1, -13.4936, -2.38419e-07, -18.9149)
 floor_max_angle = 1.0472
 
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="." node_paths=PackedStringArray("area")]
@@ -167,14 +180,18 @@ use_collision = true
 size = Vector3(2, 3, 3)
 material = ExtResource("10_4g573")
 
-[node name="CSGBox3D4" type="CSGBox3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 1.5, -20.5)
+[node name="CSGCombiner3D2" type="CSGCombiner3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0, -20.5)
+use_collision = true
+
+[node name="CSGBox3D4" type="CSGBox3D" parent="CSGCombiner3D2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
 use_collision = true
 size = Vector3(3, 3, 3)
 material = ExtResource("10_4g573")
 
-[node name="CSGBox3D6" type="CSGBox3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0.75, -23.5)
+[node name="CSGBox3D6" type="CSGBox3D" parent="CSGCombiner3D2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.75, -3)
 use_collision = true
 size = Vector3(3, 1.5, 3)
 material = ExtResource("10_4g573")
@@ -203,3 +220,101 @@ script = ExtResource("9_1vecl")
 remote_path = NodePath("../../../ent_movingplatform")
 update_rotation = false
 update_scale = false
+
+[node name="ent_physcube" parent="." instance=ExtResource("12_61ufy")]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 14.6229, 0.653241, -6.48498)
+
+[node name="ent_physcube2" parent="." instance=ExtResource("12_61ufy")]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 14.6229, 0.653241, -8.685)
+
+[node name="ent_physcube4" parent="." instance=ExtResource("12_61ufy")]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 14.6229, 0.653241, -15.685)
+mass = 5.0
+
+[node name="MeshInstance3D" parent="ent_physcube4" index="0"]
+mesh = SubResource("BoxMesh_aa8v6")
+
+[node name="CollisionShape3D" parent="ent_physcube4" index="1"]
+shape = SubResource("BoxShape3D_2712p")
+
+[node name="ent_physcube5" parent="." instance=ExtResource("12_61ufy")]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 14.6229, 0.653241, -14.685)
+mass = 10.0
+
+[node name="MeshInstance3D" parent="ent_physcube5" index="0"]
+mesh = SubResource("BoxMesh_aa8v6")
+
+[node name="CollisionShape3D" parent="ent_physcube5" index="1"]
+shape = SubResource("BoxShape3D_2712p")
+
+[node name="ent_physcube6" parent="." instance=ExtResource("12_61ufy")]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 14.6229, 0.653241, -13.685)
+mass = 20.0
+
+[node name="MeshInstance3D" parent="ent_physcube6" index="0"]
+mesh = SubResource("BoxMesh_aa8v6")
+
+[node name="CollisionShape3D" parent="ent_physcube6" index="1"]
+shape = SubResource("BoxShape3D_2712p")
+
+[node name="ent_physcube7" parent="." instance=ExtResource("12_61ufy")]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 14.6229, 0.653241, -12.685)
+mass = 35.0
+
+[node name="MeshInstance3D" parent="ent_physcube7" index="0"]
+mesh = SubResource("BoxMesh_aa8v6")
+
+[node name="CollisionShape3D" parent="ent_physcube7" index="1"]
+shape = SubResource("BoxShape3D_2712p")
+
+[node name="ent_physcube8" parent="." instance=ExtResource("12_61ufy")]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 14.6229, 0.653241, -11.685)
+mass = 70.0
+
+[node name="MeshInstance3D" parent="ent_physcube8" index="0"]
+mesh = SubResource("BoxMesh_aa8v6")
+
+[node name="CollisionShape3D" parent="ent_physcube8" index="1"]
+shape = SubResource("BoxShape3D_2712p")
+
+[node name="ent_physcube9" parent="." instance=ExtResource("12_61ufy")]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 14.6229, 0.653241, -10.685)
+mass = 80.0
+
+[node name="MeshInstance3D" parent="ent_physcube9" index="0"]
+mesh = SubResource("BoxMesh_aa8v6")
+
+[node name="CollisionShape3D" parent="ent_physcube9" index="1"]
+shape = SubResource("BoxShape3D_2712p")
+
+[node name="ent_physcube3" parent="." instance=ExtResource("12_61ufy")]
+transform = Transform3D(-3.09086e-08, 3.09086e-08, 1, 0.707107, 0.707107, 0, -0.707107, 0.707107, -4.37114e-08, 14.6229, 1.94863, -7.66235)
+
+[node name="EntJumpPadLarge" parent="." instance=ExtResource("13_optfk")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12.8117, -9.53674e-07, -12.7712)
+jumpHeight = 25.0
+
+[node name="EntJumpPadLarge3" parent="." instance=ExtResource("13_optfk")]
+transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, -1.99324, 4.5, 7.09389)
+jumpHeight = 17.0
+
+[node name="EntJumpPadLarge2" parent="." instance=ExtResource("13_optfk")]
+transform = Transform3D(0.5, 0, 0, 0, 0.468241, 0.175357, 0, -0.175357, 0.468241, 6.31914, 5.16372, 16.7392)
+jumpHeight = 17.0
+
+[node name="ent_killplane" parent="." node_paths=PackedStringArray("respawnLocation") instance=ExtResource("14_ch56x")]
+respawnLocation = NodePath("../Marker3D")
+
+[node name="Marker3D" type="Marker3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 2, -14)
+
+[node name="EntJumpPadDirectional" parent="." instance=ExtResource("15_pi8h8")]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 5.76567, 4.5, 3.87843)
+jumpForward = 40.0
+
+[editable path="ent_physcube4"]
+[editable path="ent_physcube5"]
+[editable path="ent_physcube6"]
+[editable path="ent_physcube7"]
+[editable path="ent_physcube8"]
+[editable path="ent_physcube9"]

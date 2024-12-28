@@ -5,7 +5,8 @@
 [resource]
 resource_name = "black-dent"
 albedo_color = Color(0.113725, 0.101961, 0.12549, 1)
-metallic = 1.0
+metallic = 0.5
+metallic_specular = 0.67
 roughness = 0.25
 normal_enabled = true
 normal_texture = ExtResource("1_cyn4d")

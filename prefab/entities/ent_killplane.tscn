@@ -1,0 +1,17 @@
+[gd_scene load_steps=3 format=3 uid="uid://bv2j27eby2edx"]
+
+[ext_resource type="Script" path="res://scripts/entities/KillPlane.cs" id="1_ypp0q"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_en1bo"]
+size = Vector3(500, 1, 500)
+
+[node name="ent_killplane" type="Area3D" node_paths=PackedStringArray("respawnLocation")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -2, 0)
+collision_mask = 4294967295
+input_ray_pickable = false
+script = ExtResource("1_ypp0q")
+respawnLocation = NodePath("")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 0)
+shape = SubResource("BoxShape3D_en1bo")

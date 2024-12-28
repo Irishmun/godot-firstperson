@@ -3,10 +3,9 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://hq02f546iiqk"
-path.s3tc="res://.godot/imported/FINALS-practice-area_finals_house_roof.png-d5d6e7d75ef59154fd0a9def79076ecc.s3tc.ctex"
+path="res://.godot/imported/FINALS-practice-area_finals_house_roof.png-d5d6e7d75ef59154fd0a9def79076ecc.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
-"vram_texture": true
+"vram_texture": false
 }
 generator_parameters={
 "md5": "ab83d7a69061934631168b685558432b"
@@ -15,11 +14,11 @@ generator_parameters={
 [deps]
 
 source_file="res://assets/Models/FINALS/FINALS-practice-area_finals_house_roof.png"
-dest_files=["res://.godot/imported/FINALS-practice-area_finals_house_roof.png-d5d6e7d75ef59154fd0a9def79076ecc.s3tc.ctex"]
+dest_files=["res://.godot/imported/FINALS-practice-area_finals_house_roof.png-d5d6e7d75ef59154fd0a9def79076ecc.ctex"]
 
 [params]
 
-compress/mode=2
+compress/mode=4
 compress/high_quality=false
 compress/lossy_quality=0.7
 compress/hdr_compression=1
