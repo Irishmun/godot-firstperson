@@ -27,7 +27,7 @@ public partial class CrossHairs : CenterContainer
 
     public void ChangeRadius(float radius = 1, float time = 0.1f)
     {
-        GD.Print($"dotradius:{_currentRadius} change to:{radius}");
+        //GD.Print($"dotradius:{_currentRadius} change to:{radius}");
         if (_currentRadius == radius)
         { return; }
         Callable call = new Callable(this, "ResizeReticle");

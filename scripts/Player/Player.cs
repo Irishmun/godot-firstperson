@@ -6,7 +6,7 @@ public partial class Player : CharacterBody3D
     private const string ANIM_CROUCH = "Crouch";
     private const float TERMINAL_VELOCITY = -53.645f;//120mph in m/s according to FAI SKYDIVING COMMISSION
     private const float DPI_MULTIPLIER = 0.00125f;//800 DPI mouse
-    private const float FOV_TIME = 0.1f;//800 DPI mouse
+    private const float FOV_TIME = 0.25f;//800 DPI mouse
     private readonly Vector3 HORIZONTAL = new Vector3(1, 0, 1);
     #region exports
     [ExportGroup("Movement")]
@@ -29,7 +29,7 @@ public partial class Player : CharacterBody3D
     [Export] private float cameraLeanInto = 7.5f;//degrees
     [Export] private float cameraVertSpeed = 20f;
     [Export] private float maxLookUp = 55, maxLookDown = -75;
-    [Export] private float minFOV = 80, maxFOV = 90;//adjust this to be a multiplication of the set FOV
+    [Export] private float fovIncrease = 5;
     [ExportGroup("Physics")]
     [Export] private float GravityMultiplier = 2;
     [Export] private float mass = 80;
@@ -48,6 +48,7 @@ public partial class Player : CharacterBody3D
     private Vector3 _cameraSavedPos = Vector3.Inf;
     private Tween _tween;
     private int _jumpCount = 0;
+    private float _baseFov, _sprintFov;
     private float _standingHeight, _defaultCameraHeight;
     private float _crouchVal = 0, _tilt = 0;
     private float _coyoteTime = 0, _fallT = 0;
@@ -73,6 +74,8 @@ public partial class Player : CharacterBody3D
         //_collision = (CapsuleShape3D)collisionBody.Shape;
         //_standingHeight = _collision.Height;
         _defaultCameraHeight = _cameraHolder.Position.Y;//local, for global: camera.GlobalPosition.Y-this.GlobalPosition.Y
+        _baseFov = _camera.Fov;
+        _sprintFov = _baseFov + fovIncrease;
         /*Vector3 pos = _headRay.Position;
         pos.Y = crouchHeight;
         _headRay.Position = pos;*/
@@ -147,13 +150,13 @@ public partial class Player : CharacterBody3D
             this.Velocity = _velocity;
             MoveAndSlide();
         }
-        if (_runningInput == true && _camera.Fov < maxFOV && (Velocity * HORIZONTAL).Length() > movementSpeed)
+        if (_runningInput == true && _camera.Fov < _baseFov + fovIncrease && (Velocity * HORIZONTAL).Length() > movementSpeed)
         {
-            TweenFOV(maxFOV);
+            TweenFOV(_baseFov + fovIncrease);
         }
-        else if (_runningInput == false && _camera.Fov > minFOV)
+        else if (_runningInput == false && _camera.Fov > _baseFov)
         {
-            TweenFOV(minFOV);
+            TweenFOV(_baseFov);
         }
         //GD.Print($"post move velocity: {Velocity}");
         #endregion
@@ -573,7 +576,6 @@ public partial class Player : CharacterBody3D
     }
     private void _tween_Finished()
     {
-        GD.Print(_camera.Fov);
         _tween.Kill();
         _tween = null;
     }
@@ -591,6 +593,8 @@ public partial class Player : CharacterBody3D
     public bool StartJumpSound { get; set; }
     public bool CanMove { get => _canMove; set => _canMove = value; }
     public bool CanLook { get => _canLook; set => _canLook = value; }
+    public float BaseFOV { get => _baseFov; set { _baseFov = value; _sprintFov = _baseFov + fovIncrease; } }
+
     public void ForceCrouch() => ChangeCrouchState(true);
     #endregion
     #region ExtensionMethods

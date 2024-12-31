@@ -3,7 +3,7 @@ using System;
 
 public partial class RayGrab : RayCast3D
 {
-    private const float POSITION_TWEEN = 0.25f, ROTATION_TWEEN = 0.1f;
+    private const float POSITION_TWEEN = 0.15f, ROTATION_TWEEN = 0.15f;
 
     [Export] private float throwForce = 15;
     //[Export] private Curve forceMultiplier;
@@ -35,7 +35,7 @@ public partial class RayGrab : RayCast3D
         }
         if (this.IsColliding())
         {
-            if (this.GetCollider() is RigidBody3D)
+            if (this.GetCollider() is RigidBody3D && IsGrabable(this.GetCollider() as RigidBody3D))
             {
                 if (CrossHairs.Instance.CurrentRadius == 5)
                 { return; }
@@ -93,6 +93,8 @@ public partial class RayGrab : RayCast3D
 
     private void GrabItem(RigidBody3D item)
     {
+        if (!IsGrabable(item))
+        { return; }
         _heldItem = item;
         _heldParent = item.GetParent();
         _heldCollisionLayer = item.CollisionLayer;
@@ -183,5 +185,10 @@ public partial class RayGrab : RayCast3D
     private float CalcThrowForce(float mass)
     {
         return 1f - (mass * 0.01f);//0.01f to (in practice) have a 100kg limit on throwing stuff
+    }
+
+    private bool IsGrabable(RigidBody3D item)
+    {
+        return !(item.GetGroups().Contains("UnGrabable"));
     }
 }

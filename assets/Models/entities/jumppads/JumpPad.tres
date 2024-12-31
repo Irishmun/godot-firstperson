@@ -1,12 +1,13 @@
-[gd_resource type="StandardMaterial3D" load_steps=3 format=3 uid="uid://kq1vektodu87"]
+[gd_resource type="StandardMaterial3D" load_steps=4 format=3 uid="uid://kq1vektodu87"]
 
 [ext_resource type="Texture2D" uid="uid://bol8k8yeo8o30" path="res://assets/Models/entities/jumppads/FINALS-practice-area-jump_pad_large_jumppad.png" id="1_np3fs"]
 [ext_resource type="Texture2D" uid="uid://ba31o4tqj8qmn" path="res://assets/Models/entities/jumppads/FINALS-practice-area-jump_pad_large_jumppad-norma.png" id="2_8y436"]
+[ext_resource type="Texture2D" uid="uid://cne8al3yrvds0" path="res://assets/Models/entities/jumppads/FINALS-practice-area-jump_pad_large_jumppad-roughness.png" id="3_au5cv"]
 
 [resource]
 resource_name = "JumpPad"
 albedo_texture = ExtResource("1_np3fs")
-metallic = 0.5
-roughness = 0.5
+roughness_texture = ExtResource("3_au5cv")
+roughness_texture_channel = 4
 normal_enabled = true
 normal_texture = ExtResource("2_8y436")

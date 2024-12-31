@@ -1,4 +1,4 @@
-[gd_scene load_steps=29 format=3 uid="uid://c373pswu1flix"]
+[gd_scene load_steps=30 format=3 uid="uid://c373pswu1flix"]
 
 [ext_resource type="PackedScene" uid="uid://bgum0vi5s3rqp" path="res://assets/blend/room.blend" id="1_bho1u"]
 [ext_resource type="VoxelGIData" uid="uid://rfpsecpt5abo" path="res://scenes/dev_scene/scene.VoxelGI_data.res" id="1_fmpn5"]
@@ -16,6 +16,7 @@
 [ext_resource type="Material" uid="uid://kft5p2trwepl" path="res://assets/materials/physCube.tres" id="13_thd0c"]
 [ext_resource type="PackedScene" uid="uid://bv2j27eby2edx" path="res://prefab/entities/ent_killplane.tscn" id="14_ch56x"]
 [ext_resource type="PackedScene" uid="uid://d0knlfouhgvjm" path="res://prefab/entities/ent_jump_pad_directional.tscn" id="15_pi8h8"]
+[ext_resource type="PackedScene" uid="uid://b80l747prf8k6" path="res://prefab/entities/ent_arena_box_01.tscn" id="17_y8oh4"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_rw1ov"]
 size = Vector3(10, 1.1, 6.42141)
@@ -46,10 +47,10 @@ size = Vector3(11.9307, 4.39032, 6.80811)
 
 [sub_resource type="Curve3D" id="Curve3D_dtoh2"]
 _data = {
-"points": PackedVector3Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 15, 0, 0, 0, 0, 0, 0, 0, 0, 0),
-"tilts": PackedFloat32Array(0, 0, 0)
+"points": PackedVector3Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 14.8),
+"tilts": PackedFloat32Array(0, 0)
 }
-point_count = 3
+point_count = 2
 
 [sub_resource type="BoxMesh" id="BoxMesh_aa8v6"]
 material = ExtResource("13_thd0c")
@@ -61,9 +62,8 @@ size = Vector3(0.5, 0.5, 0.5)
 [node name="Node3D" type="Node3D"]
 
 [node name="VoxelGI" type="VoxelGI" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.03232, 3.44415, 0.00342178)
-subdiv = 2
-size = Vector3(43.6601, 7.60608, 57.6452)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.03232, 14.6328, 0.00342178)
+size = Vector3(43.66, 30, 57.645)
 data = ExtResource("1_fmpn5")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
@@ -87,7 +87,7 @@ generate_probes_subdiv = 0
 light_data = ExtResource("3_enpko")
 
 [node name="Player" parent="." instance=ExtResource("2_gm5tn")]
-transform = Transform3D(1, 0, 1.06581e-14, 0, 1, 0, -1.06581e-14, 0, 1, -13.4936, -2.38419e-07, -18.9149)
+transform = Transform3D(-0.49605, 0, 0.868294, 0, 1, 0, -0.868294, 0, -0.49605, -0.112, 0, -2.937)
 floor_max_angle = 1.0472
 
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="." node_paths=PackedStringArray("area")]
@@ -212,7 +212,6 @@ curve = SubResource("Curve3D_dtoh2")
 [node name="PathFollow3D" type="PathFollow3D" parent="Path3D"]
 transform = Transform3D(0.999995, 0, 8.74224e-08, 0, 0.999997, 0, -8.74223e-08, 0, 0.999996, 0, 0, 0)
 use_model_front = true
-cubic_interp = false
 tilt_enabled = false
 script = ExtResource("9_1vecl")
 
@@ -303,14 +302,23 @@ transform = Transform3D(0.5, 0, 0, 0, 0.468241, 0.175357, 0, -0.175357, 0.468241
 jumpHeight = 17.0
 
 [node name="ent_killplane" parent="." node_paths=PackedStringArray("respawnLocation") instance=ExtResource("14_ch56x")]
-respawnLocation = NodePath("../Marker3D")
+respawnLocation = NodePath("Marker3D")
 
-[node name="Marker3D" type="Marker3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 2, -14)
+[node name="Marker3D" type="Marker3D" parent="ent_killplane"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.8993, 4.49669, -17.8901)
 
 [node name="EntJumpPadDirectional" parent="." instance=ExtResource("15_pi8h8")]
 transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 5.76567, 4.5, 3.87843)
-jumpForward = 40.0
+jumpForward = 30.0
+
+[node name="ARENA BOX 01" parent="." instance=ExtResource("17_y8oh4")]
+transform = Transform3D(1.31134e-07, 0, 1, 0, 1, 0, -1, 0, 1.31134e-07, -12.0612, -1.43051e-06, -2.9232)
+
+[node name="ARENA BOX 02" parent="." instance=ExtResource("17_y8oh4")]
+transform = Transform3D(1.31134e-07, 0, 1, 0, 1, 0, -1, 0, 1.31134e-07, -12.0612, -1.43051e-06, -4.5232)
+
+[node name="ARENA BOX 03" parent="." instance=ExtResource("17_y8oh4")]
+transform = Transform3D(1.31134e-07, 0, 1, 0, 1, 0, -1, 0, 1.31134e-07, -12.0612, 1.3, -3.7232)
 
 [editable path="ent_physcube4"]
 [editable path="ent_physcube5"]
