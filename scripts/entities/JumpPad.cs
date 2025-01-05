@@ -9,15 +9,18 @@ public abstract partial class JumpPad : Area3D
     protected float _gravity = ProjectSettings.GetSetting("physics/3d/default_gravity").AsSingle();
 
     private RandomNumberGenerator _rand;
+    protected abstract void PlayerEntered(Player body, float force);
+    protected abstract void RigidBodyEntered(RigidBody3D body, float force);
+
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
     {
-        jumpSound = GetChildWithComponent<AudioStreamPlayer3D>();
-        this.BodyEntered += GenericJumpPad_BodyEntered;
+        jumpSound = this.GetChildWithComponent<AudioStreamPlayer3D>();
+        this.BodyEntered += JumpPad_BodyEntered;
         _rand = new RandomNumberGenerator();
     }
 
-    private void GenericJumpPad_BodyEntered(Node3D body)
+    private void JumpPad_BodyEntered(Node3D body)
     {
         if ((body is PhysicsBody3D) == false)
         { return; }
@@ -25,6 +28,7 @@ public abstract partial class JumpPad : Area3D
         {
             Player bod = (body as Player);
             float force = CalcVerticalImpulse();
+            //GD.Print(force);
             PlayerEntered(bod, force);
             //bod.OverrideVelocity(new Vector3(bod.Velocity.X, force, bod.Velocity.Z));
             jumpSound.Play();
@@ -41,27 +45,10 @@ public abstract partial class JumpPad : Area3D
         }
     }
 
-    protected abstract void PlayerEntered(Player body, float force);
-    protected abstract void RigidBodyEntered(RigidBody3D body, float force);
-
-
     private float CalcVerticalImpulse(float mass = 1, float GravityMultiplier = 2)
     {//not realistic, but predictable
         //same as player jump calculation, but with mass added (player mass is "always" 1)
         return Mathf.Sqrt(2 * _gravity * jumpHeight * GravityMultiplier) * mass;
-    }
-
-    private T GetChildWithComponent<T>(Node parent = null, string name = "") where T : class
-    {//parent would be "this Node parent" instead
-        parent ??= this;
-        foreach (Node item in parent.GetChildren())
-        {
-            if (!string.IsNullOrWhiteSpace(name) && !item.Name.Equals(name))
-            { continue; }
-            if (item is T)
-            { return item as T; }
-        }
-        return null;
     }
 
     protected Vector3 GetRandomRotation(float intensity = 1)

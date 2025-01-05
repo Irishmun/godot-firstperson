@@ -91,7 +91,7 @@ public partial class Mantling : Node3D
         _tween.SetEase(Tween.EaseType.In);
         if (forceCrouch == false)
         { _tween.SetTrans(Tween.TransitionType.Back); }
-        _tween.Finished += _tween_Finished;
+        _tween.Finished += Tween_Finished;
         _tween.TweenProperty(_player, "position", globalPosition, mantleDuration);
         if (forceCrouch)
         {
@@ -99,7 +99,7 @@ public partial class Mantling : Node3D
         }
     }
 
-    private void _tween_Finished()
+    private void Tween_Finished()
     {
         _player.OverrideVelocity(Vector3.Zero);
         ReparentPlayer(_playerBaseParent, _player.GetParent());

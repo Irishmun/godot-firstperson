@@ -1,0 +1,11 @@
+ladder:
+ forward=UP
+ backward=DOWN
+ left/right=nothing
+ space = jump off (upward velocity and velocity away from ladder given)
+
+
+zipline:
+ (tween) move towards facing end when entering zipline
+ get upward momentum and momentum in direction of movement for horizontal/diagonal
+ get momentum in horizontal facing direction and vertical in movement direciton of vertical zipline

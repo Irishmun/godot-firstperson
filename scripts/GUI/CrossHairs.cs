@@ -32,7 +32,7 @@ public partial class CrossHairs : CenterContainer
         { return; }
         Callable call = new Callable(this, "ResizeReticle");
         _tween = GetTree().CreateTween();
-        _tween.Finished += _tween_Finished;
+        _tween.Finished += Tween_Finished;
         //_tween.TweenProperty(this, "dotRadius", radius, time);
         _tween.TweenMethod(call, _currentRadius, radius, time);
 
@@ -44,7 +44,7 @@ public partial class CrossHairs : CenterContainer
         QueueRedraw();
     }
 
-    private void _tween_Finished()
+    private void Tween_Finished()
     {
         _tween.Kill();
         _tween = null;

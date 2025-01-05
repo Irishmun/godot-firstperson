@@ -8,8 +8,10 @@ public partial class DirectionalJumpPad : JumpPad
     protected override void PlayerEntered(Player body, float force)
     {
         body.OverrideVelocity(GetLocalUp() * force);
-        Vector3 vel = new Vector3(body.Velocity.X, 0, body.Velocity.Z);
+        /*Vector3 vel = new Vector3(body.Velocity.X, 0, body.Velocity.Z);
         vel += GetLocalForward() * CalcForwardImpulse();
+        vel.Y = body.Velocity.Y;*/
+        Vector3 vel = GetLocalForward() * CalcForwardImpulse();
         vel.Y = body.Velocity.Y;
         body.OverrideVelocity(vel);
     }

@@ -4,6 +4,5 @@
 
 [resource]
 resource_name = "exterior-wall"
-cull_mode = 2
 albedo_texture = ExtResource("1_y0wnv")
 roughness = 0.5

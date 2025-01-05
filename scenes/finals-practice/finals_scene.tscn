@@ -6,8 +6,8 @@
 [ext_resource type="AudioStream" uid="uid://t1lxbhigjn1p" path="res://assets/audio/ambient/drone.mp3" id="5_mmi30"]
 [ext_resource type="PackedScene" uid="uid://d0knlfouhgvjm" path="res://prefab/entities/ent_jump_pad_directional.tscn" id="5_uphwa"]
 [ext_resource type="PackedScene" uid="uid://yu158hdsh3kd" path="res://prefab/entities/ent_jump_pad_large.tscn" id="6_rgy83"]
-[ext_resource type="PackedScene" uid="uid://cci787cnsnmwo" path="res://prefab/entities/ent_physcube.tscn" id="7_dnsxd"]
 [ext_resource type="Material" uid="uid://c5w72g0ut5r8f" path="res://assets/Models/FINALS/materials/wall.tres" id="8_d7qcu"]
+[ext_resource type="PackedScene" uid="uid://b80l747prf8k6" path="res://prefab/entities/ent_arena_box_01.tscn" id="9_db3pw"]
 [ext_resource type="VoxelGIData" uid="uid://bkm1phafrlryn" path="res://scenes/finals-practice/finals_scene.VoxelGI_data.res" id="9_puper"]
 
 [sub_resource type="Gradient" id="Gradient_1j2xt"]
@@ -61,6 +61,11 @@ height = 0.4
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_3654o")
+
+[node name="VoxelGI" type="VoxelGI" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16.408, 9.00256, 11.0569)
+size = Vector3(128.583, 24.3632, 83.0464)
+data = ExtResource("9_puper")
 
 [node name="LightmapGI" type="LightmapGI" parent="."]
 quality = 3
@@ -142,14 +147,7 @@ jumpForward = 9.0
 [node name="EntJumpPadLarge" parent="." instance=ExtResource("6_rgy83")]
 transform = Transform3D(0.866025, 0, 0.5, 0, 1, 0, -0.5, 0, 0.866025, 3.93084, -0.0529616, 20.7415)
 collision_layer = 2
-randomIntensity = 0.0
 jumpHeight = 17.0
-
-[node name="ent_physcube" parent="." instance=ExtResource("7_dnsxd")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.990051, 0.450002, 17.3964)
-
-[node name="ent_physcube2" parent="." instance=ExtResource("7_dnsxd")]
-transform = Transform3D(0.707107, 0, 0.707107, 0, 1, 0, -0.707107, 0, 0.707107, 12.6473, 2.06174, -13.0092)
 
 [node name="CSGBox3D" type="CSGBox3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7, 15, 28.5112)
@@ -162,11 +160,6 @@ transform = Transform3D(0.707107, 0, 0.707107, 0, 1, 0, -0.707107, 0, 0.707107, 
 use_collision = true
 size = Vector3(9.18018, 0.25, 3)
 material = ExtResource("8_d7qcu")
-
-[node name="VoxelGI" type="VoxelGI" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16.408, 9.00256, 11.0569)
-size = Vector3(128.583, 24.3632, 83.0464)
-data = ExtResource("9_puper")
 
 [node name="ReflectionProbe" type="ReflectionProbe" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -38.5932, 1.68574, 0)
@@ -214,5 +207,11 @@ interior = true
 
 [node name="Camera3D" type="Camera3D" parent="."]
 transform = Transform3D(0.229608, 0, -0.973283, 0, 1, 0, 0.973283, 0, 0.229608, 0, 4.28009, -15.7344)
+
+[node name="ARENA BOX 01" parent="." instance=ExtResource("9_db3pw")]
+transform = Transform3D(0.707107, 0, -0.707107, 0, 1, 0, 0.707107, 0, 0.707107, 12.6834, 1.45, -13.0218)
+
+[node name="ARENA BOX 02" parent="." instance=ExtResource("9_db3pw")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.840346, -0.0500019, 16.8395)
 
 [editable path="FINALS-practice-area"]

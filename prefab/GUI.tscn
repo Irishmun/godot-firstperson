@@ -1,7 +1,10 @@
-[gd_scene load_steps=3 format=3 uid="uid://djvu2ugfu3616"]
+[gd_scene load_steps=4 format=3 uid="uid://djvu2ugfu3616"]
 
 [ext_resource type="Script" path="res://scripts/GUI/FpsGui.cs" id="1_655k3"]
 [ext_resource type="Script" path="res://scripts/GUI/CrossHairs.cs" id="2_6ndfr"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_dr1jy"]
+font_size = 12
 
 [node name="Gui" type="Control"]
 layout_mode = 3
@@ -18,15 +21,28 @@ mouse_filter = 2
 layout_mode = 0
 offset_left = 9.0
 offset_top = 9.0
-offset_right = 457.0
-offset_bottom = 110.0
-text = "FPS: 9999
-Draw calls: 9999
-Objects: 9999
-VRAM: 9999 MB
-"
+offset_right = 208.0
+offset_bottom = 166.0
+text = " FPS: 9999
+ Draw calls: 9999
+ Objects: 99999
+ VRAM: 99999MB
+ State: PLAYER_STATE
+ FOV: 999
+ Vel: (999.9,999.9,999.9)(9.9999)
+ Pos: (9999.9,9999.9,9999.9)"
+label_settings = SubResource("LabelSettings_dr1jy")
 clip_text = true
 script = ExtResource("1_655k3")
+
+[node name="Panel" type="Panel" parent="DebugScreen"]
+z_index = -1
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 
 [node name="CenterContainer" type="CenterContainer" parent="."]
 layout_mode = 1

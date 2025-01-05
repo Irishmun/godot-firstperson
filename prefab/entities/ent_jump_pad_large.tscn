@@ -6,21 +6,20 @@
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_ahwd3"]
 height = 0.323377
-radius = 2.63616
+radius = 1.83846
 
 [sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_xjrrh"]
 points = PackedVector3Array(-2.38419e-07, 0, -2.56061, -0.663213, 0, -2.47339, -0.493776, 0.348652, -1.84226, -2.38419e-07, 0.348652, -1.90693, 0.493274, 0.348652, -1.84226, 0.662711, 0, -2.47339, -1.28031, 0, -2.21773, -0.953463, 0.348652, -1.65177, 0.952961, 0.348652, -1.65177, 1.28031, 0, -2.21773, -1.81068, 0, -1.81068, -1.34848, 0.348652, -1.34848, 1.34798, 0.348652, -1.34848, 1.81017, 0, -1.81068, -2.21773, 0, -1.28031, -1.65177, 0.348652, -0.953463, 1.65126, 0.348652, -0.953463, 2.21723, 0, -1.28031, -2.47339, 0, -0.663213, -1.84226, 0.348652, -0.493775, 1.84176, 0.348652, -0.493775, 2.47289, 0, -0.663213, -2.56061, 0, 0, -1.90693, 0.348652, 0, 1.90642, 0.348652, 0, 2.56061, 0, 0, -2.47339, 0, 0.662712, -1.84226, 0.348652, 0.493274, 1.84176, 0.348652, 0.493274, 2.47289, 0, 0.662712, -2.21773, 0, 1.28031, -1.65177, 0.348652, 0.952961, 1.65126, 0.348652, 0.952961, 2.21723, 0, 1.28031, -1.81068, 0, 1.81017, -1.34848, 0.348652, 1.34798, 1.34798, 0.348652, 1.34798, 1.81017, 0, 1.81017, -1.28031, 0, 2.21723, -0.953463, 0.348652, 1.65126, 0.952961, 0.348652, 1.65126, 1.28031, 0, 2.21723, -0.663213, 0, 2.47289, -0.493776, 0.348652, 1.84176, 0.493274, 0.348652, 1.84176, 0.662711, 0, 2.47289, -2.38419e-07, 0, 2.56061, -2.38419e-07, 0.348652, 1.90642)
 
 [node name="EntJumpPadLarge" type="Area3D"]
+monitorable = false
 script = ExtResource("1_fuoaa")
 randomIntensity = 0.0
 jumpHeight = 5.0
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 transform = Transform3D(0.707107, 0, 0.707107, 0, 1, 0, -0.707107, 0, 0.707107, 0, 0.214369, 0)
-visible = false
 shape = SubResource("CylinderShape3D_ahwd3")
-disabled = true
 
 [node name="AudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.30315, 0)
@@ -29,16 +28,16 @@ stream = ExtResource("3_sc6fq")
 [node name="FINALS-practice-area-jump_pad_large" parent="." instance=ExtResource("1_5iwvo")]
 
 [node name="Jump_Pad_Large_collider" parent="FINALS-practice-area-jump_pad_large/Jump_Pad_Large" index="0"]
+process_mode = 4
 visible = false
+cast_shadow = 0
+gi_mode = 0
 
 [node name="StaticBody3D" parent="FINALS-practice-area-jump_pad_large/Jump_Pad_Large/Jump_Pad_Large_collider" index="0"]
 process_mode = 4
-visible = false
-
-[node name="CollisionShape3D" parent="FINALS-practice-area-jump_pad_large/Jump_Pad_Large/Jump_Pad_Large_collider/StaticBody3D" index="0"]
-visible = false
 
 [node name="CollisionShape3D2" type="CollisionShape3D" parent="."]
 shape = SubResource("ConvexPolygonShape3D_xjrrh")
+disabled = true
 
 [editable path="FINALS-practice-area-jump_pad_large"]

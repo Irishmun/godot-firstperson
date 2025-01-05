@@ -1,17 +1,35 @@
-[gd_scene load_steps=3 format=3 uid="uid://bv2j27eby2edx"]
+[gd_scene load_steps=4 format=3 uid="uid://bv2j27eby2edx"]
 
 [ext_resource type="Script" path="res://scripts/entities/KillPlane.cs" id="1_ypp0q"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_en1bo"]
 size = Vector3(500, 1, 500)
 
-[node name="ent_killplane" type="Area3D" node_paths=PackedStringArray("respawnLocation")]
+[sub_resource type="BoxShape3D" id="BoxShape3D_7qljm"]
+size = Vector3(500, 2000, 1)
+
+[node name="ent_killplane" type="Area3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -2, 0)
 collision_mask = 4294967295
 input_ray_pickable = false
 script = ExtResource("1_ypp0q")
-respawnLocation = NodePath("")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 0)
 shape = SubResource("BoxShape3D_en1bo")
+
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1000, -250)
+shape = SubResource("BoxShape3D_7qljm")
+
+[node name="CollisionShape3D3" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1000, 250)
+shape = SubResource("BoxShape3D_7qljm")
+
+[node name="CollisionShape3D4" type="CollisionShape3D" parent="."]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 250, 1000, 0)
+shape = SubResource("BoxShape3D_7qljm")
+
+[node name="CollisionShape3D5" type="CollisionShape3D" parent="."]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, -250, 1000, 0)
+shape = SubResource("BoxShape3D_7qljm")

@@ -30,7 +30,7 @@ project/assembly_name="FirstPerson"
 
 [global_group]
 
-UnGrabable="Should not be grabable"
+Interactable=""
 
 [input]
 

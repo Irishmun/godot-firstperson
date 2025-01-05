@@ -1,4 +1,6 @@
 using Godot;
+using System;
+using static Godot.TextServer;
 
 public partial class Player : CharacterBody3D
 {
@@ -13,16 +15,17 @@ public partial class Player : CharacterBody3D
     [Export] private float groundAcceleration = 10;
     [Export] private float airAcceleration = 2.5f;
     //[Export] private float deceleration = 7;
-    [Export] private float movementSpeed = 3.6f;
+    [Export] private float movementSpeed = 4.8f;
+    [Export] private float sprintSpeed = 5.75f;
+    [Export] private float crouchSpeed = 3.6f;
     [Export] private float airSpeed = 1.2f;
-    [Export] private float sprintMultiplier = 2;
+    [Export] private float climbSpeed = 2f;
     [Export] private float maxStepHeight = 0.25f;
     [ExportGroup("Jumping")]
     [Export] private float jumpHeight = 1f;
     [Export] private int maxJumps = 1;
-    [ExportGroup("Crouching")]
-    [Export] private float crouchMultiplier = 0.75f;
-    [Export] private float crouchSpeed = 4;
+    [Export] private bool bunnyHop = false;
+    //[ExportGroup("Crouching")]
     //[Export] private float crouchHeight = 0.9f;//meters
     [ExportGroup("Camera")]
     [Export(PropertyHint.Range, "1,100,")] private int sensitivity = 40;
@@ -34,21 +37,25 @@ public partial class Player : CharacterBody3D
     [Export] private float GravityMultiplier = 2;
     [Export] private float mass = 80;
     [Export] private float timeBeforeFalling = 0.1f;//coyote time
+    [ExportGroup("Buffers")]
     [Export] private float jumpBufferTime = 0.1f;
+    [Export] private float mantleBufferTime = 0.1f;
     //[Export] private float friction = 3.5f;
+
     #endregion
     #region private fields
+    private PlayerStates _playerState = PlayerStates.STANDING;
     private bool _canMove = true, _canLook = true;
     private bool _runningInput = false, _crouchInput = false, _jumpInput = false;
-    private bool _isCrouching;
     private bool _justLanded = false, _isFalling = false, _wasOnFloor = true;
-    private bool _jumpBuffer = false;
+    private bool _jumpBuffer = false, _mantleBuffer = false;
     private Vector2 _inputDir;//, _camInput;
     private Vector3 _velocity;
     private Vector3 _cameraSavedPos = Vector3.Inf;
     private Tween _tween;
     private int _jumpCount = 0;
     private float _baseFov, _sprintFov;
+    private float _jumpForce;
     private float _standingHeight, _defaultCameraHeight;
     private float _crouchVal = 0, _tilt = 0;
     private float _coyoteTime = 0, _fallT = 0;
@@ -76,6 +83,7 @@ public partial class Player : CharacterBody3D
         _defaultCameraHeight = _cameraHolder.Position.Y;//local, for global: camera.GlobalPosition.Y-this.GlobalPosition.Y
         _baseFov = _camera.Fov;
         _sprintFov = _baseFov + fovIncrease;
+        _jumpForce = CalcJumpForce();
         /*Vector3 pos = _headRay.Position;
         pos.Y = crouchHeight;
         _headRay.Position = pos;*/
@@ -120,49 +128,19 @@ public partial class Player : CharacterBody3D
         if (_canMove == false)
         { return; }
         _velocity = this.Velocity;
-        Vector3 direction = new Vector3(_inputDir.X, 0, _inputDir.Y).Normalized();
-        direction = direction.Rotated(Vector3.Up, GlobalRotation.Y);
-        #region QUAKE MOVEMENT (Not used)
+        Vector3 wishDir = new Vector3(_inputDir.X, 0, _inputDir.Y);
         //GD.Print($"pre move velocity: {Velocity}");
-        if (IsOnFloor())
-        {
-            HandleMovement((float)delta, direction);//comment this if using the quake movement
-                                                    //HandleGroundMovement((float)delta, direction);
-                                                    //HandleMovement((float)delta, direction);//comment this if using the quake movement
-            HandleJump();
-            //GD.Print("Velocity: " + _velocity.Length());
-            //check steps
-            HandleRigidBodies();
-            this.Velocity = _velocity;
-            if (!HandleStep((float)delta))
-            {
-                MoveAndSlide();
-            }
-        }
+        if (_playerState == PlayerStates.CLIMBING)
+        { HandleClimbingMovement((float)delta, wishDir); }
+        else if (_playerState == PlayerStates.ZIPLINING)
+        { HandleZipliningMovement((float)delta, wishDir); }
         else
         {
-            HandleAir((float)delta, direction);
-            //HandleAirMovement((float)delta, direction); 
-            HandleJump();
-            //GD.Print("Velocity: " + _velocity.Length());
-            //check steps
-            HandleRigidBodies();
-            this.Velocity = _velocity;
-            MoveAndSlide();
+            wishDir = wishDir.Normalized();
+            wishDir = wishDir.Rotated(Vector3.Up, GlobalRotation.Y);
+            HandleGroundedMovement((float)delta, wishDir);
         }
-        if (_runningInput == true && _camera.Fov < _baseFov + fovIncrease && (Velocity * HORIZONTAL).Length() > movementSpeed)
-        {
-            TweenFOV(_baseFov + fovIncrease);
-        }
-        else if (_runningInput == false && _camera.Fov > _baseFov)
-        {
-            TweenFOV(_baseFov);
-        }
-        //GD.Print($"post move velocity: {Velocity}");
-        #endregion
-
-        _wasOnFloor = IsOnFloor();
-        //GD.Print("[physics]velocity:" + Velocity.ToString("0.0"));
+        HandleFOV();
     }
     #endregion
     //==========INPUT==========
@@ -215,14 +193,14 @@ public partial class Player : CharacterBody3D
 
         void addPitch(float X)
         {
-            if (IsApproxZero(X))
+            if (X.IsApproxZero())
             { return; }
             _cameraHolder.RotateObjectLocal(Vector3.Left, Mathf.DegToRad(X));
             _cameraHolder.Orthonormalize();
         }
         void addYaw(float Y)
         {
-            if (IsApproxZero(Y))
+            if (Y.IsApproxZero())
             { return; }
             this.RotateObjectLocal(Vector3.Down, Mathf.DegToRad(Y));
             this.Orthonormalize();
@@ -258,21 +236,118 @@ public partial class Player : CharacterBody3D
             TiltCamera(-tilt);
         }
     }
+    private void HandleFOV()
+    {
+        if (_canMove == false)
+        { return; }
+        if (_playerState == PlayerStates.CLIMBING)
+        {
+            if (_camera.Fov == _sprintFov)
+            { TweenFOV(_baseFov); }
+            return;
+        }
+        if (_camera.Fov == _sprintFov)
+        {//should be walking
+            if (_wasOnFloor && IsOnFloor() &&
+                (GetMoveSpeed() <= movementSpeed || _inputDir.Y.IsApproxZero()))
+            {
+                TweenFOV(_baseFov);
+            }
+        }
+        else if (_camera.Fov == _baseFov)
+        {//should be running/moving fast
+            float sprintSquared = sprintSpeed * sprintSpeed;
+            if ((GetMoveSpeed() > movementSpeed) ||//&& _inputDir.Y > 0) ||
+                (this.Velocity * HORIZONTAL).LengthSquared() >= sprintSquared ||
+                this.Velocity.Y > _jumpForce)
+            {
+                TweenFOV(_sprintFov);
+            }
+        }
+
+        /* //TODO: make this work correctly >:(
+         float normalVelocity = new Vector3(_velocity.X, _jumpForce, _velocity.Z).LengthSquared();
+         //GD.Print($"_velocity:{_velocity.Length()} Funky:{new Vector3(_velocity.X, _jumpForce, _velocity.Z).Length()}");
+         if (!_crouchInput && ((_runningInput && (_velocity * HORIZONTAL).LengthSquared() > movementSpeed * movementSpeed)
+             || ((!IsOnFloor()) && _velocity.LengthSquared() > normalVelocity))
+             && !_camera.Fov.Equals(_sprintFov))
+         //&& (_velocity * HORIZONTAL).Length() > movementSpeed)
+         {
+             //GD.Print($"(running & moving:{_runningInput && (_velocity * HORIZONTAL).LengthSquared() > 0} || " +
+             //    $"!onfloor & moving fast:{(!IsOnFloor() && _velocity.Length() > normalVelocity)}) && " +
+             //    $"fov low:{!_camera.Fov.Equals(_sprintFov)}({_camera.Fov})");
+             TweenFOV(_sprintFov);
+         }
+         else if ((_crouchInput || (!_runningInput && IsOnFloor()) || _inputDir == Vector2.Zero)
+                 && !_camera.Fov.Equals(_baseFov))
+         {
+             //GD.Print($"(crouching:{_crouchInput} || not running on floor {!_runningInput && IsOnFloor()}) || no input:{_inputDir == Vector2.Zero})" +
+             //    $" && fov high:{!_camera.Fov.Equals(_baseFov)}");
+             TweenFOV(_baseFov);
+         }*/
+    }
     private void TweenFOV(float fov)
     {
-        if (_tween != null && _tween.IsRunning())
+        if (_tween != null && _tween.IsRunning() && _camera.Fov.Equals(fov))
         { return; }
+        //GD.Print("tweening to:" + fov);
         _tween = GetTree().CreateTween();
         _tween.SetEase(Tween.EaseType.Out);
         _tween.SetTrans(Tween.TransitionType.Linear);
-        _tween.Finished += _tween_Finished;
+        _tween.Finished += Tween_Finished;
         //_tween.TweenProperty(this, "dotRadius", radius, time);
         _tween.TweenProperty(_camera, "fov", fov, FOV_TIME);
     }
-
     #endregion
     //==========MOVEMENT==========
     #region MOVEMENT
+    private void HandleGroundedMovement(float delta, Vector3 wishDir)
+    {
+        //if vertical velocity was changed externally or after last frame's move
+        //go to air instead
+        if (IsOnFloor() && _velocity.Y <= 0)
+        {
+            HandleMovement((float)delta, wishDir);
+        }
+        else
+        {
+            HandleAirMovement((float)delta, wishDir);
+            HandleGravity((float)delta);
+        }
+        HandleJump();
+        //GD.Print("Velocity: " + _velocity.Length());
+        //check steps
+        HandleRigidBodies();
+        this.Velocity = _velocity;
+        if (!IsOnFloor() || !HandleStep((float)delta))
+        {
+            MoveAndSlide();
+        }
+        //GD.Print($"post move velocity: {Velocity}");
+
+        _wasOnFloor = IsOnFloor();
+        //GD.Print("[physics]velocity:" + Velocity.ToString("0.0"));
+    }
+    private void HandleClimbingMovement(float delta, Vector3 wishDir)
+    {
+        _velocity = Vector3.Zero;
+        _velocity.Y = wishDir.Z * climbSpeed;
+        this.Velocity = _velocity;
+        if (_velocity.Y < 0 && (MoveAndCollide(_velocity * delta, true) != null || IsOnFloor()))
+        {
+            _playerState = PlayerStates.STANDING;
+        }
+        else
+        {
+            MoveAndSlide();
+        }
+
+        _wasOnFloor = true;
+    }
+    private void HandleZipliningMovement(float delta, Vector3 direction)
+    {
+        _wasOnFloor = true;
+    }
     private void HandleMovement(float delta, Vector3 direction)
     {
         //multiply input direction by speed, keep whatever vertical velocity we have
@@ -280,72 +355,23 @@ public partial class Player : CharacterBody3D
         //velocity affecting movement
         Vector3 addSpeed = direction - _velocity;
         addSpeed *= delta * groundAcceleration;
-        //addSpeed *= HORIZONTAL;
+        //addSpeed *= HORIZONTAL;//don't need this due to direction and velocity having no Y
         _velocity += addSpeed;
-        //lerp to speed in direction, does not get affected by external forces well
-        //_velocity = _velocity.Lerp(direction, delta * acceleration);
-        //^This works best when player (horizontal) velocity is never adjusted when the player has control
-        //apply gravity
-        //HandleGravity(delta);
     }
-    private void HandleAir(float delta, Vector3 direction)
+    private void HandleAirMovement(float delta, Vector3 wishDir)
     {
-        HandleGravity(delta);
-        if (direction * HORIZONTAL == Vector3.Zero)
+        if (wishDir * HORIZONTAL == Vector3.Zero || _velocity.Dot(wishDir) > (wishDir * GetMoveSpeed()).Length())
         { return; }
-        direction *= GetMoveSpeed();
+        //wishDir *= GetMoveSpeed();
         //velocity affecting movement
-        Vector3 addSpeed = direction - _velocity;
+        Vector3 addSpeed = (wishDir * GetMoveSpeed()) - _velocity;
         addSpeed *= delta * airAcceleration;
         addSpeed *= HORIZONTAL;
         _velocity += addSpeed;
     }
-    #region QUAKE
-    private void HandleGroundMovement(float delta, Vector3 direction)
-    {
-        float wishSpeed = GetMoveSpeed();
-        float addSpeed, accelSpeed, currentSpeed;
-        float deceleration = groundAcceleration, friction = 2, accel = groundAcceleration * movementSpeed;
-        currentSpeed = _velocity.Length();//_velocity.Dot(direction);
-        addSpeed = wishSpeed - currentSpeed;
-        if (addSpeed <= 0)
-        { return; }
-        accelSpeed = accel * delta * wishSpeed;
-        if (accelSpeed > addSpeed)
-        { accelSpeed = addSpeed; }
-        _velocity += accelSpeed * direction;
-
-        //friction
-        float speed = _velocity.Length();
-        if (speed <= 0)
-        { return; }
-        float control = speed < deceleration ? deceleration : speed;
-        float newSpeed = speed - delta * control * friction;
-        if (newSpeed < 0)
-        { newSpeed = 0; }
-        newSpeed /= speed;
-        _velocity *= newSpeed;
-    }
-    private void HandleAirMovement(float delta, Vector3 direction)
-    {
-        HandleGravity(delta);
-        float wishSpeed = GetMoveSpeed();
-        float curSpeed, cappedSpeed, addSpeed;
-
-        curSpeed = _velocity.Dot(direction);//(_velocity * HORIZONTAL).Length();
-        cappedSpeed = Mathf.Min((wishSpeed * direction).Length(), movementSpeed);
-        addSpeed = cappedSpeed - curSpeed;
-        if (addSpeed <= 0)
-        { return; }
-        float accel = groundAcceleration * wishSpeed * delta;
-        if (accel > addSpeed)
-        { accel = addSpeed; }
-        _velocity += accel * direction;
-    }
-    #endregion
     private void HandleJump()
     {
-        _jumpInput = Input.IsActionJustPressed("Jump");
+        _jumpInput = bunnyHop ? Input.IsActionPressed(Keys.JUMP) : Input.IsActionJustPressed(Keys.JUMP);
         //GD.Print($"Jump:{_jumpInput} and onfloor:{IsOnFloor()} or falling:{_isFalling}");
         if ((_jumpInput || _jumpBuffer) && (IsOnFloor() || !_isFalling))//(IsOnFloor() || (!_wasOnFloor && !_isFalling)))
         {//check if we can jump any more than we already have
@@ -355,13 +381,18 @@ public partial class Player : CharacterBody3D
             { StartJumpSound = true; }
             _jumpBuffer = false;
             _jumpCount += 1;
-            _velocity.Y = CalcJumpForce();
+            _velocity.Y = _jumpForce;//CalcJumpForce();
             //GD.Print(_velocity.Y);
         }
         else if (_jumpInput && (!IsOnFloor() || _isFalling))
         {//buffer jump for if the player pressed the jump button before landing
             _jumpBuffer = true;
             GetTree().CreateTimer(jumpBufferTime).Timeout += JumpBuffer_Timeout;
+        }
+        if (_jumpInput)
+        {
+            _mantleBuffer = true;
+            GetTree().CreateTimer(mantleBufferTime).Timeout += MantleBuffer_Timeout;
         }
     }
     /// <summary>Handles stepping up steps (stairs)</summary>
@@ -381,7 +412,7 @@ public partial class Player : CharacterBody3D
         {
             //check how high the collision point (step) is
             float stepHeight = (testStartPos.Origin + res.GetTravel() - this.GlobalPosition).Y;
-            stepHeight = RoundToDec(stepHeight, 3);
+            stepHeight = stepHeight.RoundToDec(3);
             //decimal decimalValue = Math.Round((decimal)stepHeight, 2);
             //if distance to step too high,        too low,       or step to high, don't move player there
             if (stepHeight > maxStepHeight || stepHeight <= 0.01f || (res.GetPosition() - this.GlobalPosition).Y > maxStepHeight)
@@ -417,21 +448,37 @@ public partial class Player : CharacterBody3D
         //_velocity.Y -= _gravity * Mass * delta;
         _velocity.Y -= _gravity * GravityMultiplier * delta;
         _velocity.Y = Mathf.Clamp(_velocity.Y, TERMINAL_VELOCITY, -TERMINAL_VELOCITY);
-        if (Input.IsActionPressed("Jump") && _mantling.HandleMantle())
+        if ((Input.IsActionPressed(Keys.JUMP) || _mantleBuffer) && (_velocity * HORIZONTAL).LengthSquared() > 0)
         {
-            _cameraSavedPos = _camera.GlobalPosition;
+            if (_mantling.HandleMantle())
+            {
+                _cameraSavedPos = _camera.GlobalPosition;
+                _mantleBuffer = false;
+            }
         }
         ApplyFloorSnap();//snap to floor to prevent floating
     }
+    private void HandleCollisionInteraction(float delta)
+    {
+        KinematicCollision3D kin = MoveAndCollide(Velocity * delta, true);
+        if (kin == null)
+        { return; }
+        GodotObject body = kin.GetCollider();
+        if (body.HasMethod("OnCollide"))
+        {
+            body.Call("OnCollide", this, kin);
+        }
+    }
     private void ChangeCrouchState(bool newState)
     {
+        //GD.Print($"newState:{newState} |playerState:{_playerState}");
         //change crouch based on newState OR if ForceCrouch is true
-        if (_isCrouching == false && newState == true)
+        if (_playerState != PlayerStates.CROUCHING && newState == true)
         {
             _animator.Play(ANIM_CROUCH, -1, crouchSpeed);
-            _isCrouching = true;
+            _playerState = PlayerStates.CROUCHING;
         }
-        else if (_isCrouching == true && newState == false)
+        else if (_playerState == PlayerStates.CROUCHING && newState == false)
         {
             _headRay.Enabled = true;
             _headRay.ForceShapecastUpdate();
@@ -443,69 +490,16 @@ public partial class Player : CharacterBody3D
                 { return; }
             }
             _animator.Play(ANIM_CROUCH, -1, -crouchSpeed, true);
-            _isCrouching = false;
+            _playerState = PlayerStates.STANDING;
         }
-
-        /*float curCrouch;
-        float curCam;
-        if (state == true && (_isCrouching == false || (_isCrouching == true && _crouchVal < 1)))
-        {//start crouch
-            _crouchVal += delta * crouchTime;
-            UpdateLerp();
-            _collision.Height = curCrouch;
-            Vector3 pos = _collisionBody.Position;
-            pos.Y = curCrouch * 0.5f;
-            _collisionBody.Position = pos;
-            pos = _cameraHolder.Position;
-            pos.Y = curCam;
-            _cameraHolder.Position = pos;
-            _isCrouching = _crouchVal >= 1;
-            return;
-        }
-        if (state == false && (_isCrouching == true || (_isCrouching == false && _crouchVal > 0)))
-        {//try and end crouch, if nothing is in the way of the player's head
-            _headRay.Enabled = true;
-            _headRay.ForceShapecastUpdate();
-            if (_headRay.GetCollisionCount() > 0)
-            {//something's in the way, check if it should stop the player
-                GodotObject hit = _headRay.GetCollider(0);
-                if (hit is StaticBody3D || hit is CsgShape3D)//hit blocking
-                { return; }
-            }
-            _crouchVal -= delta * crouchTime;
-            UpdateLerp();
-            Vector3 pos = _collisionBody.Position;
-            pos.Y = curCrouch * 0.5f;
-            _collisionBody.Position = pos;
-            _collision.Height = curCrouch;
-            pos = _cameraHolder.Position;
-            pos.Y = curCam;
-            _cameraHolder.Position = pos;
-            _isCrouching = _crouchVal > 0;
-            _headRay.Enabled = _isCrouching;
-            return;
-        }
-
-        void UpdateLerp()
-        {
-            _crouchVal = Mathf.Clamp(_crouchVal, 0, 1);//clamp value
-            curCrouch = Mathf.Lerp(_standingHeight, crouchHeight, _crouchVal);
-            curCam = Mathf.Lerp(_defaultCameraHeight, _defaultCameraHeight - (_standingHeight - crouchHeight), _crouchVal);
-        }*/
     }
     private float GetMoveSpeed()
     {//decide movement speed based on if we're crouching, running or walking
-        if (_isCrouching == true)
-        { return movementSpeed * crouchMultiplier; }
-        if (_runningInput == true && _inputDir.Y >= 0)
-        { return movementSpeed * sprintMultiplier; }
+        if (_playerState == PlayerStates.CROUCHING)
+        { return crouchSpeed; }
+        if (_runningInput && _inputDir.Y > 0)
+        { return sprintSpeed; }
         return movementSpeed;
-    }
-    private float CalcJumpForce()
-    {//initial_velocity^2 =  final_velocity^2 - 2*acceleration*displacement
-     //Sqrt(2*Gravity*JumpHeight*Mass);//account for gravity applied to player
-        float height = _isCrouching ? jumpHeight * 0.5f + 0.1f : jumpHeight + 0.1f;
-        return Mathf.Sqrt(2 * _gravity * height * GravityMultiplier);
     }
     private void HandleRigidBodies()
     {
@@ -532,15 +526,23 @@ public partial class Player : CharacterBody3D
     {
         //_collisionBody = GetChildWithComponent<CollisionShape3D>();
         //_collision = (CylinderShape3D)_collisionBody.Shape;
-        _cameraHolder = GetChildWithComponent<Node3D>(name: "CameraHolder");
-        _camera = GetChildWithComponent<Camera3D>(_cameraHolder);
-        _headRay = GetChildWithComponent<ShapeCast3D>();
-        _mantling = GetChildWithComponent<Mantling>();
-        _animator = GetChildWithComponent<AnimationPlayer>();
+        _cameraHolder = this.GetChildWithComponent<Node3D>(name: "CameraHolder");
+        _camera = this.GetChildWithComponent<Camera3D>(_cameraHolder);
+        _headRay = this.GetChildWithComponent<ShapeCast3D>();
+        _mantling = this.GetChildWithComponent<Mantling>();
+        _animator = this.GetChildWithComponent<AnimationPlayer>();
+    }
+    private float CalcJumpForce()
+    {//initial_velocity^2 =  final_velocity^2 - 2*acceleration*displacement
+     //Sqrt(2*Gravity*JumpHeight*Mass);//account for gravity applied to player
+        float height = _playerState == PlayerStates.CROUCHING ? jumpHeight * 0.5f + 0.1f : jumpHeight + 0.1f;
+        return Mathf.Sqrt(2 * _gravity * height * GravityMultiplier);
     }
     #endregion
     //==========PUBLIC METHODS==========
     #region PUBLIC METHODS
+    /// <summary>Forcibly enable Crouch state</summary>
+    public void ForceCrouch() => ChangeCrouchState(true);
     /// <summary>Overrides player's global position</summary>
     /// <param name="position">new position in Global space</param>
     public void OverridePosition(Vector3 position)
@@ -559,24 +561,39 @@ public partial class Player : CharacterBody3D
     {
         this.Velocity = velocity;
     }
+    /// <summary>Overrides the current player state to the given state</summary>
+    public void SetPlayerState(PlayerStates state, bool suggestion = false)
+    {
+        if (suggestion == false)
+        {
+            _playerState = state;
+            return;
+        }
+        if (_crouchInput == true && state == PlayerStates.STANDING)
+        {
+            _playerState = PlayerStates.CROUCHING;
+        }
+        else
+        {
+            _playerState = state;
+        }
+    }
     /// <summary>Forcibly updates input values (direction, running, crouching)</summary>
     public void ForceInputCheck()
     {
-        _inputDir = Input.GetVector("Right", "Left", "Backward", "Forward");
-        _runningInput = Input.IsActionPressed("Run");
-        _crouchInput = Input.IsActionPressed("Crouch");
+        _inputDir = Input.GetVector(Keys.RIGHT, Keys.LEFT, Keys.BACKWARD, Keys.FORWARD);
+        _runningInput = Input.IsActionPressed(Keys.RUN);
+        _crouchInput = Input.IsActionPressed(Keys.CROUCH);
         ChangeCrouchState(_crouchInput);
     }
     #endregion
     //==========EVENTS==========
     #region EVENTS
-    private void JumpBuffer_Timeout()
+    private void JumpBuffer_Timeout() => _jumpBuffer = false;
+    private void MantleBuffer_Timeout() => _mantleBuffer = false;
+    private void Tween_Finished()
     {
-        _jumpBuffer = false;
-    }
-    private void _tween_Finished()
-    {
-        _tween.Kill();
+        _tween?.Kill();
         _tween = null;
     }
     #endregion
@@ -585,60 +602,94 @@ public partial class Player : CharacterBody3D
     public float MovementSpeed => movementSpeed;
     public float CrouchHeight => 0.9f;//get from animation somehow
     public float StandingHeight => 1.85f;
+    public float FOV => _camera.Fov;
     public Vector3 HorizontalVelocity => Velocity * HORIZONTAL;
-    public bool IsCrouching => _isCrouching;
+    public bool IsCrouching => _playerState == PlayerStates.CROUCHING;
     public bool JustLanded => _justLanded;
-    public bool WasOnFloor => _wasOnFloor;
     public bool IsInAir => _isFalling || Velocity.Y > 0;
     public bool StartJumpSound { get; set; }
     public bool CanMove { get => _canMove; set => _canMove = value; }
-    public bool CanLook { get => _canLook; set => _canLook = value; }
-    public float BaseFOV { get => _baseFov; set { _baseFov = value; _sprintFov = _baseFov + fovIncrease; } }
-
-    public void ForceCrouch() => ChangeCrouchState(true);
-    #endregion
-    #region ExtensionMethods
-    //these methods would go into an extension methods class
-    /// <summary>Remaps value from range 1 to range 2</summary>
-    /// <param name="value">value to remap</param>
-    /// <param name="from1">low end of range 1</param>
-    /// <param name="to1">high end of ranfe 1</param>
-    /// <param name="from2">low end of range 2</param>
-    /// <param name="to2">high end of range 2</param>
-    /// <returns>The remapped value</returns>
-    private float ReMap(float value, float from1, float to1, float from2, float to2)
-    {//value would be "this float value" instead
-        return (value - from1) / (to1 - from1) * (to2 - from2) + from2;
-    }
-    private float RoundToDec(float value, int digit)
-    {//value would be "this float value" instead
-        float pow = Mathf.Pow(10, digit);
-        return Mathf.Floor(value * pow) / pow;
-    }
-    /// <summary>Returns if value is approximately zero, for floating point errors</summary>
-    /// <param name="value">value to check</param>
-    /// <returns>True if value is approximately zero</returns>
-    private bool IsApproxZero(float value)
-    {//value would be "this float value" instead
-        float almostZero = 0.0001f;
-        return value < almostZero && value > -almostZero;
-    }
-    /// <summary>Gets first child in parent with given component (and optionally, name)</summary>
-    /// <typeparam name="T">node type</typeparam>
-    /// <param name="parent">parent to check children for</param>
-    /// <param name="name">(optional) name of node</param>
-    /// <returns>Node of type (and name) if found. Null if not found</returns>
-    private T GetChildWithComponent<T>(Node parent = null, string name = "") where T : class
-    {//parent would be "this Node parent" instead
-        parent ??= this;
-        foreach (Node item in parent.GetChildren())
-        {
-            if (!string.IsNullOrWhiteSpace(name) && !item.Name.Equals(name))
-            { continue; }
-            if (item is T)
-            { return item as T; }
-        }
-        return null;
-    }
+    public PlayerStates PlayerState { get => _playerState; set => _playerState = value; }
+    public Vector2 PlayerWishDir => _inputDir;
     #endregion
 }
+
+#region QUAKE MOVEMENT
+/*
+    [ExportGroup("Debug")]
+    [Export] private bool useQuakeMovement = false;
+    [ExportGroup("Quake")]
+    [Export] private float friction = 6;
+    [Export] private float quakeSpeed = 7;
+    [Export] private float groundAccel = 14;
+    [Export] private float groundDeAccel = 10;
+    [Export] private float airAccel = 2;
+    //QUAKE
+    //private Vector3 wishDir = Vector3.Zero; -> wishDir
+    //var playerVelocity = Vector3.ZERO -> _velocity
+    private bool wishJump = false;
+    //END QUAKE 
+
+    private void QuakeGroundMovement(float delta, Vector3 direction)
+    {
+        QuakeFriction(delta);
+        QuakeAccelerate(delta, direction, direction.LengthSquared() * GetMoveSpeed(), groundAccel);
+    
+        if (wishJump)
+        {
+            _velocity.Y = _jumpForce;//CalcJumpForce();
+        }
+    }
+    private void QuakeAirMovement(float delta, Vector3 direction)
+    {
+        QuakeAccelerate(delta, direction, direction.LengthSquared() * GetMoveSpeed(), airAccel);
+        HandleGravity(delta);
+        /*
+        float wishSpeed = GetMoveSpeed();
+        float curSpeed, cappedSpeed, addSpeed;
+    
+        curSpeed = _velocity.Dot(direction);//(_velocity * HORIZONTAL).Length();
+        cappedSpeed = Mathf.Min((wishSpeed * direction).Length(), movementSpeed);
+        addSpeed = cappedSpeed - curSpeed;
+        if (addSpeed <= 0)
+        { return; }
+        float accel = groundAcceleration * wishSpeed * delta;
+        if (accel > addSpeed)
+        { accel = addSpeed; }
+        _velocity += accel * direction;
+    }
+    private void QuakeFriction(float delta)
+    {
+        float drop, lastSpeed, control, newSpeed;
+        Vector3 vecCopy = _velocity;
+        vecCopy.Y = 0;
+        lastSpeed = vecCopy.Length();
+    
+        control = lastSpeed;
+        if (lastSpeed < groundDeAccel)
+        { control = groundDeAccel; }
+        drop = control * friction * delta;
+    
+        newSpeed = lastSpeed - drop;
+        if (newSpeed < 0)
+        { newSpeed = 0; }
+        if (lastSpeed > 0)
+        { newSpeed /= lastSpeed; }
+        _velocity.X *= newSpeed;
+        _velocity.Z *= newSpeed;
+    }
+    private void QuakeAccelerate(float delta, Vector3 wishDir, float wishSpeed, float accel)
+    {
+        float currentSpeed, addSpeed, accelSpeed;
+        currentSpeed = _velocity.Dot(wishDir);
+        addSpeed = wishSpeed - currentSpeed;
+        GD.Print(addSpeed);
+        if (addSpeed <= 0)
+        { return; }
+        accelSpeed = accel * delta * wishSpeed;
+        if (accelSpeed > accel)
+        { accelSpeed = addSpeed; }
+        _velocity += accelSpeed * wishDir;
+    }
+*/
+#endregion

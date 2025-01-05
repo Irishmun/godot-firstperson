@@ -10,12 +10,15 @@ points = PackedVector3Array(-0.75, 0, -0.75, -0.75, 0, 0.75, -0.75, 0.424946, -0
 [sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_8o4a0"]
 points = PackedVector3Array(-0.75, -0.425007, -0.75, -0.75, 0, -0.75, 0.75, -0.425007, -0.75, -0.75, -0.525034, -0.723277, -0.75, 0, 0.75, 0.75, 0, -0.75, 0.75, -0.525034, -0.723277, -0.75, -0.598265, -0.65001, -0.75, -0.425007, 0.75, 0.75, 0, 0.75, 0.75, -0.598265, -0.65001, -0.75, -0.625, -0.550166, -0.75, -0.525034, 0.72313, 0.75, -0.425007, 0.75, 0.75, -0.625, -0.550166, -0.75, -0.625, 0.549873, -0.75, -0.598265, 0.649863, 0.75, -0.525034, 0.72313, 0.75, -0.625, 0.549873, 0.75, -0.598265, 0.649863)
 
-[node name="ARENA BOX 01" type="RigidBody3D"]
+[node name="ARENA BOX 01" type="RigidBody3D" groups=["Interactable"]]
 mass = 50.0
 physics_material_override = SubResource("PhysicsMaterial_1sejk")
 
 [node name="ARENA_BOX_012" parent="." instance=ExtResource("1_aqadu")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.625, 0)
+
+[node name="ARENA_BOX_01" parent="ARENA_BOX_012" index="0"]
+gi_mode = 2
 
 [node name="ARENA_BOX_01-bottom" parent="ARENA_BOX_012/ARENA_BOX_01" index="0"]
 visible = false

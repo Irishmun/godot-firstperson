@@ -1,16 +1,17 @@
-[gd_scene load_steps=22 format=3 uid="uid://cgm5nhqvbbne5"]
+[gd_scene load_steps=23 format=3 uid="uid://cgm5nhqvbbne5"]
 
 [ext_resource type="Script" path="res://scripts/Player/Player.cs" id="1_1hwto"]
-[ext_resource type="CameraAttributesPractical" uid="uid://s5c1cgf018lg" path="res://prefab/components/Player_cameraatributes.tres" id="2_86ksr"]
 [ext_resource type="Script" path="res://scripts/FlashLight.cs" id="2_xwd2e"]
 [ext_resource type="AudioStream" uid="uid://5kodn1ik0c28" path="res://assets/audio/player/boots1.wav" id="3_smurv"]
-[ext_resource type="Script" path="res://scripts/Player/RayGrab.cs" id="4_74qyv"]
 [ext_resource type="AudioStream" uid="uid://bstgr6ya5tgcb" path="res://assets/audio/player/boots2.wav" id="4_tq1ao"]
 [ext_resource type="AudioStream" uid="uid://b28cs70bcjcua" path="res://assets/audio/player/boots3.wav" id="5_pp6fp"]
 [ext_resource type="AudioStream" uid="uid://denw3bcm0uvjd" path="res://assets/audio/player/boots4.wav" id="6_oiq8o"]
 [ext_resource type="Script" path="res://scripts/Player/WalkingSound.cs" id="7_upvhr"]
 [ext_resource type="Script" path="res://scripts/Player/Mantling.cs" id="8_vp37e"]
 [ext_resource type="PackedScene" uid="uid://dtqm0lvia4lhy" path="res://assets/Models/Hands/hands.tscn" id="10_f4mqp"]
+[ext_resource type="Script" path="res://scripts/Player/Grabber.cs" id="11_iq5f5"]
+[ext_resource type="Script" path="res://scripts/Player/InteractionRay.cs" id="11_m2y7n"]
+[ext_resource type="Script" path="res://scripts/Player/RayInteract.cs" id="12_hscbo"]
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_1xpml"]
 height = 1.85
@@ -145,11 +146,10 @@ _data = {
 slide_on_ceiling = false
 platform_on_leave = 2
 script = ExtResource("1_1hwto")
-movementSpeed = 4.8
-sprintMultiplier = 1.2
 jumpHeight = 1.3
 sensitivity = 100
 maxLookUp = 75.0
+jumpBufferTime = 0.05
 
 [node name="Body" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.925, 0)
@@ -159,7 +159,6 @@ shape = SubResource("CylinderShape3D_1xpml")
 transform = Transform3D(-1, 0, 8.74228e-08, 0, 1, 0, -8.74228e-08, 0, -1, 0, 1.7, 0)
 
 [node name="Camera3D" type="Camera3D" parent="CameraHolder"]
-attributes = ExtResource("2_86ksr")
 fov = 80.0
 far = 1000.0
 
@@ -227,13 +226,20 @@ libraries = {
 "": SubResource("AnimationLibrary_bo4sf")
 }
 
-[node name="GrabRay" type="RayCast3D" parent="." node_paths=PackedStringArray("followNode")]
+[node name="InteractRay" type="RayCast3D" parent="." node_paths=PackedStringArray("followNode")]
 transform = Transform3D(-1, 0, 8.74228e-08, 0, 1, 0, -8.74228e-08, 0, -1, 0, 1.7, 0)
 target_position = Vector3(0, 0, -3)
 hit_back_faces = false
-script = ExtResource("4_74qyv")
-heldOffset = Vector3(0.6, -0.6, -1.5)
+collide_with_areas = true
+script = ExtResource("11_m2y7n")
 followNode = NodePath("../CameraHolder/Camera3D")
 
-[node name="Marker3D" type="Marker3D" parent="GrabRay"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, -0.5, -1)
+[node name="Grabber" type="Marker3D" parent="InteractRay" node_paths=PackedStringArray("interactRay")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.6, -0.6, -1.5)
+script = ExtResource("11_iq5f5")
+interactRay = NodePath("..")
+
+[node name="Interactor" type="Node" parent="InteractRay" node_paths=PackedStringArray("interactRay", "player")]
+script = ExtResource("12_hscbo")
+interactRay = NodePath("..")
+player = NodePath("../..")

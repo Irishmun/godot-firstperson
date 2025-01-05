@@ -1,132 +1,98 @@
 using Godot;
 using System;
 
-public partial class RayGrab : RayCast3D
+public partial class Grabber : Node3D
 {
     private const float POSITION_TWEEN = 0.15f, ROTATION_TWEEN = 0.15f;
 
+    [Export] private InteractionRay interactRay;
     [Export] private float throwForce = 15;
     //[Export] private Curve forceMultiplier;
     [Export] private Vector3 heldOffset = Vector3.Zero;
-    [Export] private Node3D followNode;
+    [Export] private bool centerBeforeThrow = false;
 
     private RigidBody3D _heldItem;
     private Node _heldParent;
     private uint _heldCollisionLayer;
-    private Tween _tween;
+    private bool _holding, lastContact;
+    private int lastContactReport, collideCount;
 
-    public override void _Process(double delta)
-    {
-        //this prevents it from casting against the player, whilst still following the camera
-        this.GlobalPosition = followNode.GlobalPosition;
-        this.GlobalRotation = followNode.GlobalRotation;
-    }
+    private Tween _tween;
 
     public override void _PhysicsProcess(double delta)
     {
-        if (!this.IsColliding())
-        {
-            if (CrossHairs.Instance.CurrentRadius == 1)
-            { return; }
-            if (CrossHairs.Instance.IsTweening)
-            { return; }
-            CrossHairs.Instance.ChangeRadius(1);
-            return;
-        }
-        if (this.IsColliding())
-        {
-            if (this.GetCollider() is RigidBody3D && IsGrabable(this.GetCollider() as RigidBody3D))
-            {
-                if (CrossHairs.Instance.CurrentRadius == 5)
-                { return; }
-                if (CrossHairs.Instance.IsTweening)
-                { return; }
-                CrossHairs.Instance.ChangeRadius(5);
-            }
-            else
-            {
-                if (CrossHairs.Instance.CurrentRadius == 1)
-                { return; }
-                if (CrossHairs.Instance.IsTweening)
-                { return; }
-                CrossHairs.Instance.ChangeRadius(1);
-            }
-        }
+        if (_heldItem == null || _holding == false)
+        { return; }
+        _heldItem.Position = heldOffset;
+        _heldItem.Rotation = Vector3.Zero;
     }
 
     public override void _Input(InputEvent @event)
     {
-        if (Input.IsActionJustPressed("Use"))
+        if (Input.IsActionJustPressed(Keys.USE))
         {
-            GrabRelease();
+            if (GrabRelease())
+            { GetViewport().SetInputAsHandled(); }
             return;
         }
         if (_heldItem == null)
         { return; }
-        if (Input.IsActionJustPressed("Mouse_1"))
+        if (Input.IsActionJustPressed(Keys.MOUSE_1))
         {
             ThrowHeld();
             return;
         }
-        if (Input.IsActionJustPressed("Mouse_2"))
+        if (Input.IsActionJustPressed(Keys.MOUSE_2))
         {
             DropHeld();
             return;
         }
     }
 
-    private void GrabRelease()
+    private bool GrabRelease()
     {
         if (_heldItem == null)
         {
-            this.ForceRaycastUpdate();
-            if (this.GetCollider() is RigidBody3D)
+            interactRay.ForceRaycastUpdate();
+            if (interactRay.GetCollider() is RigidBody3D)
             {
-                GrabItem(this.GetCollider() as RigidBody3D);
+                GrabItem(interactRay.GetCollider() as RigidBody3D, interactRay.GetColliderShape());
+                return true;
             }
         }
         else
         {
             DropHeld();
+            return true;
         }
+        return false;
     }
 
-    private void GrabItem(RigidBody3D item)
+    private void GrabItem(RigidBody3D item, int shapeId)
     {
         if (!IsGrabable(item))
         { return; }
         _heldItem = item;
         _heldParent = item.GetParent();
+        lastContactReport = item.MaxContactsReported;
+        lastContact = item.ContactMonitor;
+        item.MaxContactsReported = 1;
+        item.ContactMonitor = true;
         _heldCollisionLayer = item.CollisionLayer;
+        //_heldShape = item.ShapeOwnerGetShape(item.ShapeFindOwner(shapeId), shapeId);
+
 
         item.CollisionLayer = 0;
         item.SetCollisionLayerValue(16, true);
-        item.Freeze = true;
+        //item.Freeze = true;
+        item.GravityScale = 0;
         ReparentHeld(_heldParent, this);
         /*Vector3 Zpos = item.GlobalPosition - this.GetCollisionPoint();
         GD.Print(Zpos.Length());
         SetHeld(new Vector3(heldOffset.X, heldOffset.Y, heldOffset.Z - Zpos.Length()));*/
-        SetHeld(heldOffset);
-    }
+        SetHeld(Vector3.Zero);//SetHeld(heldOffset);
 
-    /// <summary>Throws the held item, applying a centlral impulse in the facing direction</summary>
-    private void ThrowHeld()
-    {
-        if (CanRelease() == false)
-        { return; }
-        RigidBody3D held = _heldItem;
-        ReleaseHeld();
-        //(raycast.global_basis * raycast.target_position).normalized()
-        float force = throwForce * CalcThrowForce(held.Mass);
-        GD.Print($"({held.Mass}kg)(X{CalcThrowForce(held.Mass)})Throw: " + force * held.Mass);
-        GD.Print("player:" + Player.Instance.HorizontalVelocity.Length());
-        if (Player.Instance.HorizontalVelocity.LengthSquared() > 0.0001f)
-        {
-            force += Player.Instance.Velocity.Length();
-        }
-        held.ApplyCentralImpulse((this.GlobalBasis * this.TargetPosition).Normalized() * (force * held.Mass));
     }
-
     /// <summary>Drops the held item, releasing it</summary>
     private void DropHeld()
     {
@@ -134,20 +100,47 @@ public partial class RayGrab : RayCast3D
         { return; }
         ReleaseHeld();
     }
+    /// <summary>Throws the held item, applying a centlral impulse in the facing direction</summary>
+    private void ThrowHeld()
+    {
+        if (CanRelease() == false)
+        { return; }
+        if (centerBeforeThrow == true)
+        { _heldItem.Position = new Vector3(-Position.X, -Position.Y, 0); }
+        RigidBody3D held = _heldItem;
+        ReleaseHeld();
+        //(raycast.global_basis * raycast.target_position).normalized()
+        float force = throwForce * CalcThrowForce(held.Mass);
+        GD.Print($"({held.Mass}kg)(X{CalcThrowForce(held.Mass)})Throw: " + force * held.Mass);
+        GD.Print("player:" + Player.Instance.HorizontalVelocity.Length());
+        if (Player.Instance.HorizontalVelocity.LengthSquared() > 0.0001f)
+        { force += Player.Instance.Velocity.Length(); }
+        held.ApplyCentralImpulse((this.GlobalBasis * interactRay.TargetPosition).Normalized() * (force * held.Mass));
+    }
 
     private bool CanRelease()
     {
-        this.ForceRaycastUpdate();
-        GD.Print($"colliding ({this.IsColliding()}) with: {(this.GetCollider() as Node)?.Name}");
-        return !this.IsColliding();
+        collideCount = _heldItem.GetCollidingBodies().Count;
+        GD.Print($"Colliding with: ({collideCount}){_heldItem.GetCollidingBodies()}");
+
+        return collideCount <= 0;
+        /*interactRay.ForceRaycastUpdate();
+        GD.Print($"colliding ({interactRay.IsColliding()}) with: {(interactRay.GetCollider() as Node)?.Name}");
+        if (!interactRay.IsColliding())
+        { return true; }
+        return interactRay.GetCollider() is Area3D;*/
     }
 
     private void ReleaseHeld()
     {
         ReparentHeld(this, _heldParent);
-        _heldItem.Freeze = false;
+        //_heldItem.Freeze = false;
+        _heldItem.ContactMonitor = lastContact;
+        _heldItem.MaxContactsReported = lastContactReport;
+        _heldItem.GravityScale = 1;
         _heldItem.CollisionLayer = _heldCollisionLayer;
         _heldItem = null;
+        _holding = false;
     }
 
     private void ReparentHeld(Node oldParent, Node newParent)
@@ -168,7 +161,7 @@ public partial class RayGrab : RayCast3D
     public void SetHeld(Vector3 heldPosition)
     {
         _tween = GetTree().CreateTween();
-        _tween.Finished += _tween_Finished;
+        _tween.Finished += Tween_Finished;
         //_tween.TweenProperty(this, "dotRadius", radius, time);
         _tween.TweenProperty(_heldItem, "rotation", Vector3.Zero, ROTATION_TWEEN);
         _tween.SetParallel();
@@ -176,8 +169,9 @@ public partial class RayGrab : RayCast3D
         _tween.TweenProperty(_heldItem, "position:y", heldPosition.Y, POSITION_TWEEN);
         _tween.TweenProperty(_heldItem, "position:z", heldPosition.Z, POSITION_TWEEN);
     }
-    private void _tween_Finished()
+    private void Tween_Finished()
     {
+        _holding = true;
         _tween.Kill();
         _tween = null;
     }
@@ -189,6 +183,6 @@ public partial class RayGrab : RayCast3D
 
     private bool IsGrabable(RigidBody3D item)
     {
-        return !(item.GetGroups().Contains("UnGrabable"));
+        return item.GetGroups().Contains("Interactable");
     }
 }

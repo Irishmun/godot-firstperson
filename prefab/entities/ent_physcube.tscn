@@ -7,12 +7,10 @@ rough = true
 
 [sub_resource type="BoxMesh" id="BoxMesh_qhtcu"]
 material = ExtResource("1_1637y")
-size = Vector3(1.5, 1.25, 1.5)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_ucexb"]
-size = Vector3(1.5, 1.25, 1.5)
 
-[node name="ent_physcube" type="RigidBody3D"]
+[node name="ent_physcube" type="RigidBody3D" groups=["Interactable"]]
 mass = 25.0
 physics_material_override = SubResource("PhysicsMaterial_1sejk")
 
