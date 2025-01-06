@@ -1,4 +1,4 @@
-[gd_scene load_steps=31 format=3 uid="uid://c373pswu1flix"]
+[gd_scene load_steps=32 format=3 uid="uid://c373pswu1flix"]
 
 [ext_resource type="PackedScene" uid="uid://bgum0vi5s3rqp" path="res://assets/blend/room.blend" id="1_bho1u"]
 [ext_resource type="VoxelGIData" uid="uid://rfpsecpt5abo" path="res://scenes/dev_scene/scene.VoxelGI_data.res" id="1_fmpn5"]
@@ -18,6 +18,7 @@
 [ext_resource type="PackedScene" uid="uid://d0knlfouhgvjm" path="res://prefab/entities/ent_jump_pad_directional.tscn" id="15_pi8h8"]
 [ext_resource type="PackedScene" uid="uid://c4qf2tfkg7vna" path="res://prefab/entities/ent_ladder-dev.tscn" id="17_m6ij2"]
 [ext_resource type="PackedScene" uid="uid://b80l747prf8k6" path="res://prefab/entities/ent_arena_box_01.tscn" id="17_y8oh4"]
+[ext_resource type="PackedScene" uid="uid://bt15c643cdq0c" path="res://prefab/entities/ent_zipline.tscn" id="19_jdblr"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_rw1ov"]
 size = Vector3(10, 1.1, 6.42141)
@@ -82,6 +83,7 @@ light_indirect_energy = 3.0
 light_bake_mode = 1
 shadow_enabled = true
 shadow_bias = 0.02
+directional_shadow_mode = 0
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = ExtResource("2_erogr")
@@ -90,12 +92,12 @@ environment = ExtResource("2_erogr")
 quality = 3
 bounces = 10
 denoiser_strength = 0.2
-texel_scale = 8.0
+texel_scale = 2.0
 generate_probes_subdiv = 0
 light_data = ExtResource("3_enpko")
 
 [node name="Player" parent="." instance=ExtResource("2_gm5tn")]
-transform = Transform3D(-0.49605, 0, 0.868294, 0, 1, 0, -0.868294, 0, -0.49605, 7.19916, -4.76837e-07, -10.5892)
+transform = Transform3D(-0.49605, 0, 0.868294, 0, 1, 0, -0.868294, 0, -0.49605, -12.3935, 4.50845, 6.28246)
 floor_max_angle = 1.0472
 
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="." node_paths=PackedStringArray("area")]
@@ -228,28 +230,6 @@ update_scale = false
 [node name="ent_movingplatform" parent="Path3D" instance=ExtResource("8_8d4ab")]
 transform = Transform3D(0.999995, 0, 8.74224e-08, 0, 0.999997, 0, -8.74223e-08, 0, 0.999996, 0, 0, 0)
 
-[node name="EntJumpPadLarge" parent="." instance=ExtResource("13_optfk")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12.8117, -9.53674e-07, -12.7712)
-jumpHeight = 15.0
-
-[node name="EntJumpPadLarge3" parent="." instance=ExtResource("13_optfk")]
-transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, -1.99324, 4.5, 7.09389)
-jumpHeight = 16.0
-
-[node name="EntJumpPadLarge2" parent="." instance=ExtResource("13_optfk")]
-transform = Transform3D(0.5, 0, 0, 0, 0.468241, 0.175357, 0, -0.175357, 0.468241, 6.31914, 5.16372, 16.7392)
-jumpHeight = 16.0
-
-[node name="EntJumpPadDirectional" parent="." instance=ExtResource("15_pi8h8")]
-transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 5.76567, 4.5, 3.87843)
-jumpForward = 15.0
-jumpHeight = 20.0
-
-[node name="EntJumpPadDirectional2" parent="." instance=ExtResource("15_pi8h8")]
-transform = Transform3D(1.31134e-07, 0, -1, 0, 1, 0, 1, 0, 1.31134e-07, -20.2343, 0, -25.1216)
-jumpForward = 10.0
-jumpHeight = 5.0
-
 [node name="Entities" type="Node" parent="."]
 
 [node name="ent_physcube" parent="Entities" instance=ExtResource("12_61ufy")]
@@ -330,11 +310,60 @@ transform = Transform3D(1.31134e-07, 0, 1, 0, 1, 0, -1, 0, 1.31134e-07, -12.0612
 [node name="ARENA BOX 03" parent="Entities" instance=ExtResource("17_y8oh4")]
 transform = Transform3D(1.31134e-07, 0, 1, 0, 1, 0, -1, 0, 1.31134e-07, -12.0612, 1.3, -3.7232)
 
-[node name="Ladder" parent="." instance=ExtResource("17_m6ij2")]
+[node name="Static Entities" type="Node" parent="."]
+
+[node name="ent_zipline" parent="Static Entities" node_paths=PackedStringArray("otherEnd") instance=ExtResource("19_jdblr")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -13.4267, 4.5, 8.37639)
+otherEnd = NodePath("../ent_zipline2")
+isMain = true
+
+[node name="ent_zipline2" parent="Static Entities" instance=ExtResource("19_jdblr")]
+transform = Transform3D(2.98023e-08, 0, -1, 0, 1, 0, 1, 0, 2.98023e-08, -6.72357, 4.5, 11.445)
+
+[node name="ent_zipline3" parent="Static Entities" node_paths=PackedStringArray("otherEnd") instance=ExtResource("19_jdblr")]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 9.42845, 6, 23.3613)
+otherEnd = NodePath("Node3D")
+isMain = true
+
+[node name="Node3D" type="Node3D" parent="Static Entities/ent_zipline3"]
+transform = Transform3D(1.31134e-07, 0, 1, 0, 1, 0, -1, 0, 1.31134e-07, 0, -5.143, 0.254244)
+
+[node name="ent_zipline4" parent="Static Entities" node_paths=PackedStringArray("otherEnd") instance=ExtResource("19_jdblr")]
+transform = Transform3D(-1, 0, 8.74228e-08, 0, 1, 0, -8.74228e-08, 0, -1, -2.90261, 6, 23.3538)
+otherEnd = NodePath("../ent_zipline5")
+isMain = true
+
+[node name="ent_zipline5" parent="Static Entities" instance=ExtResource("19_jdblr")]
+transform = Transform3D(-1, 0, 8.74228e-08, 0, 1, 0, -8.74228e-08, 0, -1, -15.103, 0, 23.354)
+isMain = true
+
+[node name="Ladder" parent="Static Entities" instance=ExtResource("17_m6ij2")]
 transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -4.65122, -4.76837e-07, 0.0492629)
 
-[node name="Ladder2" parent="." instance=ExtResource("17_m6ij2")]
+[node name="Ladder2" parent="Static Entities" instance=ExtResource("17_m6ij2")]
 transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, -6.98029, 4.76837e-07, -0.125194)
+
+[node name="EntJumpPadLarge" parent="Static Entities" instance=ExtResource("13_optfk")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12.8117, -9.53674e-07, -12.7712)
+jumpHeight = 15.0
+
+[node name="EntJumpPadLarge3" parent="Static Entities" instance=ExtResource("13_optfk")]
+transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, -1.99324, 4.5, 7.09389)
+jumpHeight = 16.0
+
+[node name="EntJumpPadLarge2" parent="Static Entities" instance=ExtResource("13_optfk")]
+transform = Transform3D(0.5, 0, 0, 0, 0.468241, 0.175357, 0, -0.175357, 0.468241, 6.31914, 5.16372, 16.7392)
+jumpHeight = 16.0
+
+[node name="EntJumpPadDirectional" parent="Static Entities" instance=ExtResource("15_pi8h8")]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 5.76567, 4.5, 3.87843)
+jumpForward = 15.0
+jumpHeight = 20.0
+
+[node name="EntJumpPadDirectional2" parent="Static Entities" instance=ExtResource("15_pi8h8")]
+transform = Transform3D(1.31134e-07, 0, -1, 0, 1, 0, 1, 0, 1.31134e-07, -20.2343, 0, -25.1216)
+jumpForward = 10.0
+jumpHeight = 5.0
 
 [editable path="Entities/ent_physcube4"]
 [editable path="Entities/ent_physcube5"]

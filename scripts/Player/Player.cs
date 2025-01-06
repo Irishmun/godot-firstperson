@@ -611,6 +611,8 @@ public partial class Player : CharacterBody3D
     public bool CanMove { get => _canMove; set => _canMove = value; }
     public PlayerStates PlayerState { get => _playerState; set => _playerState = value; }
     public Vector2 PlayerWishDir => _inputDir;
+
+    public float JumpForce { get => _jumpForce; set => _jumpForce = value; }
     #endregion
 }
 

@@ -229,6 +229,7 @@ libraries = {
 [node name="InteractRay" type="RayCast3D" parent="." node_paths=PackedStringArray("followNode")]
 transform = Transform3D(-1, 0, 8.74228e-08, 0, 1, 0, -8.74228e-08, 0, -1, 0, 1.7, 0)
 target_position = Vector3(0, 0, -3)
+collision_mask = 3
 hit_back_faces = false
 collide_with_areas = true
 script = ExtResource("11_m2y7n")
