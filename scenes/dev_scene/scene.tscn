@@ -63,12 +63,6 @@ size = Vector3(0.5, 0.5, 0.5)
 
 [node name="Node3D" type="Node3D"]
 
-[node name="ent_killplane" parent="." node_paths=PackedStringArray("respawnLocation") instance=ExtResource("14_ch56x")]
-respawnLocation = NodePath("Marker3D")
-
-[node name="Marker3D" type="Marker3D" parent="ent_killplane"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.8993, 4.49669, -17.8901)
-
 [node name="VoxelGI" type="VoxelGI" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.03232, 14.6328, 0.00342178)
 visible = false
@@ -92,13 +86,13 @@ environment = ExtResource("2_erogr")
 quality = 3
 bounces = 10
 denoiser_strength = 0.2
-texel_scale = 2.0
-generate_probes_subdiv = 0
+texel_scale = 4.0
 light_data = ExtResource("3_enpko")
 
 [node name="Player" parent="." instance=ExtResource("2_gm5tn")]
-transform = Transform3D(-0.49605, 0, 0.868294, 0, 1, 0, -0.868294, 0, -0.49605, -12.3935, 4.50845, 6.28246)
+transform = Transform3D(-0.49605, 0, 0.868294, 0, 1, 0, -0.868294, 0, -0.49605, 0, 0, 7.1)
 floor_max_angle = 1.0472
+crouchSpeed = 2.7
 
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="." node_paths=PackedStringArray("area")]
 stream = ExtResource("4_wqwg3")
@@ -233,14 +227,14 @@ transform = Transform3D(0.999995, 0, 8.74224e-08, 0, 0.999997, 0, -8.74223e-08, 
 [node name="Entities" type="Node" parent="."]
 
 [node name="ent_physcube" parent="Entities" instance=ExtResource("12_61ufy")]
-transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 14.6229, 0.653241, -6.48498)
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 14.6229, 0.5, -6.79952)
 
 [node name="ent_physcube2" parent="Entities" instance=ExtResource("12_61ufy")]
-transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 14.6229, 0.653241, -8.685)
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 14.6229, 0.5, -8.47602)
 
 [node name="ent_physcube4" parent="Entities" instance=ExtResource("12_61ufy")]
-transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 14.6229, 0.653241, -15.685)
-mass = 5.0
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 14.6229, 0.25, -15.685)
+mass = 6.0
 
 [node name="MeshInstance3D" parent="Entities/ent_physcube4" index="0"]
 mesh = SubResource("BoxMesh_aa8v6")
@@ -248,8 +242,11 @@ mesh = SubResource("BoxMesh_aa8v6")
 [node name="CollisionShape3D" parent="Entities/ent_physcube4" index="1"]
 shape = SubResource("BoxShape3D_2712p")
 
+[node name="Label3D" parent="Entities/ent_physcube4" index="2"]
+text = "5 KG"
+
 [node name="ent_physcube5" parent="Entities" instance=ExtResource("12_61ufy")]
-transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 14.6229, 0.653241, -14.685)
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 14.6229, 0.25, -14.685)
 mass = 10.0
 
 [node name="MeshInstance3D" parent="Entities/ent_physcube5" index="0"]
@@ -258,8 +255,11 @@ mesh = SubResource("BoxMesh_aa8v6")
 [node name="CollisionShape3D" parent="Entities/ent_physcube5" index="1"]
 shape = SubResource("BoxShape3D_2712p")
 
+[node name="Label3D" parent="Entities/ent_physcube5" index="2"]
+text = "10 KG"
+
 [node name="ent_physcube6" parent="Entities" instance=ExtResource("12_61ufy")]
-transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 14.6229, 0.653241, -13.685)
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 14.6229, 0.25, -13.685)
 mass = 20.0
 
 [node name="MeshInstance3D" parent="Entities/ent_physcube6" index="0"]
@@ -268,8 +268,11 @@ mesh = SubResource("BoxMesh_aa8v6")
 [node name="CollisionShape3D" parent="Entities/ent_physcube6" index="1"]
 shape = SubResource("BoxShape3D_2712p")
 
+[node name="Label3D" parent="Entities/ent_physcube6" index="2"]
+text = "20 KG"
+
 [node name="ent_physcube7" parent="Entities" instance=ExtResource("12_61ufy")]
-transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 14.6229, 0.653241, -12.685)
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 14.6229, 0.25, -12.685)
 mass = 35.0
 
 [node name="MeshInstance3D" parent="Entities/ent_physcube7" index="0"]
@@ -278,8 +281,11 @@ mesh = SubResource("BoxMesh_aa8v6")
 [node name="CollisionShape3D" parent="Entities/ent_physcube7" index="1"]
 shape = SubResource("BoxShape3D_2712p")
 
+[node name="Label3D" parent="Entities/ent_physcube7" index="2"]
+text = "35 KG"
+
 [node name="ent_physcube8" parent="Entities" instance=ExtResource("12_61ufy")]
-transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 14.6229, 0.653241, -11.685)
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 14.6229, 0.25, -11.685)
 mass = 70.0
 
 [node name="MeshInstance3D" parent="Entities/ent_physcube8" index="0"]
@@ -288,8 +294,11 @@ mesh = SubResource("BoxMesh_aa8v6")
 [node name="CollisionShape3D" parent="Entities/ent_physcube8" index="1"]
 shape = SubResource("BoxShape3D_2712p")
 
+[node name="Label3D" parent="Entities/ent_physcube8" index="2"]
+text = "70 KG"
+
 [node name="ent_physcube9" parent="Entities" instance=ExtResource("12_61ufy")]
-transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 14.6229, 0.653241, -10.685)
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 14.623, 0.25, -10.685)
 mass = 80.0
 
 [node name="MeshInstance3D" parent="Entities/ent_physcube9" index="0"]
@@ -298,17 +307,20 @@ mesh = SubResource("BoxMesh_aa8v6")
 [node name="CollisionShape3D" parent="Entities/ent_physcube9" index="1"]
 shape = SubResource("BoxShape3D_2712p")
 
+[node name="Label3D" parent="Entities/ent_physcube9" index="2"]
+text = "80 KG"
+
 [node name="ent_physcube3" parent="Entities" instance=ExtResource("12_61ufy")]
-transform = Transform3D(-3.09086e-08, 3.09086e-08, 1, 0.707107, 0.707107, 0, -0.707107, 0.707107, -4.37114e-08, 14.6229, 1.94863, -7.66235)
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 14.623, 1.5, -7.662)
 
 [node name="ARENA BOX 01" parent="Entities" instance=ExtResource("17_y8oh4")]
-transform = Transform3D(1.31134e-07, 0, 1, 0, 1, 0, -1, 0, 1.31134e-07, -12.0612, -1.43051e-06, -2.9232)
+transform = Transform3D(1.31134e-07, 0, 1, 0, 1, 0, -1, 0, 1.31134e-07, -12.0612, -1.43051e-06, -5.4232)
 
 [node name="ARENA BOX 02" parent="Entities" instance=ExtResource("17_y8oh4")]
-transform = Transform3D(1.31134e-07, 0, 1, 0, 1, 0, -1, 0, 1.31134e-07, -12.0612, -1.43051e-06, -4.5232)
+transform = Transform3D(1.31134e-07, 0, 1, 0, 1, 0, -1, 0, 1.31134e-07, -12.0612, -1.43051e-06, -7.0232)
 
 [node name="ARENA BOX 03" parent="Entities" instance=ExtResource("17_y8oh4")]
-transform = Transform3D(1.31134e-07, 0, 1, 0, 1, 0, -1, 0, 1.31134e-07, -12.0612, 1.3, -3.7232)
+transform = Transform3D(1.31134e-07, 0, 1, 0, 1, 0, -1, 0, 1.31134e-07, -12.0612, 1.3, -6.2232)
 
 [node name="Static Entities" type="Node" parent="."]
 
@@ -319,14 +331,6 @@ isMain = true
 
 [node name="ent_zipline2" parent="Static Entities" instance=ExtResource("19_jdblr")]
 transform = Transform3D(2.98023e-08, 0, -1, 0, 1, 0, 1, 0, 2.98023e-08, -6.72357, 4.5, 11.445)
-
-[node name="ent_zipline3" parent="Static Entities" node_paths=PackedStringArray("otherEnd") instance=ExtResource("19_jdblr")]
-transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 9.42845, 6, 23.3613)
-otherEnd = NodePath("Node3D")
-isMain = true
-
-[node name="Node3D" type="Node3D" parent="Static Entities/ent_zipline3"]
-transform = Transform3D(1.31134e-07, 0, 1, 0, 1, 0, -1, 0, 1.31134e-07, 0, -5.143, 0.254244)
 
 [node name="ent_zipline4" parent="Static Entities" node_paths=PackedStringArray("otherEnd") instance=ExtResource("19_jdblr")]
 transform = Transform3D(-1, 0, 8.74228e-08, 0, 1, 0, -8.74228e-08, 0, -1, -2.90261, 6, 23.3538)
@@ -364,6 +368,12 @@ jumpHeight = 20.0
 transform = Transform3D(1.31134e-07, 0, -1, 0, 1, 0, 1, 0, 1.31134e-07, -20.2343, 0, -25.1216)
 jumpForward = 10.0
 jumpHeight = 5.0
+
+[node name="ent_killplane" parent="Static Entities" node_paths=PackedStringArray("respawnLocation") instance=ExtResource("14_ch56x")]
+respawnLocation = NodePath("Marker3D")
+
+[node name="Marker3D" type="Marker3D" parent="Static Entities/ent_killplane"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.8993, 4.49669, -17.8901)
 
 [editable path="Entities/ent_physcube4"]
 [editable path="Entities/ent_physcube5"]

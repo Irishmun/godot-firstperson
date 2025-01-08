@@ -167,6 +167,7 @@ transform = Transform3D(1, 0, -6.35734e-08, 0, 1, 0, 6.35734e-08, 0, 1, 0, -0.1,
 light_color = Color(1, 0.937255, 0.792157, 1)
 light_projector = SubResource("GradientTexture2D_688g2")
 shadow_enabled = true
+spot_range = 50.0
 spot_attenuation = 2.0
 spot_angle = 30.0
 script = ExtResource("2_xwd2e")

@@ -2,7 +2,11 @@ using Godot;
 
 public partial class FpsGui : Label
 {
-#if DEBUG
+    [Export] private bool startVisible = true;
+    public override void _Ready()
+    {
+        this.Visible = startVisible;
+    }
     public override void _Process(double delta)
     {
         //NOTE: some if not all of these values are not available unless the game is in debug mode
@@ -18,7 +22,14 @@ public partial class FpsGui : Label
                $" Vel: {velocity.ToString("0.000")}({horizontal.ToString("0.000")})\n" +
                $" Pos: {Player.Instance?.GlobalPosition.ToString("0.000")}";
     }
-#endif
+
+    public override void _UnhandledInput(InputEvent e)
+    {
+        if (e.IsActionReleased(Keys.DEBUG_TOGGLE_INFO))
+        {
+            this.Visible = !this.Visible;
+        }
+    }
 
     /*
      * Text = $"FPS: {Engine.GetFramesPerSecond()}\n" +

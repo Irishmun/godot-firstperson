@@ -2,9 +2,7 @@
 
 [ext_resource type="Script" path="res://scripts/GUI/FpsGui.cs" id="1_655k3"]
 [ext_resource type="Script" path="res://scripts/GUI/CrossHairs.cs" id="2_6ndfr"]
-
-[sub_resource type="LabelSettings" id="LabelSettings_dr1jy"]
-font_size = 12
+[ext_resource type="Theme" uid="uid://cdbuv1cjfkx2d" path="res://assets/Themes/new_theme.tres" id="2_o5i88"]
 
 [node name="Gui" type="Control"]
 layout_mode = 3
@@ -16,13 +14,14 @@ grow_vertical = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 mouse_filter = 2
+theme = ExtResource("2_o5i88")
 
 [node name="DebugScreen" type="Label" parent="."]
-layout_mode = 0
-offset_left = 9.0
-offset_top = 9.0
-offset_right = 208.0
-offset_bottom = 166.0
+layout_mode = 2
+offset_left = 8.0
+offset_top = 8.0
+offset_right = 157.0
+offset_bottom = 164.0
 text = " FPS: 9999
  Draw calls: 9999
  Objects: 99999
@@ -31,9 +30,9 @@ text = " FPS: 9999
  FOV: 999
  Vel: (999.9,999.9,999.9)(9.9999)
  Pos: (9999.9,9999.9,9999.9)"
-label_settings = SubResource("LabelSettings_dr1jy")
 clip_text = true
 script = ExtResource("1_655k3")
+startVisible = false
 
 [node name="Panel" type="Panel" parent="DebugScreen"]
 z_index = -1
@@ -43,6 +42,48 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+
+[node name="Panel" type="PanelContainer" parent="."]
+z_index = -1
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 8.0
+offset_top = -126.0
+offset_right = 172.0
+offset_bottom = -8.0
+grow_vertical = 0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Panel"]
+layout_mode = 2
+alignment = 1
+
+[node name="Controls" type="RichTextLabel" parent="Panel/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+bbcode_enabled = true
+text = "[i] [b]Move:[/b] WASD
+ [b]Look:[/b] Mouse
+ [b]Crouch:[/b] Control
+ [b]Run:[/b] Shift
+ [b]Jump:[/b] Space
+ [b]Quit:[/b] Shift+Escape[/i]"
+fit_content = true
+scroll_active = false
+
+[node name="Controls2" type="RichTextLabel" parent="Panel/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+bbcode_enabled = true
+text = "[i] [b]Flashlight:[/b] F
+ [b]Interact:[/b] E
+ [b]Throw:[/b] Mouse 1
+ [b]Drop:[/b] Mouse 2
+
+ [b]Toggle Info:[/b] Z[/i]"
+fit_content = true
+scroll_active = false
 
 [node name="CenterContainer" type="CenterContainer" parent="."]
 layout_mode = 1

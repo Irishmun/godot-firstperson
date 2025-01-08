@@ -1,9 +1,9 @@
 [gd_scene load_steps=7 format=3 uid="uid://bt15c643cdq0c"]
 
-[ext_resource type="Script" path="res://prefab/entities/Zipline.cs" id="1_jrv06"]
+[ext_resource type="Script" path="res://scripts/entities/Zipline.cs" id="1_4mqfc"]
 [ext_resource type="Texture2D" uid="uid://bv64yri6ig8r5" path="res://assets/textures/rope.png" id="2_ygt7p"]
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_su10r"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_wocd6"]
 albedo_texture = ExtResource("2_ygt7p")
 uv1_scale = Vector3(16, 4, 16)
 uv1_triplanar = true
@@ -23,9 +23,9 @@ size = Vector3(0.125, 2.25, 0.35)
 
 [node name="ent_zipline" type="StaticBody3D" node_paths=PackedStringArray("cablePoint") groups=["Interactable"]]
 collision_layer = 2
-script = ExtResource("1_jrv06")
+script = ExtResource("1_4mqfc")
 cablePoint = NodePath("Marker3D")
-cableMaterial = SubResource("StandardMaterial3D_su10r")
+cableMaterial = SubResource("StandardMaterial3D_wocd6")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.125, 0)

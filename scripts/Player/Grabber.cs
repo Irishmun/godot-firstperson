@@ -79,6 +79,8 @@ public partial class Grabber : Node3D
         item.MaxContactsReported = 1;
         item.ContactMonitor = true;
         _heldCollisionLayer = item.CollisionLayer;
+        if (item is PhysCube)
+        { (item as PhysCube).Active = false; }
         //_heldShape = item.ShapeOwnerGetShape(item.ShapeFindOwner(shapeId), shapeId);
 
 
@@ -139,6 +141,8 @@ public partial class Grabber : Node3D
         _heldItem.MaxContactsReported = lastContactReport;
         _heldItem.GravityScale = 1;
         _heldItem.CollisionLayer = _heldCollisionLayer;
+        if (_heldItem is PhysCube)
+        { (_heldItem as PhysCube).Active = true; }
         _heldItem = null;
         _holding = false;
     }
