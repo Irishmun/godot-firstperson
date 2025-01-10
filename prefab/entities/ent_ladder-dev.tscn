@@ -10,13 +10,13 @@ uv1_triplanar = true
 
 [sub_resource type="BoxMesh" id="BoxMesh_g0d2w"]
 material = SubResource("StandardMaterial3D_vr15j")
-size = Vector3(0.125, 4.5, 0.61)
+size = Vector3(0.125, 4.6, 0.61)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_ia7k6"]
-size = Vector3(0.125, 4.5, 0.61)
+size = Vector3(0.125, 4.6, 0.61)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_bvo2b"]
-size = Vector3(0.05, 4.5, 0.61)
+size = Vector3(0.05, 4.6, 0.61)
 
 [node name="Ladder" type="Area3D" node_paths=PackedStringArray("ladderOffset") groups=["Interactable"]]
 script = ExtResource("1_jsufy")
@@ -26,16 +26,16 @@ ladderOffset = NodePath("Marker3D")
 transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 0.103333, 0, -0.103333)
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="StaticBody3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.25, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.3, 0)
 mesh = SubResource("BoxMesh_g0d2w")
 skeleton = NodePath("../..")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.25, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.3, 0)
 shape = SubResource("BoxShape3D_ia7k6")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
-transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 0.103333, 2.25, -0.0133333)
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 0.103, 2.3, -0.013)
 shape = SubResource("BoxShape3D_bvo2b")
 
 [node name="Marker3D" type="Marker3D" parent="."]

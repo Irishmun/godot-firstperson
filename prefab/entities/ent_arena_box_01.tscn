@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://b80l747prf8k6"]
+[gd_scene load_steps=9 format=3 uid="uid://b80l747prf8k6"]
 
 [ext_resource type="PackedScene" uid="uid://b8r21q6vispa0" path="res://assets/Models/entities/boxes/ARENA_BOX_01.glb" id="1_aqadu"]
 [ext_resource type="Script" path="res://scripts/entities/PhysCube.cs" id="1_lwdae"]
@@ -8,17 +8,14 @@
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_1sejk"]
 
-[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_5gxto"]
-points = PackedVector3Array(-0.75, 0, -0.75, -0.75, 0, 0.75, -0.75, 0.424946, -0.75, 0.75, 0, -0.75, -0.75, 0.424946, 0.75, 0.75, 0, 0.75, -0.723277, 0.524973, -0.75, 0.75, 0.424946, -0.75, -0.723277, 0.524973, 0.75, 0.75, 0.424946, 0.75, -0.65001, 0.598143, -0.75, 0.72313, 0.524973, -0.75, -0.65001, 0.598143, 0.75, 0.72313, 0.524973, 0.75, -0.550166, 0.625, -0.75, 0.649863, 0.598143, -0.75, -0.550166, 0.625, 0.75, 0.649863, 0.598143, 0.75, 0.549873, 0.625, -0.75, 0.549873, 0.625, 0.75)
-
-[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_8o4a0"]
-points = PackedVector3Array(-0.75, -0.425007, -0.75, -0.75, 0, -0.75, 0.75, -0.425007, -0.75, -0.75, -0.525034, -0.723277, -0.75, 0, 0.75, 0.75, 0, -0.75, 0.75, -0.525034, -0.723277, -0.75, -0.598265, -0.65001, -0.75, -0.425007, 0.75, 0.75, 0, 0.75, 0.75, -0.598265, -0.65001, -0.75, -0.625, -0.550166, -0.75, -0.525034, 0.72313, 0.75, -0.425007, 0.75, 0.75, -0.625, -0.550166, -0.75, -0.625, 0.549873, -0.75, -0.598265, 0.649863, 0.75, -0.525034, 0.72313, 0.75, -0.625, 0.549873, 0.75, -0.598265, 0.649863)
-
 [sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_ac0g3"]
 streams_count = 3
 stream_0/stream = ExtResource("3_5rqf0")
 stream_1/stream = ExtResource("4_mgn0c")
 stream_2/stream = ExtResource("5_8j7u6")
+
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_bcrwc"]
+points = PackedVector3Array(-0.75, -0.425068, -0.75, -0.75, -0.525034, -0.723277, -0.75, 0.424946, -0.75, 0.75, -0.425068, -0.75, -0.75, -0.598326, -0.65001, 0.75, -0.525034, -0.723277, -0.75, 0.424946, 0.75, -0.723277, 0.524912, -0.75, 0.75, 0.424946, -0.75, -0.75, -0.625, -0.55002, 0.75, -0.598326, -0.65001, -0.75, -0.425068, 0.75, -0.723277, 0.524912, 0.75, -0.65001, 0.598204, -0.75, 0.72313, 0.524912, -0.75, 0.75, 0.424946, 0.75, -0.75, -0.625, 0.549873, 0.75, -0.625, -0.55002, -0.75, -0.525034, 0.72313, 0.75, -0.425068, 0.75, -0.65001, 0.598204, 0.75, -0.55002, 0.625, -0.75, 0.649863, 0.598204, -0.75, 0.72313, 0.524912, 0.75, -0.75, -0.598326, 0.649863, 0.75, -0.625, 0.549873, 0.75, -0.525034, 0.72313, -0.55002, 0.625, 0.75, 0.549873, 0.625, -0.75, 0.649863, 0.598204, 0.75, 0.75, -0.598326, 0.649863, 0.549873, 0.625, 0.75)
 
 [node name="ARENA BOX 01" type="RigidBody3D" groups=["Interactable"]]
 mass = 50.0
@@ -27,35 +24,19 @@ contact_monitor = true
 max_contacts_reported = 1
 script = ExtResource("1_lwdae")
 
-[node name="ARENA_BOX_012" parent="." instance=ExtResource("1_aqadu")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.625, 0)
-
-[node name="ARENA_BOX_01" parent="ARENA_BOX_012" index="0"]
-gi_mode = 2
-
-[node name="ARENA_BOX_01-bottom" parent="ARENA_BOX_012/ARENA_BOX_01" index="0"]
-visible = false
-
-[node name="StaticBody3D" parent="ARENA_BOX_012/ARENA_BOX_01/ARENA_BOX_01-bottom" index="0"]
-process_mode = 4
-
-[node name="ARENA_BOX_01-top" parent="ARENA_BOX_012/ARENA_BOX_01" index="1"]
-visible = false
-
-[node name="StaticBody3D" parent="ARENA_BOX_012/ARENA_BOX_01/ARENA_BOX_01-top" index="0"]
-process_mode = 4
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.625, 0)
-shape = SubResource("ConvexPolygonShape3D_5gxto")
-
-[node name="CollisionShape3D2" type="CollisionShape3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.625, 0)
-shape = SubResource("ConvexPolygonShape3D_8o4a0")
-
 [node name="AudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="."]
 stream = SubResource("AudioStreamRandomizer_ac0g3")
 attenuation_model = 2
 pitch_scale = 0.5
+
+[node name="ARENA_BOX_012" parent="." instance=ExtResource("1_aqadu")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.625, 0)
+
+[node name="CollisionShape3D" parent="ARENA_BOX_012/ARENA_BOX_01/ARENA_BOX_01" index="0"]
+disabled = true
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.625, 0)
+shape = SubResource("ConvexPolygonShape3D_bcrwc")
 
 [editable path="ARENA_BOX_012"]

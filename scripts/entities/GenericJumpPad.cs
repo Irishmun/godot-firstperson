@@ -13,7 +13,7 @@ public partial class GenericJumpPad : JumpPad
         vel = (GetLocalUp() + ran) * force;
         if (keepMomentum == true)
         {
-            vel += body.Velocity * new Vector3(1, 0, 1);
+            vel += body.HorizontalVelocity;
         }
         body.OverrideVelocity(vel);// (GlobalTransform.Basis.Y + ran) * force);
     }

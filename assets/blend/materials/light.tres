@@ -1,8 +1,8 @@
-[gd_resource type="StandardMaterial3D" format=3 uid="uid://bxj4uc5d8adc4"]
+[gd_resource type="StandardMaterial3D" format=3 uid="uid://2p3l82l6tg1m"]
 
 [resource]
 resource_name = "light"
-albedo_color = Color(0.906332, 0.906332, 0.906332, 1)
-roughness = 0.5
+albedo_color = Color(0.898037, 0.901961, 0.909804, 1)
+roughness = 0.0
 emission_enabled = true
 emission = Color(1, 1, 1, 1)

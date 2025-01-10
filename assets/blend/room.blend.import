@@ -35,19 +35,23 @@ _subresources={
 "materials": {
 "exterior-floor": {
 "use_external/enabled": true,
-"use_external/path": "res://blend/materials/exterior-floor.tres"
+"use_external/path": "res://assets/blend/materials/exterior-floor.tres"
 },
 "exterior-wall": {
 "use_external/enabled": true,
-"use_external/path": "res://blend/materials/exterior-wall.tres"
+"use_external/path": "res://assets/blend/materials/exterior-wall.tres"
 },
 "interior": {
 "use_external/enabled": true,
-"use_external/path": "res://blend/materials/interior.tres"
+"use_external/path": "res://assets/blend/materials/interior.tres"
+},
+"interior-floor": {
+"use_external/enabled": true,
+"use_external/path": "res://assets/blend/materials/interior-floor.tres"
 },
 "light": {
 "use_external/enabled": true,
-"use_external/path": "res://blend/materials/light.tres"
+"use_external/path": "res://assets/blend/materials/light.tres"
 }
 },
 "meshes": {

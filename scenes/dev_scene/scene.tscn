@@ -1,8 +1,7 @@
-[gd_scene load_steps=32 format=3 uid="uid://c373pswu1flix"]
+[gd_scene load_steps=31 format=3 uid="uid://c373pswu1flix"]
 
 [ext_resource type="PackedScene" uid="uid://bgum0vi5s3rqp" path="res://assets/blend/room.blend" id="1_bho1u"]
-[ext_resource type="VoxelGIData" uid="uid://rfpsecpt5abo" path="res://scenes/dev_scene/scene.VoxelGI_data.res" id="1_fmpn5"]
-[ext_resource type="Environment" uid="uid://c86oq6lqxe8bc" path="res://scenes/dev_scene/scene_environment.tres" id="2_erogr"]
+[ext_resource type="Environment" uid="uid://c86oq6lqxe8bc" path="res://scenes/scene_environment.tres" id="2_erogr"]
 [ext_resource type="PackedScene" uid="uid://cgm5nhqvbbne5" path="res://prefab/Player.tscn" id="2_gm5tn"]
 [ext_resource type="LightmapGIData" uid="uid://bi6icdb3gfd6n" path="res://scenes/dev_scene/scene.lmbake" id="3_enpko"]
 [ext_resource type="AudioStream" uid="uid://t1lxbhigjn1p" path="res://assets/audio/ambient/drone.mp3" id="4_wqwg3"]
@@ -63,12 +62,6 @@ size = Vector3(0.5, 0.5, 0.5)
 
 [node name="Node3D" type="Node3D"]
 
-[node name="VoxelGI" type="VoxelGI" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.03232, 14.6328, 0.00342178)
-visible = false
-size = Vector3(43.66, 30, 57.645)
-data = ExtResource("1_fmpn5")
-
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(0.707539, 0.55178, 0.441506, 0, -0.624766, 0.780812, 0.706675, -0.552455, -0.442046, 0, 10, 0)
 light_color = Color(1, 0.937255, 0.792157, 1)
@@ -89,6 +82,8 @@ denoiser_strength = 0.2
 texel_scale = 4.0
 light_data = ExtResource("3_enpko")
 
+[node name="room" parent="." instance=ExtResource("1_bho1u")]
+
 [node name="Player" parent="." instance=ExtResource("2_gm5tn")]
 transform = Transform3D(-0.49605, 0, 0.868294, 0, 1, 0, -0.868294, 0, -0.49605, 0, 0, 7.1)
 floor_max_angle = 1.0472
@@ -105,9 +100,6 @@ area = NodePath("../Area3D3")
 [node name="Camera3D" type="Camera3D" parent="."]
 transform = Transform3D(-0.562545, 0.222918, -0.796147, 1.09709e-07, 0.962965, 0.269626, 0.826766, 0.151677, -0.541712, -6.0837, 13.6006, -3.6547)
 attributes = ExtResource("8_m2eun")
-
-[node name="room" parent="." instance=ExtResource("1_bho1u")]
-physics_interpolation_mode = 2
 
 [node name="Area3D" type="Area3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.9, 2, 13.5)
@@ -325,15 +317,15 @@ transform = Transform3D(1.31134e-07, 0, 1, 0, 1, 0, -1, 0, 1.31134e-07, -12.0612
 [node name="Static Entities" type="Node" parent="."]
 
 [node name="ent_zipline" parent="Static Entities" node_paths=PackedStringArray("otherEnd") instance=ExtResource("19_jdblr")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -13.4267, 4.5, 8.37639)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -13.4267, 4.6, 8.37639)
 otherEnd = NodePath("../ent_zipline2")
 isMain = true
 
 [node name="ent_zipline2" parent="Static Entities" instance=ExtResource("19_jdblr")]
-transform = Transform3D(2.98023e-08, 0, -1, 0, 1, 0, 1, 0, 2.98023e-08, -6.72357, 4.5, 11.445)
+transform = Transform3D(2.98023e-08, 0, -1, 0, 1, 0, 1, 0, 2.98023e-08, -6.72357, 4.6, 11.445)
 
 [node name="ent_zipline4" parent="Static Entities" node_paths=PackedStringArray("otherEnd") instance=ExtResource("19_jdblr")]
-transform = Transform3D(-1, 0, 8.74228e-08, 0, 1, 0, -8.74228e-08, 0, -1, -2.90261, 6, 23.3538)
+transform = Transform3D(-1, 0, 8.74228e-08, 0, 1, 0, -8.74228e-08, 0, -1, -2.90261, 6.1, 23.3538)
 otherEnd = NodePath("../ent_zipline5")
 isMain = true
 
@@ -352,15 +344,15 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12.8117, -9.53674e-07, -12.7
 jumpHeight = 15.0
 
 [node name="EntJumpPadLarge3" parent="Static Entities" instance=ExtResource("13_optfk")]
-transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, -1.99324, 4.5, 7.09389)
+transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, -1.99324, 4.6, 7.09389)
 jumpHeight = 16.0
 
 [node name="EntJumpPadLarge2" parent="Static Entities" instance=ExtResource("13_optfk")]
-transform = Transform3D(0.5, 0, 0, 0, 0.468241, 0.175357, 0, -0.175357, 0.468241, 6.31914, 5.16372, 16.7392)
+transform = Transform3D(0.5, 0, 0, 0, 0.468241, 0.175357, 0, -0.175357, 0.468241, 6.31914, 5.26372, 16.7392)
 jumpHeight = 16.0
 
 [node name="EntJumpPadDirectional" parent="Static Entities" instance=ExtResource("15_pi8h8")]
-transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 5.76567, 4.5, 3.87843)
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 5.76567, 4.6, 3.87843)
 jumpForward = 15.0
 jumpHeight = 20.0
 

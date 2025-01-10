@@ -46,10 +46,12 @@ public partial class Player : CharacterBody3D
     #region private fields
     private PlayerStates _playerState = PlayerStates.STANDING;
     private bool _canMove = true, _canLook = true;
+    private bool _controller = false, _toggleCrouch = false;
     private bool _runningInput = false, _crouchInput = false, _jumpInput = false;
     private bool _justLanded = false, _isFalling = false, _wasOnFloor = true;
     private bool _jumpBuffer = false, _mantleBuffer = false;
-    private Vector2 _inputDir;//, _camInput;
+    private Vector2 _inputDir;
+    private Vector2 _controllerInput = Vector2.Zero;
     private Vector3 _velocity;
     private Vector3 _cameraSavedPos = Vector3.Inf;
     private Tween _tween;
@@ -94,6 +96,10 @@ public partial class Player : CharacterBody3D
         //FixCameraRoll(delta);
         //_camInput = Vector2.Zero;
         //allways put player's camera to origin
+        if (_canLook && _controller)
+        {
+            RotatePlayer(_controllerInput);
+        }
         if (!Vector3.Inf.IsEqualApprox(_cameraSavedPos))
         {
             Vector3 pos = _camera.GlobalPosition;
@@ -161,11 +167,22 @@ public partial class Player : CharacterBody3D
     {
         if (_canLook == true && (e is InputEventMouseMotion && Input.MouseMode == Input.MouseModeEnum.Captured))
         {
+            _controller = false;
             //adjust mouse input to make game size irrelevant
             Transform2D viewportTransform = GetTree().Root.GetFinalTransform();
             //maybe use this instead? (e as InputEventMouseMotion).ScreenRelative;
-            RotatePlayer(e.XformedBy(viewportTransform) as InputEventMouseMotion);
-            GetViewport().SetInputAsHandled();//eat input
+            RotatePlayer((e.XformedBy(viewportTransform) as InputEventMouseMotion).Relative);
+        }
+        else if (e is InputEventJoypadMotion && e.IsAction(Keys.CONTROLLER_LOOK))
+        {
+            _controller = true;
+            InputEventJoypadMotion m = (InputEventJoypadMotion)e;
+            float x, y, dead;
+            dead = InputMap.ActionGetDeadzone(Keys.CONTROLLER_LOOK);
+            x = Input.GetJoyAxis(m.Device, JoyAxis.RightX);
+            y = Input.GetJoyAxis(m.Device, JoyAxis.RightY);
+            _controllerInput.X = Mathf.Abs(x) > dead ? x : 0;
+            _controllerInput.Y = Mathf.Abs(y) > dead ? y : 0;
         }
         /*if (_handleInputs == false)
         { return; }*/
@@ -173,9 +190,8 @@ public partial class Player : CharacterBody3D
     #endregion
     //==========VIEW==========
     #region VIEW
-    private void RotatePlayer(InputEventMouseMotion rotation)
+    private void RotatePlayer(Vector2 motion)
     {
-        Vector2 motion = rotation.Relative;
         motion *= DPI_MULTIPLIER * sensitivity;//sensitivity based on mouse DPI (make a setting in game?)
         addPitch(motion.Y);
         addYaw(motion.X);
@@ -473,6 +489,8 @@ public partial class Player : CharacterBody3D
     {
         //GD.Print($"newState:{newState} |playerState:{_playerState}");
         //change crouch based on newState OR if ForceCrouch is true
+        if (_toggleCrouch == true)
+        { newState = true; }
         if (_playerState != PlayerStates.CROUCHING && newState == true)
         {
             _animator.Play(ANIM_CROUCH, -1, crouchSpeed);
@@ -584,6 +602,7 @@ public partial class Player : CharacterBody3D
         _inputDir = Input.GetVector(Keys.RIGHT, Keys.LEFT, Keys.BACKWARD, Keys.FORWARD);
         _runningInput = Input.IsActionPressed(Keys.RUN);
         _crouchInput = Input.IsActionPressed(Keys.CROUCH);
+        _toggleCrouch = Input.IsActionJustPressed(Keys.TOGGLE_CROUCH) ? !_toggleCrouch : _toggleCrouch;
         ChangeCrouchState(_crouchInput);
     }
     #endregion
