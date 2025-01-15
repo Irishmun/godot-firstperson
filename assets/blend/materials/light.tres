@@ -2,7 +2,9 @@
 
 [resource]
 resource_name = "light"
+specular_mode = 2
 albedo_color = Color(0.898037, 0.901961, 0.909804, 1)
 roughness = 0.0
 emission_enabled = true
 emission = Color(1, 1, 1, 1)
+emission_energy_multiplier = 2.0

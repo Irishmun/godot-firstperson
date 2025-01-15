@@ -3,10 +3,9 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://gi8iuggm1tfy"
-path.s3tc="res://.godot/imported/room_granular_concrete_nor_gl_1k.png-4227b9e9dc5f03ea9e15b555d0624232.s3tc.ctex"
+path="res://.godot/imported/room_granular_concrete_nor_gl_1k.png-4227b9e9dc5f03ea9e15b555d0624232.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
-"vram_texture": true
+"vram_texture": false
 }
 generator_parameters={
 "md5": "362bf6f47a5e9680b3cd7d194d3c08b2"
@@ -15,11 +14,11 @@ generator_parameters={
 [deps]
 
 source_file="res://assets/blend/textures/room_granular_concrete_nor_gl_1k.png"
-dest_files=["res://.godot/imported/room_granular_concrete_nor_gl_1k.png-4227b9e9dc5f03ea9e15b555d0624232.s3tc.ctex"]
+dest_files=["res://.godot/imported/room_granular_concrete_nor_gl_1k.png-4227b9e9dc5f03ea9e15b555d0624232.ctex"]
 
 [params]
 
-compress/mode=2
+compress/mode=4
 compress/high_quality=false
 compress/lossy_quality=0.7
 compress/hdr_compression=1

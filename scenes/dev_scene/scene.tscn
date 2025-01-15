@@ -1,4 +1,4 @@
-[gd_scene load_steps=31 format=3 uid="uid://c373pswu1flix"]
+[gd_scene load_steps=33 format=3 uid="uid://c373pswu1flix"]
 
 [ext_resource type="PackedScene" uid="uid://bgum0vi5s3rqp" path="res://assets/blend/room.blend" id="1_bho1u"]
 [ext_resource type="Environment" uid="uid://c86oq6lqxe8bc" path="res://scenes/scene_environment.tres" id="2_erogr"]
@@ -60,13 +60,25 @@ size = Vector3(0.5, 0.5, 0.5)
 [sub_resource type="BoxShape3D" id="BoxShape3D_2712p"]
 size = Vector3(0.5, 0.5, 0.5)
 
+[sub_resource type="Gradient" id="Gradient_lh4yj"]
+offsets = PackedFloat32Array(0, 0.112462, 0.182371, 0.270517, 0.361702, 0.449848, 0.744681, 0.93617, 0.972644, 1)
+colors = PackedColorArray(1, 1, 1, 0.262745, 1, 1, 1, 1, 1, 1, 1, 0.705882, 1, 1, 1, 0.682353, 1, 1, 1, 0.286275, 1, 1, 1, 0.627451, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0.278431, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_wv4w1"]
+gradient = SubResource("Gradient_lh4yj")
+width = 256
+height = 256
+use_hdr = true
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(1, 0.5)
+
 [node name="Node3D" type="Node3D"]
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(0.707539, 0.55178, 0.441506, 0, -0.624766, 0.780812, 0.706675, -0.552455, -0.442046, 0, 10, 0)
 light_color = Color(1, 0.937255, 0.792157, 1)
 light_energy = 2.0
-light_indirect_energy = 3.0
 light_bake_mode = 1
 shadow_enabled = true
 shadow_bias = 0.02
@@ -79,7 +91,7 @@ environment = ExtResource("2_erogr")
 quality = 3
 bounces = 10
 denoiser_strength = 0.2
-texel_scale = 4.0
+generate_probes_subdiv = 1
 light_data = ExtResource("3_enpko")
 
 [node name="room" parent="." instance=ExtResource("1_bho1u")]
@@ -333,6 +345,14 @@ isMain = true
 transform = Transform3D(-1, 0, 8.74228e-08, 0, 1, 0, -8.74228e-08, 0, -1, -15.103, 0, 23.354)
 isMain = true
 
+[node name="ent_zipline6" parent="Static Entities" node_paths=PackedStringArray("otherEnd") instance=ExtResource("19_jdblr")]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 19, 0, -26)
+otherEnd = NodePath("../ent_zipline7")
+isMain = true
+
+[node name="ent_zipline7" parent="Static Entities" instance=ExtResource("19_jdblr")]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 19, 0, 27)
+
 [node name="Ladder" parent="Static Entities" instance=ExtResource("17_m6ij2")]
 transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -4.65122, -4.76837e-07, 0.0492629)
 
@@ -358,14 +378,93 @@ jumpHeight = 20.0
 
 [node name="EntJumpPadDirectional2" parent="Static Entities" instance=ExtResource("15_pi8h8")]
 transform = Transform3D(1.31134e-07, 0, -1, 0, 1, 0, 1, 0, 1.31134e-07, -20.2343, 0, -25.1216)
-jumpForward = 10.0
-jumpHeight = 5.0
+jumpForward = 20.0
+jumpHeight = 7.0
 
 [node name="ent_killplane" parent="Static Entities" node_paths=PackedStringArray("respawnLocation") instance=ExtResource("14_ch56x")]
 respawnLocation = NodePath("Marker3D")
 
 [node name="Marker3D" type="Marker3D" parent="Static Entities/ent_killplane"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.8993, 4.49669, -17.8901)
+
+[node name="LightProbes" type="Node" parent="."]
+
+[node name="LightmapProbe" type="LightmapProbe" parent="LightProbes"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10, 1.9, -4.9)
+
+[node name="LightmapProbe2" type="LightmapProbe" parent="LightProbes"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, 1.9, -4.9)
+
+[node name="LightmapProbe3" type="LightmapProbe" parent="LightProbes"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 1.9, -4.9)
+
+[node name="LightmapProbe4" type="LightmapProbe" parent="LightProbes"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 1.9, -4.9)
+
+[node name="LightmapProbe5" type="LightmapProbe" parent="LightProbes"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10, 1.9, 5)
+
+[node name="LightmapProbe6" type="LightmapProbe" parent="LightProbes"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, 1.9, 5)
+
+[node name="LightmapProbe7" type="LightmapProbe" parent="LightProbes"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 1.9, 5)
+
+[node name="LightmapProbe14" type="LightmapProbe" parent="LightProbes"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.4, 1.9, 8.6)
+
+[node name="LightmapProbe15" type="LightmapProbe" parent="LightProbes"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.4, 1.9, 11.6)
+
+[node name="LightmapProbe16" type="LightmapProbe" parent="LightProbes"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.4, 1.9, 14.6)
+
+[node name="LightmapProbe17" type="LightmapProbe" parent="LightProbes"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.2, 2.1, 13.5)
+
+[node name="LightmapProbe20" type="LightmapProbe" parent="LightProbes"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.8, 2.1, 13.5)
+
+[node name="LightmapProbe22" type="LightmapProbe" parent="LightProbes"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.8, 2.1, 8.7)
+
+[node name="LightmapProbe23" type="LightmapProbe" parent="LightProbes"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.8, 2.1, 11)
+
+[node name="LightmapProbe21" type="LightmapProbe" parent="LightProbes"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.3, 2.1, 13.5)
+
+[node name="LightmapProbe18" type="LightmapProbe" parent="LightProbes"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.2, 2.1, 18.1)
+
+[node name="LightmapProbe19" type="LightmapProbe" parent="LightProbes"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.2, 2.1, 15.9)
+
+[node name="LightmapProbe8" type="LightmapProbe" parent="LightProbes"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 1.9, 5)
+
+[node name="LightmapProbe10" type="LightmapProbe" parent="LightProbes"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.3, 3.6, 21)
+
+[node name="LightmapProbe11" type="LightmapProbe" parent="LightProbes"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.5, 3.6, 21)
+
+[node name="LightmapProbe13" type="LightmapProbe" parent="LightProbes"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.5, 2.5, 17)
+
+[node name="LightmapProbe12" type="LightmapProbe" parent="LightProbes"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.8, 3.6, 21)
+
+[node name="LightmapProbe9" type="LightmapProbe" parent="LightProbes"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.9, 2.1, 4.76837e-07)
+
+[node name="SpotLight3D2" type="SpotLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.154866, 0.987936, 0, -0.987936, 0.154866, 7.56248, 5.55435, 22.9099)
+light_color = Color(1, 0.937255, 0.792157, 1)
+light_energy = 2.0
+light_indirect_energy = 3.0
+light_projector = SubResource("GradientTexture2D_wv4w1")
+shadow_enabled = true
 
 [editable path="Entities/ent_physcube4"]
 [editable path="Entities/ent_physcube5"]

@@ -7,8 +7,9 @@
 [resource]
 resource_name = "exterior-floor"
 cull_mode = 2
+specular_mode = 2
 albedo_texture = ExtResource("1_7kx1y")
-metallic = 1.0
+metallic_specular = 0.2
 metallic_texture = ExtResource("2_4akap")
 metallic_texture_channel = 2
 roughness_texture = ExtResource("2_4akap")

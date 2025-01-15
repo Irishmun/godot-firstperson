@@ -17,12 +17,12 @@
 height = 1.85
 radius = 0.3
 
-[sub_resource type="Gradient" id="Gradient_62kd1"]
+[sub_resource type="Gradient" id="Gradient_lh4yj"]
 offsets = PackedFloat32Array(0, 0.112462, 0.182371, 0.270517, 0.361702, 0.449848, 0.744681, 0.93617, 0.972644, 1)
 colors = PackedColorArray(1, 1, 1, 0.262745, 1, 1, 1, 1, 1, 1, 1, 0.705882, 1, 1, 1, 0.682353, 1, 1, 1, 0.286275, 1, 1, 1, 0.627451, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0.278431, 1, 1, 1, 0)
 
 [sub_resource type="GradientTexture2D" id="GradientTexture2D_688g2"]
-gradient = SubResource("Gradient_62kd1")
+gradient = SubResource("Gradient_lh4yj")
 width = 256
 height = 256
 use_hdr = true
@@ -159,12 +159,15 @@ shape = SubResource("CylinderShape3D_1xpml")
 transform = Transform3D(-1, 0, 8.74228e-08, 0, 1, 0, -8.74228e-08, 0, -1, 0, 1.7, 0)
 
 [node name="Camera3D" type="Camera3D" parent="CameraHolder"]
+doppler_tracking = 1
 fov = 80.0
 far = 1000.0
 
 [node name="SpotLight3D" type="SpotLight3D" parent="CameraHolder/Camera3D" node_paths=PackedStringArray("followTarget")]
 transform = Transform3D(1, 0, -6.35734e-08, 0, 1, 0, 6.35734e-08, 0, 1, 0, -0.1, 0)
 light_color = Color(1, 0.937255, 0.792157, 1)
+light_energy = 5.0
+light_indirect_energy = 3.0
 light_projector = SubResource("GradientTexture2D_688g2")
 shadow_enabled = true
 spot_range = 50.0
@@ -200,7 +203,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.7)
 
 [node name="CeilingRay" type="RayCast3D" parent="LedgeCast"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.7)
-exclude_parent = false
 target_position = Vector3(0, 1, 0)
 hit_from_inside = true
 

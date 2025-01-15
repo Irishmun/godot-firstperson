@@ -265,7 +265,8 @@ public partial class Player : CharacterBody3D
         if (_camera.Fov == _sprintFov)
         {//should be walking
             if (_wasOnFloor && IsOnFloor() &&
-                (GetMoveSpeed() <= movementSpeed || _inputDir.Y.IsApproxZero()))
+                (GetMoveSpeed() <= movementSpeed || _inputDir.Y.IsApproxZero()) &&
+                this.Velocity.LengthSquared() < sprintSpeed * sprintSpeed)
             {
                 TweenFOV(_baseFov);
             }
@@ -485,12 +486,14 @@ public partial class Player : CharacterBody3D
             body.Call("OnCollide", this, kin);
         }
     }
-    private void ChangeCrouchState(bool newState)
+    private void ChangeCrouchState(bool newState, bool ignoreFloor = false)
     {
         //GD.Print($"newState:{newState} |playerState:{_playerState}");
         //change crouch based on newState OR if ForceCrouch is true
         if (_toggleCrouch == true)
         { newState = true; }
+        if (ignoreFloor == false && IsOnFloor() == false)
+        { return; }
         if (_playerState != PlayerStates.CROUCHING && newState == true)
         {
             _animator.Play(ANIM_CROUCH, -1, crouchSpeed);
@@ -560,7 +563,7 @@ public partial class Player : CharacterBody3D
     //==========PUBLIC METHODS==========
     #region PUBLIC METHODS
     /// <summary>Forcibly enable Crouch state</summary>
-    public void ForceCrouch() => ChangeCrouchState(true);
+    public void ForceCrouch() => ChangeCrouchState(true, true);
     /// <summary>Overrides player's global position</summary>
     /// <param name="position">new position in Global space</param>
     public void OverridePosition(Vector3 position)

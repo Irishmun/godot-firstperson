@@ -9,6 +9,7 @@
 resource_name = "JumpPad"
 albedo_texture = ExtResource("1_np3fs")
 metallic = 0.5
+metallic_specular = 0.0
 metallic_texture = ExtResource("2_y5383")
 roughness_texture = ExtResource("3_au5cv")
 roughness_texture_channel = 4

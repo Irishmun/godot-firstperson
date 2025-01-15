@@ -3,6 +3,7 @@ using System;
 
 public partial class Zipline : StaticBody3D
 {
+    private const float MAX_ZIP_TIME = 5f;
     private const float ZIPLINE_VELOCITY = 7f;//fast than running
     [Export] private Node3D otherEnd;
     [Export] private bool isMain;
@@ -27,7 +28,7 @@ public partial class Zipline : StaticBody3D
         if (otherEnd is Zipline)
         {
             _cableEnd = (otherEnd as Zipline).CablePoint;
-            _lineTime = lineDelta().Length() / ZIPLINE_VELOCITY;
+            _lineTime = Mathf.Clamp(lineDelta().Length() / ZIPLINE_VELOCITY, 0, MAX_ZIP_TIME);
             (otherEnd as Zipline).CableEnd = cablePoint;
             (otherEnd as Zipline).LineTime = _lineTime;
         }
@@ -81,6 +82,7 @@ public partial class Zipline : StaticBody3D
     {
         _zippingPlayer = player;
         _zippingPlayer.SetPlayerState(PlayerStates.ZIPLINING);
+        _zippingPlayer.OverrideVelocity(Vector3.Zero);
         Vector3 pos = cablePoint.GlobalPosition;
         pos.Y -= _zippingPlayer.StandingHeight;
         _zippingPlayer.GlobalPosition = pos;

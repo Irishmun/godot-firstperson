@@ -72,7 +72,7 @@ public partial class Mantling : Node3D
             ceilingRay.TargetPosition = Vector3.Up * _player.StandingHeight;
             ceilingRay.ForceRaycastUpdate();
             GodotObject crouchHit = ceilingRay.GetCollider();
-            mantlePos = mantlePos - ((Node3D)hit).GlobalPosition;
+            mantlePos -= ((Node3D)hit).GlobalPosition;
             EnableHandContacts(true);
             MantleToPosition(mantlePos, (Node)hit, crouchHit is StaticBody3D || crouchHit is CsgShape3D);
         }

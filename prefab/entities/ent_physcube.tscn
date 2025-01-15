@@ -29,6 +29,7 @@ max_contacts_reported = 1
 script = ExtResource("1_lalnb")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+gi_mode = 2
 mesh = SubResource("BoxMesh_qhtcu")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
