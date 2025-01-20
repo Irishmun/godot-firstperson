@@ -43,4 +43,9 @@ public static class ExtensionMethods
         }
         return null;
     }
+
+    public static bool IsStaticOrCSG(this GodotObject val)
+    {
+        return val is StaticBody3D || val is CsgShape3D;
+    }
 }

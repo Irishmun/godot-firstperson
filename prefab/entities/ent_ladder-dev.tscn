@@ -20,10 +20,10 @@ size = Vector3(0.05, 4.6, 0.61)
 
 [node name="Ladder" type="Area3D" node_paths=PackedStringArray("ladderOffset") groups=["Interactable"]]
 script = ExtResource("1_jsufy")
-ladderOffset = NodePath("Marker3D")
+ladderOffset = NodePath("Offset")
 
 [node name="StaticBody3D" type="StaticBody3D" parent="."]
-transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 0.103333, 0, -0.103333)
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 0.00333299, 0, 0.0626543)
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="StaticBody3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.3, 0)
@@ -35,8 +35,11 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.3, 0)
 shape = SubResource("BoxShape3D_ia7k6")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
-transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 0.103, 2.3, -0.013)
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 0, 2.3, 0.154987)
 shape = SubResource("BoxShape3D_bvo2b")
 
-[node name="Marker3D" type="Marker3D" parent="."]
-transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 0.103333, 0, 0.116667)
+[node name="Offset" type="Marker3D" parent="."]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 0, 0, 0.282987)
+
+[node name="Top" type="Marker3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.5, 0.165987)

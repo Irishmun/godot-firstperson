@@ -5,6 +5,16 @@ public partial class RayInteract : Node
 {
     [Export] private InteractionRay interactRay;
     [Export] private Player player;
+
+
+    public override void _PhysicsProcess(double delta)
+    {
+        if (interactRay.IsColliding() && IsInteractable(interactRay.GetCollider() as Node3D))
+        {
+            CrossHairs.Instance.RequestIndicate = true;
+        }
+    }
+
     public override void _UnhandledInput(InputEvent e)
     {
         if (!e.IsActionPressed(Keys.USE))
@@ -31,6 +41,10 @@ public partial class RayInteract : Node
     {
         return body != null && body.HasMethod("Interact");
 
+    }
+    private bool IsInteractable(Node3D item)
+    {
+        return item.GetGroups().Contains("Interactable");
     }
     /*
      *   public override void _UnhandledInput(InputEvent e)

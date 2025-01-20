@@ -17,7 +17,7 @@ stream_2/stream = ExtResource("5_8j7u6")
 [sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_bcrwc"]
 points = PackedVector3Array(-0.75, -0.425068, -0.75, -0.75, -0.525034, -0.723277, -0.75, 0.424946, -0.75, 0.75, -0.425068, -0.75, -0.75, -0.598326, -0.65001, 0.75, -0.525034, -0.723277, -0.75, 0.424946, 0.75, -0.723277, 0.524912, -0.75, 0.75, 0.424946, -0.75, -0.75, -0.625, -0.55002, 0.75, -0.598326, -0.65001, -0.75, -0.425068, 0.75, -0.723277, 0.524912, 0.75, -0.65001, 0.598204, -0.75, 0.72313, 0.524912, -0.75, 0.75, 0.424946, 0.75, -0.75, -0.625, 0.549873, 0.75, -0.625, -0.55002, -0.75, -0.525034, 0.72313, 0.75, -0.425068, 0.75, -0.65001, 0.598204, 0.75, -0.55002, 0.625, -0.75, 0.649863, 0.598204, -0.75, 0.72313, 0.524912, 0.75, -0.75, -0.598326, 0.649863, 0.75, -0.625, 0.549873, 0.75, -0.525034, 0.72313, -0.55002, 0.625, 0.75, 0.549873, 0.625, -0.75, 0.649863, 0.598204, 0.75, 0.75, -0.598326, 0.649863, 0.549873, 0.625, 0.75)
 
-[node name="ARENA BOX 01" type="RigidBody3D" groups=["Interactable"]]
+[node name="ARENA BOX 01" type="RigidBody3D" groups=["Grabbable"]]
 mass = 50.0
 physics_material_override = SubResource("PhysicsMaterial_1sejk")
 contact_monitor = true
@@ -28,6 +28,7 @@ script = ExtResource("1_lwdae")
 stream = SubResource("AudioStreamRandomizer_ac0g3")
 attenuation_model = 2
 pitch_scale = 0.5
+bus = &"Exterior"
 
 [node name="ARENA_BOX_012" parent="." instance=ExtResource("1_aqadu")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.625, 0)

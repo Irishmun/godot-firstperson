@@ -1,4 +1,4 @@
-[gd_scene load_steps=33 format=3 uid="uid://c373pswu1flix"]
+[gd_scene load_steps=34 format=3 uid="uid://c373pswu1flix"]
 
 [ext_resource type="PackedScene" uid="uid://bgum0vi5s3rqp" path="res://assets/blend/room.blend" id="1_bho1u"]
 [ext_resource type="Environment" uid="uid://c86oq6lqxe8bc" path="res://scenes/scene_environment.tres" id="2_erogr"]
@@ -17,6 +17,7 @@
 [ext_resource type="PackedScene" uid="uid://d0knlfouhgvjm" path="res://prefab/entities/ent_jump_pad_directional.tscn" id="15_pi8h8"]
 [ext_resource type="PackedScene" uid="uid://c4qf2tfkg7vna" path="res://prefab/entities/ent_ladder-dev.tscn" id="17_m6ij2"]
 [ext_resource type="PackedScene" uid="uid://b80l747prf8k6" path="res://prefab/entities/ent_arena_box_01.tscn" id="17_y8oh4"]
+[ext_resource type="Texture2D" uid="uid://bvc6i6c2cl514" path="res://assets/sprites/wasd_poster_b2X256.png" id="19_1jat0"]
 [ext_resource type="PackedScene" uid="uid://bt15c643cdq0c" path="res://prefab/entities/ent_zipline.tscn" id="19_jdblr"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_rw1ov"]
@@ -96,8 +97,14 @@ light_data = ExtResource("3_enpko")
 
 [node name="room" parent="." instance=ExtResource("1_bho1u")]
 
+[node name="Cubecol" parent="room" index="2"]
+collision_layer = 9
+
+[node name="Cube-exteriorcol" parent="room" index="3"]
+collision_layer = 9
+
 [node name="Player" parent="." instance=ExtResource("2_gm5tn")]
-transform = Transform3D(-0.49605, 0, 0.868294, 0, 1, 0, -0.868294, 0, -0.49605, 0, 0, 7.1)
+transform = Transform3D(-0.953607, 0, 0.301055, 0, 1, 0, -0.301055, 0, -0.953607, 1.12073, 9.53674e-07, 3.53343)
 floor_max_angle = 1.0472
 crouchSpeed = 2.7
 
@@ -354,10 +361,10 @@ isMain = true
 transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 19, 0, 27)
 
 [node name="Ladder" parent="Static Entities" instance=ExtResource("17_m6ij2")]
-transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -4.65122, -4.76837e-07, 0.0492629)
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -4.81472, -4.76837e-07, 0.0492629)
 
 [node name="Ladder2" parent="Static Entities" instance=ExtResource("17_m6ij2")]
-transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, -6.98029, 4.76837e-07, -0.125194)
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, -6.82008, 4.76837e-07, -0.125194)
 
 [node name="EntJumpPadLarge" parent="Static Entities" instance=ExtResource("13_optfk")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12.8117, -9.53674e-07, -12.7712)
@@ -466,6 +473,14 @@ light_indirect_energy = 3.0
 light_projector = SubResource("GradientTexture2D_wv4w1")
 shadow_enabled = true
 
+[node name="WASD_poster" type="Sprite3D" parent="."]
+transform = Transform3D(0.4, 0, 0, 0, 0.4, 0, 0, 0, 1, 1.62, 1.8, 2.01965)
+shaded = true
+double_sided = false
+alpha_cut = 1
+texture = ExtResource("19_1jat0")
+
+[editable path="room"]
 [editable path="Entities/ent_physcube4"]
 [editable path="Entities/ent_physcube5"]
 [editable path="Entities/ent_physcube6"]

@@ -49,6 +49,7 @@ public partial class Player : CharacterBody3D
     private bool _controller = false, _toggleCrouch = false;
     private bool _runningInput = false, _crouchInput = false, _jumpInput = false;
     private bool _justLanded = false, _isFalling = false, _wasOnFloor = true;
+    private bool _snappedToStairs = false;
     private bool _jumpBuffer = false, _mantleBuffer = false;
     private Vector2 _inputDir;
     private Vector2 _controllerInput = Vector2.Zero;
@@ -67,6 +68,7 @@ public partial class Player : CharacterBody3D
     private Node3D _cameraHolder;
     private Camera3D _camera;
     private ShapeCast3D _headRay;
+    private RayCast3D _stairBelowRay, _stairAheadRay;
     //private CollisionShape3D _collisionBody;
     private Mantling _mantling;
     private AnimationPlayer _animator;
@@ -322,7 +324,7 @@ public partial class Player : CharacterBody3D
     {
         //if vertical velocity was changed externally or after last frame's move
         //go to air instead
-        if (IsOnFloor() && _velocity.Y <= 0)
+        if ((IsOnFloor() || _snappedToStairs) && _velocity.Y <= 0)
         {
             HandleMovement((float)delta, wishDir);
         }
@@ -336,9 +338,14 @@ public partial class Player : CharacterBody3D
         //check steps
         HandleRigidBodies();
         this.Velocity = _velocity;
-        if (!IsOnFloor() || !HandleStep((float)delta))
+        /*if (!IsOnFloor() || !HandleCylinderStep((float)delta))
         {
             MoveAndSlide();
+        }*/
+        if (!HandleStairs((float)delta))
+        {
+            MoveAndSlide();
+            SnapDownStairs();
         }
         //GD.Print($"post move velocity: {Velocity}");
 
@@ -415,8 +422,12 @@ public partial class Player : CharacterBody3D
     /// <summary>Handles stepping up steps (stairs)</summary>
     /// <param name="delta">delta time</param>
     /// <returns>false if it can't step up the blockade, true otherwise</returns>
-    private bool HandleStep(float delta) //velocity with minStep distance maybe?
+    private bool HandleCylinderStep(float delta) //velocity with minStep distance maybe?
     {
+        KinematicCollision3D col = MoveAndCollide(this.Velocity * delta, true);
+        GD.Print("colliding with:" + col);
+        if (col == null)
+        { return false; }
         //get where the player would have gone horizontaly        
         Vector3 expectedMoveMotion = this.Velocity * new Vector3(1, 0, 1) * delta;
         //get that position but above the possible step (double it for clearance just in case it's right on the edge)
@@ -425,7 +436,7 @@ public partial class Player : CharacterBody3D
 
         //check if the player would hit something, if so, check if it's an environment collider
         if (this.TestMove(testStartPos, new Vector3(0, -(maxStepHeight + 0.01f), 0), res) &&
-            (res.GetCollider() is StaticBody3D || res.GetCollider() is CsgShape3D))
+            res.GetCollider().IsStaticOrCSG())
         {
             //check how high the collision point (step) is
             float stepHeight = (testStartPos.Origin + res.GetTravel() - this.GlobalPosition).Y;
@@ -447,6 +458,63 @@ public partial class Player : CharacterBody3D
         }
         return false;
     }
+    private bool HandleStairs(float delta)
+    {
+        if (!IsOnFloor() && !_snappedToStairs)
+        { return false; }
+        Vector3 expectedMove, step;
+        expectedMove = this.Velocity * HORIZONTAL * delta;
+        step = (maxStepHeight * Vector3.Up);
+        Transform3D stepWithClearance = this.GlobalTransform.Translated(expectedMove + step * 2);
+        PhysicsTestMotionResult3D downRes = new PhysicsTestMotionResult3D();
+        if (!RunBodyTestMotion(stepWithClearance, -step * 2, downRes) || !downRes.GetCollider().IsStaticOrCSG())
+        { return false; }
+        float height = ((stepWithClearance.Origin + downRes.GetTravel()) - this.GlobalPosition).Y;
+        if (height > maxStepHeight || height.IsApproxZero(0.01f) || (downRes.GetCollisionPoint() - this.GlobalPosition).Y > maxStepHeight)
+        { return false; }
+        _stairAheadRay.GlobalPosition = downRes.GetCollisionPoint() + step + expectedMove.Normalized() * 0.1f;
+        _stairAheadRay.ForceRaycastUpdate();
+        if (_stairAheadRay.IsColliding() && !SurfaceTooSteep(_stairAheadRay.GetCollisionNormal()))
+        {
+            this.GlobalPosition = stepWithClearance.Origin + downRes.GetTravel();
+            ApplyFloorSnap();
+            _snappedToStairs = true;
+            return true;
+        }
+        return false;
+    }
+
+    private void SnapDownStairs()
+    {
+        bool didSnap, floorBelow;
+        didSnap = false;
+        floorBelow = _stairBelowRay.IsColliding() && !SurfaceTooSteep(_stairBelowRay.GetCollisionNormal());
+        if (!IsOnFloor() && _velocity.Y <= 0 && (_wasOnFloor || _snappedToStairs) && floorBelow)
+        {
+            PhysicsTestMotionResult3D bodyTestResult = new PhysicsTestMotionResult3D();
+            if (RunBodyTestMotion(this.GlobalTransform, maxStepHeight * Vector3.Down, bodyTestResult))
+            {
+                float travelY = bodyTestResult.GetTravel().Y;
+                Vector3 pos = this.GlobalPosition;
+                pos.Y += travelY;
+                this.GlobalPosition = pos;
+                ApplyFloorSnap();
+                didSnap = true;
+            }
+        }
+        _snappedToStairs = didSnap;
+    }
+    bool SurfaceTooSteep(Vector3 normal) => normal.AngleTo(Vector3.Up) > this.FloorMaxAngle;
+    private bool RunBodyTestMotion(Transform3D from, Vector3 motion, PhysicsTestMotionResult3D res = null)
+    {
+        res ??= new PhysicsTestMotionResult3D();
+        PhysicsTestMotionParameters3D param = new PhysicsTestMotionParameters3D();
+        param.From = from;
+        param.Motion = motion;
+        return PhysicsServer3D.BodyTestMotion(this.GetRid(), param, res);
+    }
+
+
     private void HandleGravity(float delta)
     {
         if (IsOnFloor())
@@ -464,7 +532,7 @@ public partial class Player : CharacterBody3D
         _cameraSavedPos = _camera.GlobalPosition;
         //_velocity.Y -= _gravity * Mass * delta;
         _velocity.Y -= _gravity * GravityMultiplier * delta;
-        _velocity.Y = Mathf.Clamp(_velocity.Y, TERMINAL_VELOCITY, -TERMINAL_VELOCITY);
+        _velocity.Y = Mathf.Clamp(_velocity.Y, TERMINAL_VELOCITY * GravityMultiplier, -TERMINAL_VELOCITY * GravityMultiplier);
         if ((Input.IsActionPressed(Keys.JUMP) || _mantleBuffer) && (_velocity * HORIZONTAL).LengthSquared() > 0)
         {
             if (_mantling.HandleMantle())
@@ -507,7 +575,7 @@ public partial class Player : CharacterBody3D
             if (_headRay.GetCollisionCount() > 0)
             {//something's in the way, check if it should stop the player
                 GodotObject hit = _headRay.GetCollider(0);
-                if (hit is StaticBody3D || hit is CsgShape3D)//hit blocking
+                if (hit.IsStaticOrCSG())//hit blocking
                 { return; }
             }
             _animator.Play(ANIM_CROUCH, -1, -crouchSpeed, true);
@@ -545,13 +613,15 @@ public partial class Player : CharacterBody3D
     #region PRIVATE METHODS
     private void GetNodes()
     {
-        //_collisionBody = GetChildWithComponent<CollisionShape3D>();
+        //_collisionBody = this.GetChildWithComponent<CollisionShape3D>(name:"Body");
         //_collision = (CylinderShape3D)_collisionBody.Shape;
         _cameraHolder = this.GetChildWithComponent<Node3D>(name: "CameraHolder");
         _camera = this.GetChildWithComponent<Camera3D>(_cameraHolder);
         _headRay = this.GetChildWithComponent<ShapeCast3D>();
         _mantling = this.GetChildWithComponent<Mantling>();
         _animator = this.GetChildWithComponent<AnimationPlayer>();
+        _stairBelowRay = this.GetChildWithComponent<RayCast3D>(name: "StairBelow");
+        _stairAheadRay = this.GetChildWithComponent<RayCast3D>(name: "StairInFront");
     }
     private float CalcJumpForce()
     {//initial_velocity^2 =  final_velocity^2 - 2*acceleration*displacement

@@ -85,7 +85,7 @@ public partial class Zipline : StaticBody3D
         _zippingPlayer.OverrideVelocity(Vector3.Zero);
         Vector3 pos = cablePoint.GlobalPosition;
         pos.Y -= _zippingPlayer.StandingHeight;
-        _zippingPlayer.GlobalPosition = pos;
+        _zippingPlayer.OverridePosition(pos);
         GD.Print("ziplining for:" + _lineTime);
         Zip();
         //tween to other end global position at player zipline speed

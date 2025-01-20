@@ -12,6 +12,7 @@ public partial class CrossHairs : CenterContainer
 
     private Vector2 shadowOffset = new Vector2(1, 1);
     private Vector2 _center;
+    private bool _request = false;
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
     {
@@ -19,6 +20,23 @@ public partial class CrossHairs : CenterContainer
         Instance = this;
         ResizeReticle(dotRadius);
     }
+
+    public override void _PhysicsProcess(double delta)
+    {
+        if (_request)
+        {
+            if (CrossHairs.Instance.CurrentRadius != 5 && !CrossHairs.Instance.IsTweening)
+            { CrossHairs.Instance.ChangeRadius(5); }
+        }
+        else
+        {
+            if (CrossHairs.Instance.CurrentRadius != 1 && !CrossHairs.Instance.IsTweening)
+            { CrossHairs.Instance.ChangeRadius(1); }
+        }
+        _request = false;
+    }
+
+
     public override void _Draw()
     {
         DrawCircle(_center, _currentRadius + 1, Colors.Black, false, -1);
@@ -52,4 +70,6 @@ public partial class CrossHairs : CenterContainer
 
     public bool IsTweening => _tween != null && _tween.IsRunning();
     public float CurrentRadius => _currentRadius;
+
+    public bool RequestIndicate { set => _request = value; }
 }

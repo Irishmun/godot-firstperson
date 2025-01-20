@@ -8,10 +8,12 @@ public partial class LadderEntity : Area3D
     [Export] private Marker3D ladderOffset;
     private Player _climbingPlayer;
     private float _interactionRad;
+    private Node3D _ladderTop;
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
     {
         _interactionRad = Mathf.DegToRad(interactionAngle);
+        _ladderTop = this.GetChildWithComponent<Marker3D>(name: "Top");
         this.BodyEntered += Ladder_BodyEntered;
         this.BodyExited += Ladder_BodyExited;
     }
@@ -81,17 +83,22 @@ public partial class LadderEntity : Area3D
 
     private void EnterLadder(Player player)
     {
-        GD.Print("Enter Ladder");
         _climbingPlayer = player;
-        _climbingPlayer.GlobalPosition = new Vector3(ladderOffset.GlobalPosition.X, _climbingPlayer.GlobalPosition.Y, ladderOffset.GlobalPosition.Z);
+        _climbingPlayer.OverridePosition(new Vector3(ladderOffset.GlobalPosition.X, _climbingPlayer.GlobalPosition.Y, ladderOffset.GlobalPosition.Z));
         _climbingPlayer.SetPlayerState(PlayerStates.CLIMBING);
     }
 
     private void ExitLadder()
     {
-        GD.Print("Exit Ladder");
         Player p = _climbingPlayer;
         _climbingPlayer = null;
+        if (p.GlobalPosition.Y > _ladderTop.GlobalPosition.Y)
+        {
+            Vector3 pos = p.GlobalPosition;
+            pos += -GlobalTransform.Basis.Z.Normalized() * 0.1f;
+            pos.Y = p.GlobalPosition.Y + 0.1f;
+            p.OverridePosition(pos);
+        }
         p.SetPlayerState(PlayerStates.STANDING, true);
     }
 }

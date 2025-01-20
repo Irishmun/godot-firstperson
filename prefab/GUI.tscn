@@ -18,15 +18,12 @@ mouse_filter = 2
 theme = ExtResource("2_o5i88")
 
 [node name="DebugScreen" type="Label" parent="."]
-layout_mode = 2
-anchor_left = 0.004
-anchor_top = 0.007
-anchor_right = 0.151
-anchor_bottom = 0.271
-offset_left = 0.32
-offset_top = 0.44
-offset_right = 0.0799866
-offset_bottom = 0.319977
+layout_mode = 1
+anchors_preset = -1
+offset_left = 8.0
+offset_top = 8.0
+offset_right = 290.0
+offset_bottom = 293.0
 text = " FPS: 9999
  Draw calls: 9999
  Objects: 99999
@@ -51,14 +48,12 @@ grow_vertical = 2
 z_index = -1
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.004
-anchor_top = 0.794
-anchor_right = 0.156
-anchor_bottom = 0.993
-offset_left = 0.32
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 8.0
 offset_top = 0.47998
-offset_right = 0.47998
-offset_bottom = -0.440063
+offset_right = 300.0
+offset_bottom = -8.0
 grow_vertical = 0
 script = ExtResource("3_peoh2")
 keyboardInputs = NodePath("ControlsKeyboard")

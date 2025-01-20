@@ -40,7 +40,7 @@ public partial class Mantling : Node3D
         //EnableRays(true);
         wallRay.ForceRaycastUpdate();
         GodotObject hit = wallRay.GetCollider();
-        if (hit is StaticBody3D || hit is CsgShape3D)
+        if (hit.IsStaticOrCSG())
         { return false; }
         floorRay.ForceRaycastUpdate();
         hit = floorRay.GetCollider();
@@ -74,7 +74,7 @@ public partial class Mantling : Node3D
             GodotObject crouchHit = ceilingRay.GetCollider();
             mantlePos -= ((Node3D)hit).GlobalPosition;
             EnableHandContacts(true);
-            MantleToPosition(mantlePos, (Node)hit, crouchHit is StaticBody3D || crouchHit is CsgShape3D);
+            MantleToPosition(mantlePos, (Node)hit, crouchHit.IsStaticOrCSG());
         }
         //EnableRays(false);
         return true;
@@ -120,8 +120,8 @@ public partial class Mantling : Node3D
         //GD.Print($"Player Old Rotation: (Global){playerRot} (Local){_player.Rotation}");
         oldParrent.RemoveChild(_player);
         newParrent.AddChild(_player);
-        _player.GlobalPosition = playerPos;
-        _player.GlobalRotation = playerRot;
+        _player.OverridePosition(playerPos);
+        _player.OverrideRotation(playerRot);
         //GD.Print($"Player New Rotation: (Global){playerRot} (Local){_player.Rotation}");
     }
 

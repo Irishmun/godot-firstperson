@@ -24,7 +24,7 @@ public partial class PhysCube : RigidBody3D
 
     private void PhysCube_BodyEntered(Node body)
     {
-        if (_active == false || _audio == null || this.LinearVelocity.LengthSquared().IsApproxZero())
+        if (_active == false || _audio == null || this.LinearVelocity.LengthSquared().IsApproxZero(0.1f))
         { return; }
         _audio.Play();
     }

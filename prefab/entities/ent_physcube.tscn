@@ -21,7 +21,7 @@ stream_0/stream = ExtResource("4_3ce51")
 stream_1/stream = ExtResource("5_hgjl6")
 stream_2/stream = ExtResource("6_88t1a")
 
-[node name="ent_physcube" type="RigidBody3D" groups=["Interactable"]]
+[node name="ent_physcube" type="RigidBody3D" groups=["Grabbable"]]
 mass = 25.0
 physics_material_override = SubResource("PhysicsMaterial_1sejk")
 contact_monitor = true
@@ -50,3 +50,4 @@ uppercase = true
 [node name="AudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="."]
 stream = SubResource("AudioStreamRandomizer_ai8bq")
 attenuation_model = 2
+bus = &"Exterior"

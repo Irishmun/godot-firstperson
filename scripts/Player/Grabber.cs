@@ -21,6 +21,10 @@ public partial class Grabber : Node3D
 
     public override void _PhysicsProcess(double delta)
     {
+        if (interactRay.IsColliding() && IsGrabable(interactRay.GetCollider() as Node3D))
+        {
+            CrossHairs.Instance.RequestIndicate = true;
+        }
         if (_heldItem == null || _holding == false)
         { return; }
         _heldItem.Position = heldOffset;
@@ -185,8 +189,8 @@ public partial class Grabber : Node3D
         return 1f - (mass * 0.01f);//0.01f to (in practice) have a 100kg limit on throwing stuff
     }
 
-    private bool IsGrabable(RigidBody3D item)
+    private bool IsGrabable(Node3D item)
     {
-        return item.GetGroups().Contains("Interactable");
+        return item.GetGroups().Contains("Grabbable");
     }
 }
