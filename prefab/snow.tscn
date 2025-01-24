@@ -1,0 +1,66 @@
+[gd_scene load_steps=10 format=3 uid="uid://cbgndicygbdg7"]
+
+[sub_resource type="Gradient" id="Gradient_8sbmw"]
+offsets = PackedFloat32Array(0.503106, 1)
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_p0qdy"]
+gradient = SubResource("Gradient_8sbmw")
+
+[sub_resource type="Curve" id="Curve_vtcx2"]
+_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.121693, 1), -2.0, -2.0, 0, 0, Vector2(1, 0.461538), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="CurveTexture" id="CurveTexture_r05g3"]
+texture_mode = 1
+curve = SubResource("Curve_vtcx2")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_u6qrh"]
+emission_shape = 3
+emission_box_extents = Vector3(32, 2, 32)
+direction = Vector3(0, -1, 0)
+initial_velocity_min = 3.0
+initial_velocity_max = 6.0
+gravity = Vector3(0, -5.5, 0)
+radial_accel_min = -4.0
+radial_accel_max = 4.0
+tangential_accel_min = -8.0
+tangential_accel_max = 8.0
+damping_max = 4.0
+scale_min = 0.05
+scale_max = 0.1
+scale_curve = SubResource("CurveTexture_r05g3")
+color = Color(0.91664, 0.91664, 0.91664, 1)
+color_ramp = SubResource("GradientTexture1D_p0qdy")
+collision_mode = 2
+
+[sub_resource type="Gradient" id="Gradient_j02as"]
+offsets = PackedFloat32Array(0.381818, 0.666667)
+colors = PackedColorArray(1, 1, 1, 1, 0.347817, 0.347817, 0.347817, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_xqbur"]
+gradient = SubResource("Gradient_j02as")
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_84pdg"]
+transparency = 1
+diffuse_mode = 2
+vertex_color_use_as_albedo = true
+albedo_texture = SubResource("GradientTexture2D_xqbur")
+emission_enabled = true
+emission = Color(1, 1, 1, 1)
+emission_energy_multiplier = 52.2
+billboard_mode = 1
+
+[sub_resource type="QuadMesh" id="QuadMesh_ncork"]
+material = SubResource("StandardMaterial3D_84pdg")
+size = Vector2(0.1, 0.1)
+
+[node name="GPUParticles3D" type="GPUParticles3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 50, 0)
+amount = 1024
+lifetime = 5.0
+visibility_aabb = AABB(-70.7118, -61.6011, -65.41, 141.268, 64.5683, 137.088)
+process_material = SubResource("ParticleProcessMaterial_u6qrh")
+draw_pass_1 = SubResource("QuadMesh_ncork")

@@ -7,7 +7,7 @@
 [ext_resource type="AudioStream" uid="uid://qcvgp60t4ofs" path="res://assets/audio/physics/metal_box_impact_soft2.wav" id="5_hgjl6"]
 [ext_resource type="AudioStream" uid="uid://dytk0wgyncmil" path="res://assets/audio/physics/metal_box_impact_soft3.wav" id="6_88t1a"]
 
-[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_1sejk"]
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_0b0oo"]
 rough = true
 
 [sub_resource type="BoxMesh" id="BoxMesh_qhtcu"]
@@ -23,7 +23,7 @@ stream_2/stream = ExtResource("6_88t1a")
 
 [node name="ent_physcube" type="RigidBody3D" groups=["Grabbable"]]
 mass = 25.0
-physics_material_override = SubResource("PhysicsMaterial_1sejk")
+physics_material_override = SubResource("PhysicsMaterial_0b0oo")
 contact_monitor = true
 max_contacts_reported = 1
 script = ExtResource("1_lalnb")

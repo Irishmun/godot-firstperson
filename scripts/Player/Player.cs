@@ -336,7 +336,6 @@ public partial class Player : CharacterBody3D
         HandleJump();
         //GD.Print("Velocity: " + _velocity.Length());
         //check steps
-        HandleRigidBodies();
         this.Velocity = _velocity;
         /*if (!IsOnFloor() || !HandleCylinderStep((float)delta))
         {
@@ -344,6 +343,7 @@ public partial class Player : CharacterBody3D
         }*/
         if (!HandleStairs((float)delta))
         {
+            HandleRigidBodies();
             MoveAndSlide();
             SnapDownStairs();
         }
@@ -595,18 +595,30 @@ public partial class Player : CharacterBody3D
         for (int i = 0; i < this.GetSlideCollisionCount(); i++)
         {
             KinematicCollision3D col = this.GetSlideCollision(i);
-            if ((col.GetCollider() is RigidBody3D) == false)
-            { continue; }
             RigidBody3D collider = col.GetCollider() as RigidBody3D;
+            if (collider == null)
+            { continue; }
             Vector3 pushDir = -col.GetNormal();
-            float pushVelocity = _velocity.Dot(pushDir) - collider.LinearVelocity.Dot(pushDir);
-            pushVelocity = pushVelocity < 0 ? 0 : pushVelocity;
-            float massRatio = Mass / collider.Mass;
-            massRatio = massRatio > 1 ? 1 : massRatio;
+            if (Mathf.Abs(pushDir.Y) > .1f)
+            { continue; }
+            float velocityDif = _velocity.Dot(pushDir) - collider.LinearVelocity.Dot(pushDir);
+            velocityDif = Mathf.Max(0, velocityDif);
+            float massRatio = Mathf.Min(1, Mass / collider.Mass);
             pushDir.Y = 0;
-            float force = massRatio * 5;
-            collider.ApplyImpulse(pushDir * pushVelocity * force, col.GetPosition() - collider.GlobalPosition);
+            float pushForce = massRatio * 10;
+            collider.ApplyImpulse(pushDir * velocityDif * pushForce, col.GetPosition() - collider.GlobalPosition);
         }
+
+        /*
+         * Rigidbody body = hit.collider.attachedRigidbody;
+        Vector3 force;
+        // no rigidbody
+        if (body == null || body.isKinematic) { return; }//don't push if no rigidbody is present
+        if (hit.moveDirection.y < -0.3) { return; }//don't push if rigidbody is below player
+        force = hit.controller.velocity * PushPower;
+        // Apply push
+        body.AddForceAtPosition(force, hit.point);
+        */
     }
     #endregion
     //==========PRIVATE METHODS==========

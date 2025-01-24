@@ -19,17 +19,22 @@ config/icon="res://icon.svg"
 
 DebugExit="*res://scripts/DebugExit.cs"
 Gui="*res://prefab/GUI.tscn"
+ImGuiRoot="*res://addons/imgui-godot/data/ImGuiRoot.tscn"
 
 [display]
 
 window/stretch/mode="viewport"
 window/stretch/aspect="expand"
-window/vsync/vsync_mode=3
+window/vsync/vsync_mode=0
 window/quality/msaa_3d=1
 
 [dotnet]
 
 project/assembly_name="FirstPerson"
+
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/imgui-godot/plugin.cfg")
 
 [global_group]
 
@@ -146,6 +151,7 @@ controller_look={
 [physics]
 
 3d/physics_engine="JoltPhysics3D"
+jolt_3d/solver/contact_speculative_distance=0.0
 
 [rendering]
 
