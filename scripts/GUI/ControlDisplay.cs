@@ -1,8 +1,10 @@
 using Godot;
 using System;
+using static System.Net.Mime.MediaTypeNames;
 
 public partial class ControlDisplay : Control
 {
+
     [Export] private Control keyboardInputs, controllerInputs;
     private bool _usingController = false;
 

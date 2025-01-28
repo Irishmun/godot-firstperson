@@ -100,7 +100,7 @@ public partial class Player : CharacterBody3D
         //allways put player's camera to origin
         if (_canLook && _controller)
         {
-            RotatePlayer(_controllerInput);
+            RotatePlayer(_controllerInput * (float)delta / DPI_MULTIPLIER);
         }
         if (!Vector3.Inf.IsEqualApprox(_cameraSavedPos))
         {
@@ -138,15 +138,24 @@ public partial class Player : CharacterBody3D
         _velocity = this.Velocity;
         Vector3 wishDir = new Vector3(_inputDir.X, 0, _inputDir.Y);
         //GD.Print($"pre move velocity: {Velocity}");
-        if (_playerState == PlayerStates.CLIMBING)
-        { HandleClimbingMovement((float)delta, wishDir); }
-        else if (_playerState == PlayerStates.ZIPLINING)
-        { HandleZipliningMovement((float)delta, wishDir); }
-        else
+        switch (_playerState)
         {
-            wishDir = wishDir.Normalized();
-            wishDir = wishDir.Rotated(Vector3.Up, GlobalRotation.Y);
-            HandleGroundedMovement((float)delta, wishDir);
+            case PlayerStates.CLIMBING:
+                HandleClimbingMovement((float)delta, wishDir);
+                break;
+            case PlayerStates.ZIPLINING:
+                HandleZipliningMovement((float)delta, wishDir);
+                break;
+            case PlayerStates.SLIDING:
+                HandleSlideMovement((float)delta, _velocity.Normalized());
+                break;
+            case PlayerStates.CROUCHING:
+            case PlayerStates.STANDING:
+            default:
+                wishDir = wishDir.Normalized();
+                wishDir = wishDir.Rotated(Vector3.Up, GlobalRotation.Y);
+                HandleGroundedMovement((float)delta, wishDir);
+                break;
         }
         HandleFOV();
     }
@@ -178,11 +187,13 @@ public partial class Player : CharacterBody3D
         else if (e is InputEventJoypadMotion && e.IsAction(Keys.CONTROLLER_LOOK))
         {
             _controller = true;
-            InputEventJoypadMotion m = (InputEventJoypadMotion)e;
+            Transform2D viewportTransform = GetTree().Root.GetFinalTransform();
+            InputEventJoypadMotion m = (InputEventJoypadMotion)e;//.XformedBy(viewportTransform);
             float x, y, dead;
             dead = InputMap.ActionGetDeadzone(Keys.CONTROLLER_LOOK);
             x = Input.GetJoyAxis(m.Device, JoyAxis.RightX);
             y = Input.GetJoyAxis(m.Device, JoyAxis.RightY);
+
             _controllerInput.X = Mathf.Abs(x) > dead ? x : 0;
             _controllerInput.Y = Mathf.Abs(y) > dead ? y : 0;
         }
@@ -194,6 +205,7 @@ public partial class Player : CharacterBody3D
     #region VIEW
     private void RotatePlayer(Vector2 motion)
     {
+        GD.Print(motion);
         motion *= DPI_MULTIPLIER * sensitivity;//sensitivity based on mouse DPI (make a setting in game?)
         addPitch(motion.Y);
         addYaw(motion.X);
@@ -372,6 +384,53 @@ public partial class Player : CharacterBody3D
     {
         _wasOnFloor = true;
     }
+    private void HandleSlideMovement(float delta, Vector3 direction)
+    {
+        float velY, crouchSquared;
+        crouchSquared = (crouchSpeed + 0.1f) * (crouchSpeed + 0.1f);
+        HandleGravity((float)delta);
+        if (IsOnFloor() || _snappedToStairs)
+        {
+            GD.Print(GetFloorAngle());
+            velY = _velocity.Y;
+            Vector3 addSpeed = direction * delta * groundAcceleration;
+            float angle = GetFloorAngle();
+            if (angle.IsApproxZero())//on horizontal ground, reduce speed normally
+            { _velocity -= addSpeed; }
+            else
+            {
+                _stairAheadRay.ForceRaycastUpdate();
+                if (!_stairAheadRay.IsColliding())//going down a slope, increase speed
+                {
+                    _velocity += addSpeed * angle;
+                    _velocity.Y = 0;
+                    _velocity = _velocity.Clamp(-10, 10);
+                }
+                else//going UP a slope, reduce speed more
+                {
+                    _velocity -= addSpeed / angle;
+                }
+            }
+            if (_velocity.LengthSquared().IsApproxZero(crouchSquared))
+            { _velocity = direction * crouchSpeed; }
+            _velocity.Y = velY;
+            bool j = HandleJump();
+            velY = _velocity.Y;
+            this.Velocity = _velocity;
+            if (HorizontalVelocity.LengthSquared().IsApproxZero(crouchSquared) || (!_crouchInput && !_toggleCrouch) || j == true)
+            {
+                _velocity = direction * crouchSpeed;
+                _velocity.Y = velY;
+                this.Velocity = _velocity;
+                _playerState = PlayerStates.CROUCHING;
+                ChangeCrouchState(false);
+            }
+        }
+        else
+        { this.Velocity = _velocity; }
+        MoveAndSlide();
+
+    }
     private void HandleMovement(float delta, Vector3 direction)
     {
         //multiply input direction by speed, keep whatever vertical velocity we have
@@ -393,19 +452,25 @@ public partial class Player : CharacterBody3D
         addSpeed *= HORIZONTAL;
         _velocity += addSpeed;
     }
-    private void HandleJump()
+    private bool HandleJump()
     {
         _jumpInput = bunnyHop ? Input.IsActionPressed(Keys.JUMP) : Input.IsActionJustPressed(Keys.JUMP);
         //GD.Print($"Jump:{_jumpInput} and onfloor:{IsOnFloor()} or falling:{_isFalling}");
+        if (_jumpInput)
+        {
+            _mantleBuffer = true;
+            GetTree().CreateTimer(mantleBufferTime).Timeout += MantleBuffer_Timeout;
+        }
         if ((_jumpInput || _jumpBuffer) && (IsOnFloor() || !_isFalling))//(IsOnFloor() || (!_wasOnFloor && !_isFalling)))
         {//check if we can jump any more than we already have
             if (_jumpCount >= maxJumps)
-            { return; }
+            { return false; }
             if (_jumpCount == 0)//make sound only on first jump
             { StartJumpSound = true; }
             _jumpBuffer = false;
             _jumpCount += 1;
             _velocity.Y = _jumpForce;//CalcJumpForce();
+            return true;
             //GD.Print(_velocity.Y);
         }
         else if (_jumpInput && (!IsOnFloor() || _isFalling))
@@ -413,11 +478,7 @@ public partial class Player : CharacterBody3D
             _jumpBuffer = true;
             GetTree().CreateTimer(jumpBufferTime).Timeout += JumpBuffer_Timeout;
         }
-        if (_jumpInput)
-        {
-            _mantleBuffer = true;
-            GetTree().CreateTimer(mantleBufferTime).Timeout += MantleBuffer_Timeout;
-        }
+        return false;
     }
     /// <summary>Handles stepping up steps (stairs)</summary>
     /// <param name="delta">delta time</param>
@@ -428,7 +489,7 @@ public partial class Player : CharacterBody3D
         GD.Print("colliding with:" + col);
         if (col == null)
         { return false; }
-        //get where the player would have gone horizontaly        
+        //get where the player would have gone horizontaly
         Vector3 expectedMoveMotion = this.Velocity * new Vector3(1, 0, 1) * delta;
         //get that position but above the possible step (double it for clearance just in case it's right on the edge)
         Transform3D testStartPos = this.GlobalTransform.Translated(expectedMoveMotion + new Vector3(0, maxStepHeight + 0.01f, 0));//*2 for clearance
@@ -461,6 +522,8 @@ public partial class Player : CharacterBody3D
     private bool HandleStairs(float delta)
     {
         if (!IsOnFloor() && !_snappedToStairs)
+        { return false; }
+        if (Velocity.Y > 0)
         { return false; }
         Vector3 expectedMove, step;
         expectedMove = this.Velocity * HORIZONTAL * delta;
@@ -688,7 +751,43 @@ public partial class Player : CharacterBody3D
         _runningInput = Input.IsActionPressed(Keys.RUN);
         _crouchInput = Input.IsActionPressed(Keys.CROUCH);
         _toggleCrouch = Input.IsActionJustPressed(Keys.TOGGLE_CROUCH) ? !_toggleCrouch : _toggleCrouch;
-        ChangeCrouchState(_crouchInput);
+        if (_runningInput && (_crouchInput || _toggleCrouch))
+        {
+            if (!TrySlide())
+            {
+                ChangeCrouchState(_crouchInput);
+            }
+        }
+        else
+        {
+            ChangeCrouchState(_crouchInput);
+        }
+    }
+
+    private bool TrySlide()
+    {
+        if (_playerState == PlayerStates.SLIDING)
+        { return true; }
+        if (!IsOnFloor() && _isFalling)
+        { return false; }
+        float speed, moveSquared;
+        moveSquared = movementSpeed * movementSpeed;
+        speed = HorizontalVelocity.LengthSquared();
+        if (speed >= moveSquared)
+        {//running
+            Vector3 vel, maxVel;
+            float y = Velocity.Y;
+            vel = Velocity;
+            maxVel = Vector3.One * sprintSpeed * 1.5f;
+            vel *= 1.5f;//TODO: check here if speed isn't already at 1.5x value            
+            vel = vel.Clamp(-maxVel, maxVel);
+            vel.Y = y;
+            Velocity = vel;
+            _animator.Play(ANIM_CROUCH, -1, crouchSpeed * 4);
+            _playerState = PlayerStates.SLIDING;
+            return true;
+        }
+        return false;
     }
     #endregion
     //==========EVENTS==========
@@ -734,13 +833,13 @@ public partial class Player : CharacterBody3D
     //private Vector3 wishDir = Vector3.Zero; -> wishDir
     //var playerVelocity = Vector3.ZERO -> _velocity
     private bool wishJump = false;
-    //END QUAKE 
+    //END QUAKE
 
     private void QuakeGroundMovement(float delta, Vector3 direction)
     {
         QuakeFriction(delta);
         QuakeAccelerate(delta, direction, direction.LengthSquared() * GetMoveSpeed(), groundAccel);
-    
+
         if (wishJump)
         {
             _velocity.Y = _jumpForce;//CalcJumpForce();
@@ -753,7 +852,7 @@ public partial class Player : CharacterBody3D
         /*
         float wishSpeed = GetMoveSpeed();
         float curSpeed, cappedSpeed, addSpeed;
-    
+
         curSpeed = _velocity.Dot(direction);//(_velocity * HORIZONTAL).Length();
         cappedSpeed = Mathf.Min((wishSpeed * direction).Length(), movementSpeed);
         addSpeed = cappedSpeed - curSpeed;
@@ -770,12 +869,12 @@ public partial class Player : CharacterBody3D
         Vector3 vecCopy = _velocity;
         vecCopy.Y = 0;
         lastSpeed = vecCopy.Length();
-    
+
         control = lastSpeed;
         if (lastSpeed < groundDeAccel)
         { control = groundDeAccel; }
         drop = control * friction * delta;
-    
+
         newSpeed = lastSpeed - drop;
         if (newSpeed < 0)
         { newSpeed = 0; }

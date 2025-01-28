@@ -15,4 +15,5 @@ public static class Keys
     public static readonly string MOUSE_2 = "Mouse_2";
     public static readonly string DEBUG_EXIT = "debug_exit";
     public static readonly string DEBUG_TOGGLE_INFO = "debug_toggleinfo";
+    public static readonly string DEBUG_FULLSCREEN = "debug_fullscreen";
 }

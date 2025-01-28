@@ -287,7 +287,7 @@ libraries = {
 "": SubResource("AnimationLibrary_bo4sf")
 }
 
-[node name="InteractRay" type="RayCast3D" parent="." node_paths=PackedStringArray("followNode")]
+[node name="GrabRay" type="RayCast3D" parent="." node_paths=PackedStringArray("followNode")]
 transform = Transform3D(-1, 0, 8.74228e-08, 0, 1, 0, -8.74228e-08, 0, -1, 0, 1.7, 0)
 target_position = Vector3(0, 0, -3)
 collision_mask = 3
@@ -296,21 +296,22 @@ collide_with_areas = true
 script = ExtResource("11_m2y7n")
 followNode = NodePath("../CameraHolder/Camera3D")
 
-[node name="Grabber" type="Marker3D" parent="InteractRay" node_paths=PackedStringArray("interactRay")]
+[node name="Grabber" type="Marker3D" parent="GrabRay" node_paths=PackedStringArray("interactRay")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.6, -0.6, -1.5)
 script = ExtResource("11_iq5f5")
 interactRay = NodePath("..")
 
-[node name="InteractRay2" type="RayCast3D" parent="." node_paths=PackedStringArray("followNode")]
+[node name="InteractRay" type="RayCast3D" parent="." node_paths=PackedStringArray("followNode")]
 transform = Transform3D(-1, 0, 8.74228e-08, 0, 1, 0, -8.74228e-08, 0, -1, 0, 1.7, 0)
-target_position = Vector3(0, 0, -1)
+target_position = Vector3(0, 0, -2)
 collision_mask = 3
 hit_back_faces = false
 collide_with_areas = true
+debug_shape_custom_color = Color(0.898039, 0.901961, 0.909804, 1)
 script = ExtResource("11_m2y7n")
 followNode = NodePath("../CameraHolder/Camera3D")
 
-[node name="Interactor" type="Node" parent="InteractRay2" node_paths=PackedStringArray("interactRay", "player")]
+[node name="Interactor" type="Node" parent="InteractRay" node_paths=PackedStringArray("interactRay", "player")]
 script = ExtResource("12_hscbo")
 interactRay = NodePath("..")
 player = NodePath("../..")
@@ -320,5 +321,6 @@ target_position = Vector3(0, -0.3, 0)
 
 [node name="StairInFront" type="RayCast3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.220519, 0.569956)
-enabled = false
 target_position = Vector3(0, -0.3, 0)
+debug_shape_custom_color = Color(0, 1, 0, 1)
+debug_shape_thickness = 5

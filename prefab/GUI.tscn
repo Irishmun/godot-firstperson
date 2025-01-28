@@ -1,10 +1,9 @@
-[gd_scene load_steps=6 format=3 uid="uid://djvu2ugfu3616"]
+[gd_scene load_steps=5 format=3 uid="uid://djvu2ugfu3616"]
 
 [ext_resource type="Script" path="res://scripts/GUI/FpsGui.cs" id="1_655k3"]
 [ext_resource type="Script" path="res://scripts/GUI/CrossHairs.cs" id="2_6ndfr"]
 [ext_resource type="Theme" uid="uid://cdbuv1cjfkx2d" path="res://assets/Themes/new_theme.tres" id="2_o5i88"]
 [ext_resource type="Script" path="res://scripts/GUI/ControlDisplay.cs" id="3_peoh2"]
-[ext_resource type="Script" path="res://scripts/GUI/DebugGUi.cs" id="5_gnbpo"]
 
 [node name="Gui" type="Control"]
 layout_mode = 3
@@ -49,6 +48,8 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="Panel" type="PanelContainer" parent="." node_paths=PackedStringArray("keyboardInputs", "controllerInputs")]
+process_mode = 4
+visible = false
 z_index = -1
 layout_mode = 1
 anchors_preset = -1
@@ -138,6 +139,3 @@ offset_bottom = 20.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("2_6ndfr")
-
-[node name="Node" type="Node" parent="."]
-script = ExtResource("5_gnbpo")
