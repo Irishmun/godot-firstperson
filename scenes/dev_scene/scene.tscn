@@ -123,7 +123,7 @@ light_data = ExtResource("3_enpko")
 [node name="room" parent="." instance=ExtResource("1_bho1u")]
 
 [node name="Player" parent="." instance=ExtResource("2_gm5tn")]
-transform = Transform3D(-0.953607, 0, 0.301055, 0, 1, 0, -0.301055, 0, -0.953607, 12.5832, 9.53674e-07, -9.58921)
+transform = Transform3D(-0.953607, 0, 0.301055, 0, 1, 0, -0.301055, 0, -0.953607, 11.6454, 9.53674e-07, -10.7287)
 crouchSpeed = 2.7
 
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="." node_paths=PackedStringArray("area")]
@@ -432,79 +432,83 @@ shape = SubResource("SphereShape3D_bumtn")
 
 [node name="Probes" type="Node" parent="."]
 
-[node name="LightmapProbe" type="LightmapProbe" parent="Probes"]
+[node name="reflection" type="Node" parent="Probes"]
+
+[node name="ReflectionProbe" type="ReflectionProbe" parent="Probes/reflection"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.57672, 3.74048, 0.617929)
+size = Vector3(46.847, 8, 58.7642)
+origin_offset = Vector3(-13.425, -0.74, 5.11)
+
+[node name="light" type="Node" parent="Probes"]
+
+[node name="LightmapProbe" type="LightmapProbe" parent="Probes/light"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10, 1.9, -4.9)
 
-[node name="LightmapProbe2" type="LightmapProbe" parent="Probes"]
+[node name="LightmapProbe2" type="LightmapProbe" parent="Probes/light"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, 1.9, -4.9)
 
-[node name="LightmapProbe3" type="LightmapProbe" parent="Probes"]
+[node name="LightmapProbe3" type="LightmapProbe" parent="Probes/light"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 1.9, -4.9)
 
-[node name="LightmapProbe4" type="LightmapProbe" parent="Probes"]
+[node name="LightmapProbe4" type="LightmapProbe" parent="Probes/light"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 1.9, -4.9)
 
-[node name="LightmapProbe5" type="LightmapProbe" parent="Probes"]
+[node name="LightmapProbe5" type="LightmapProbe" parent="Probes/light"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10, 1.9, 5)
 
-[node name="LightmapProbe6" type="LightmapProbe" parent="Probes"]
+[node name="LightmapProbe6" type="LightmapProbe" parent="Probes/light"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, 1.9, 5)
 
-[node name="LightmapProbe7" type="LightmapProbe" parent="Probes"]
+[node name="LightmapProbe7" type="LightmapProbe" parent="Probes/light"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 1.9, 5)
 
-[node name="LightmapProbe14" type="LightmapProbe" parent="Probes"]
+[node name="LightmapProbe14" type="LightmapProbe" parent="Probes/light"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.4, 1.9, 8.6)
 
-[node name="LightmapProbe15" type="LightmapProbe" parent="Probes"]
+[node name="LightmapProbe15" type="LightmapProbe" parent="Probes/light"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.4, 1.9, 11.6)
 
-[node name="LightmapProbe16" type="LightmapProbe" parent="Probes"]
+[node name="LightmapProbe16" type="LightmapProbe" parent="Probes/light"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.4, 1.9, 14.6)
 
-[node name="LightmapProbe17" type="LightmapProbe" parent="Probes"]
+[node name="LightmapProbe17" type="LightmapProbe" parent="Probes/light"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.2, 2.1, 13.5)
 
-[node name="LightmapProbe20" type="LightmapProbe" parent="Probes"]
+[node name="LightmapProbe20" type="LightmapProbe" parent="Probes/light"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.8, 2.1, 13.5)
 
-[node name="LightmapProbe22" type="LightmapProbe" parent="Probes"]
+[node name="LightmapProbe22" type="LightmapProbe" parent="Probes/light"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.8, 2.1, 8.7)
 
-[node name="LightmapProbe23" type="LightmapProbe" parent="Probes"]
+[node name="LightmapProbe23" type="LightmapProbe" parent="Probes/light"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.8, 2.1, 11)
 
-[node name="LightmapProbe21" type="LightmapProbe" parent="Probes"]
+[node name="LightmapProbe21" type="LightmapProbe" parent="Probes/light"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.3, 2.1, 13.5)
 
-[node name="LightmapProbe18" type="LightmapProbe" parent="Probes"]
+[node name="LightmapProbe18" type="LightmapProbe" parent="Probes/light"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.2, 2.1, 18.1)
 
-[node name="LightmapProbe19" type="LightmapProbe" parent="Probes"]
+[node name="LightmapProbe19" type="LightmapProbe" parent="Probes/light"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.2, 2.1, 15.9)
 
-[node name="LightmapProbe8" type="LightmapProbe" parent="Probes"]
+[node name="LightmapProbe8" type="LightmapProbe" parent="Probes/light"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 1.9, 5)
 
-[node name="LightmapProbe10" type="LightmapProbe" parent="Probes"]
+[node name="LightmapProbe10" type="LightmapProbe" parent="Probes/light"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.3, 3.6, 21)
 
-[node name="LightmapProbe11" type="LightmapProbe" parent="Probes"]
+[node name="LightmapProbe11" type="LightmapProbe" parent="Probes/light"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.5, 3.6, 21)
 
-[node name="LightmapProbe13" type="LightmapProbe" parent="Probes"]
+[node name="LightmapProbe13" type="LightmapProbe" parent="Probes/light"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.5, 2.5, 17)
 
-[node name="LightmapProbe12" type="LightmapProbe" parent="Probes"]
+[node name="LightmapProbe12" type="LightmapProbe" parent="Probes/light"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.8, 3.6, 21)
 
-[node name="LightmapProbe9" type="LightmapProbe" parent="Probes"]
+[node name="LightmapProbe9" type="LightmapProbe" parent="Probes/light"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.9, 2.1, 4.76837e-07)
-
-[node name="ReflectionProbe" type="ReflectionProbe" parent="Probes"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.57672, 3.74048, 0.562012)
-size = Vector3(46.847, 8, 58.876)
-origin_offset = Vector3(-13.425, -0.74, 19.435)
 
 [node name="SpotLight3D2" type="SpotLight3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 0.154866, 0.987936, 0, -0.987936, 0.154866, 7.56248, 5.55435, 22.9099)
@@ -520,6 +524,8 @@ shaded = true
 double_sided = false
 alpha_cut = 1
 texture = ExtResource("19_1jat0")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
 
 [editable path="Entities/ent_physcube4"]
 [editable path="Entities/ent_physcube5"]

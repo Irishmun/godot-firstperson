@@ -1,4 +1,4 @@
-[gd_resource type="StandardMaterial3D" load_steps=4 format=3 uid="uid://dsrbsqob3wate"]
+[gd_resource type="StandardMaterial3D" load_steps=4 format=3 uid="uid://cuotvgvrmyfx8"]
 
 [ext_resource type="Texture2D" uid="uid://c7ah7wb7v51dg" path="res://assets/blend/textures/room_gravel_embedded_concrete_diff_1k.png" id="1_7kx1y"]
 [ext_resource type="Texture2D" uid="uid://xn3tamiol6mw" path="res://assets/blend/textures/room_gravel_embedded_concrete_arm_1k.png" id="2_4akap"]
