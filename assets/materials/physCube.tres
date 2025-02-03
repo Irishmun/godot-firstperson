@@ -1,4 +1,4 @@
-[gd_resource type="StandardMaterial3D" load_steps=3 format=3 uid="uid://kft5p2trwepl"]
+[gd_resource type="StandardMaterial3D" load_steps=3 format=3 uid="uid://cki0qaxpeag4x"]
 
 [ext_resource type="Texture2D" uid="uid://8nt6exa4b185" path="res://assets/textures/JB_HPBase_Konkrete.png" id="1_hbedy"]
 [ext_resource type="Texture2D" uid="uid://75p6rwibjqve" path="res://assets/textures/JB_HPBase_Konkrete_BW.png" id="2_36hjd"]

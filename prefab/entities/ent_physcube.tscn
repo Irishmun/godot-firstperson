@@ -1,8 +1,8 @@
 [gd_scene load_steps=11 format=3 uid="uid://cci787cnsnmwo"]
 
-[ext_resource type="Material" uid="uid://kft5p2trwepl" path="res://assets/materials/physCube.tres" id="1_1637y"]
 [ext_resource type="Script" path="res://scripts/entities/PhysCube.cs" id="1_lalnb"]
 [ext_resource type="FontFile" uid="uid://dlfdwtdtod238" path="res://assets/fonts/Saira_ExtraCondensed-Italic.ttf" id="2_5ari2"]
+[ext_resource type="Material" uid="uid://u07g38trmxme" path="res://assets/materials/ent_physcube.tres" id="2_n36sq"]
 [ext_resource type="AudioStream" uid="uid://ffrev13nrtc5" path="res://assets/audio/physics/metal_box_impact_soft1.wav" id="4_3ce51"]
 [ext_resource type="AudioStream" uid="uid://qcvgp60t4ofs" path="res://assets/audio/physics/metal_box_impact_soft2.wav" id="5_hgjl6"]
 [ext_resource type="AudioStream" uid="uid://dytk0wgyncmil" path="res://assets/audio/physics/metal_box_impact_soft3.wav" id="6_88t1a"]
@@ -11,7 +11,6 @@
 rough = true
 
 [sub_resource type="BoxMesh" id="BoxMesh_qhtcu"]
-material = ExtResource("1_1637y")
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_ucexb"]
 
@@ -30,7 +29,9 @@ script = ExtResource("1_lalnb")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
 gi_mode = 2
+instance_shader_parameters/color_state = 0
 mesh = SubResource("BoxMesh_qhtcu")
+surface_material_override/0 = ExtResource("2_n36sq")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 shape = SubResource("BoxShape3D_ucexb")

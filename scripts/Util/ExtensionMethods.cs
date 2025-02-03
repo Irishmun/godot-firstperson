@@ -31,10 +31,10 @@ public static class ExtensionMethods
     /// <param name="parent">parent to check children for</param>
     /// <param name="name">(optional) name of node</param>
     /// <returns>Node of type (and name) if found. Null if not found</returns>
-    public static T GetChildWithComponent<T>(this Node defParent, Node parent = null, string name = "") where T : class
+    public static T GetChildWithComponent<T>(this Node defParent, Node parent = null, string name = "", bool includeInternal = false) where T : class
     {//parent would be "this Node parent" instead
         parent ??= defParent;
-        foreach (Node item in parent.GetChildren())
+        foreach (Node item in parent.GetChildren(includeInternal))
         {
             if (!string.IsNullOrWhiteSpace(name) && !item.Name.Equals(name))
             { continue; }

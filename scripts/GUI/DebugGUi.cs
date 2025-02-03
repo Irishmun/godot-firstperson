@@ -3,7 +3,6 @@ using Godot;
 using ImGuiNET;
 #endif
 using System;
-using static System.Net.Mime.MediaTypeNames;
 
 public partial class DebugGUi : Node
 {
@@ -15,6 +14,9 @@ public partial class DebugGUi : Node
     private const string KEYBOARD_TOGGLE_INFO = "Toggle Info: Z", CONTROLLER_TOGGLE_INFO = "Toggle Info: Select";
     private const byte MAX_VISIBILTY = 2;
 
+    private string _gameVersion;
+    private System.Numerics.Vector2 _gameVersionSize;
+    
     private byte startState = 1;
 
     private bool _usingController = false;
@@ -23,32 +25,40 @@ public partial class DebugGUi : Node
     public override void _Ready()
     {
         this._visibilityState = startState;
+        Vector3I ver = (Vector3I)ProjectSettings.GetSetting("global/version");
+        _gameVersion = $"{ver.X}.{ver.Y}.{ver.Z}";
+        
     }
     public override void _Process(double delta)
     {
         //NOTE: some if not all of these values are not available unless the game is in debug mode
         //Text = $"Draw calls: {RenderingServer.GetRenderingInfo(RenderingServer.RenderingInfo.TotalDrawCallsInFrame)}";
 #if IMGUI
-        float height = GetViewport().GetVisibleRect().Size.Y;
+        _gameVersionSize = ImGui.CalcTextSize(_gameVersion);
+        _gameVersionSize.X += 16;
+        Vector2 size = GetViewport().GetVisibleRect().Size;
+        ImGuiGameVersion(size);
         switch (_visibilityState)
         {
             case 0:
-                ToggleInfo(height);
+                ToggleInfo(size.Y);
                 break;
             case 1:
-                KeyboardController(height);
-                ToggleInfo(height);
+                KeyboardController(size.Y);
+                ToggleInfo(size.Y);
                 break;
             case 2:
                 ImGuiDebugInfo();
-                KeyboardController(height);
-                ToggleInfo(height);
+                KeyboardController(size.Y);
+                ToggleInfo(size.Y);
                 break;
             default:
                 break;
         }
 #endif
     }
+
+
 #if IMGUI
     public override void _UnhandledInput(InputEvent e)
     {
@@ -87,6 +97,16 @@ public partial class DebugGUi : Node
         { ImGuiControllerToggleInfo(height); }
         else
         { ImGuiKeyboardToggleInfo(height); }
+    }
+
+    private void ImGuiGameVersion(Vector2 size)
+    {
+        //GD.Print(s.ToString());
+        ImGui.Begin("GameVersionLabel", ImGuiWindowFlags.NoDecoration | ImGuiWindowFlags.NoBackground);
+        ImGui.SetWindowSize(_gameVersionSize);
+        ImGui.SetWindowPos(new System.Numerics.Vector2(size.X - _gameVersionSize.X, size.Y - (_gameVersionSize.Y * 2)));
+        ImGui.Text(_gameVersion);
+        ImGui.End();
     }
 
     private void ImGuiDebugInfo()

@@ -1,6 +1,5 @@
 using Godot;
 using System;
-using static Godot.TextServer;
 
 public partial class Player : CharacterBody3D
 {
@@ -205,7 +204,6 @@ public partial class Player : CharacterBody3D
     #region VIEW
     private void RotatePlayer(Vector2 motion)
     {
-        GD.Print(motion);
         motion *= DPI_MULTIPLIER * sensitivity;//sensitivity based on mouse DPI (make a setting in game?)
         addPitch(motion.Y);
         addYaw(motion.X);
@@ -391,7 +389,7 @@ public partial class Player : CharacterBody3D
         HandleGravity((float)delta);
         if (IsOnFloor() || _snappedToStairs)
         {
-            GD.Print(GetFloorAngle());
+            //GD.Print(GetFloorAngle());
             velY = _velocity.Y;
             Vector3 addSpeed = direction * delta * groundAcceleration;
             float angle = GetFloorAngle();

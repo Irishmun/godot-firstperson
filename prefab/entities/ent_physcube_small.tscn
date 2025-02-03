@@ -1,0 +1,17 @@
+[gd_scene load_steps=4 format=3 uid="uid://454nwwgiettn"]
+
+[ext_resource type="PackedScene" uid="uid://cci787cnsnmwo" path="res://prefab/entities/ent_physcube.tscn" id="1_hplsp"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_4d5ch"]
+size = Vector3(0.5, 0.5, 0.5)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_0la57"]
+size = Vector3(0.5, 0.5, 0.5)
+
+[node name="ent_physcube" instance=ExtResource("1_hplsp")]
+
+[node name="MeshInstance3D" parent="." index="0"]
+mesh = SubResource("BoxMesh_4d5ch")
+
+[node name="CollisionShape3D" parent="." index="1"]
+shape = SubResource("BoxShape3D_0la57")

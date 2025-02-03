@@ -1,5 +1,6 @@
 using Godot;
 using System;
+using System.Linq;
 
 public partial class Grabber : Node3D
 {
@@ -12,6 +13,7 @@ public partial class Grabber : Node3D
     [Export] private bool centerBeforeThrow = false;
 
     private RigidBody3D _heldItem;
+    private MeshInstance3D _heldMesh;
     private Node _heldParent;
     private uint _heldCollisionLayer;
     private bool _holding, lastContact;
@@ -93,12 +95,21 @@ public partial class Grabber : Node3D
         //item.Freeze = true;
         item.GravityScale = 0;
         ReparentHeld(_heldParent, this);
+        _heldItem.BodyEntered += heldItem_BodyEntered;
+        _heldItem.BodyExited += heldItem_BodyExited;
+        _heldMesh = _heldItem.GetChildWithComponent<MeshInstance3D>();
+
+        SetMaterialParam(2);
+        //(_heldMesh.GetActiveMaterial(0) as ShaderMaterial).SetShaderParameter("color_state", 2);
         /*Vector3 Zpos = item.GlobalPosition - this.GetCollisionPoint();
         GD.Print(Zpos.Length());
         SetHeld(new Vector3(heldOffset.X, heldOffset.Y, heldOffset.Z - Zpos.Length()));*/
         SetHeld(Vector3.Zero);//SetHeld(heldOffset);
 
     }
+
+
+
     /// <summary>Drops the held item, releasing it</summary>
     private void DropHeld()
     {
@@ -147,7 +158,11 @@ public partial class Grabber : Node3D
         _heldItem.CollisionLayer = _heldCollisionLayer;
         if (_heldItem is PhysCube)
         { (_heldItem as PhysCube).Active = true; }
+        _heldItem.BodyEntered -= heldItem_BodyEntered;
+        _heldItem.BodyExited -= heldItem_BodyExited;
+        SetMaterialParam(0);
         _heldItem = null;
+        _heldMesh = null;
         _holding = false;
     }
 
@@ -192,5 +207,22 @@ public partial class Grabber : Node3D
     private bool IsGrabable(Node3D item)
     {
         return item.GetGroups().Contains("Grabbable");
+    }
+
+
+    private void heldItem_BodyExited(Node body)
+    {
+        SetMaterialParam(2);
+    }
+
+    private void heldItem_BodyEntered(Node body)
+    {
+        SetMaterialParam(1);
+    }
+
+    private void SetMaterialParam(int val)
+    {
+        _heldMesh.SetInstanceShaderParameter("color_state",val);
+        //_heldMesh.GetActiveMaterial(0).Set("shader_parameter/color_state", val);
     }
 }

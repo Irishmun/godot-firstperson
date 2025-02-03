@@ -26,7 +26,6 @@ DebugGUi="*res://scripts/GUI/DebugGUi.cs"
 [display]
 
 window/stretch/aspect="expand"
-window/vsync/vsync_mode=0
 window/quality/msaa_3d=1
 
 [dotnet]
@@ -36,6 +35,10 @@ project/assembly_name="FirstPerson"
 [editor_plugins]
 
 enabled=PackedStringArray("res://addons/imgui-godot/plugin.cfg")
+
+[global]
+
+version=Vector3i(0, 5, 1)
 
 [global_group]
 

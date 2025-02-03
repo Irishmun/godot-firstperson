@@ -1,4 +1,4 @@
-[gd_scene load_steps=41 format=3 uid="uid://c373pswu1flix"]
+[gd_scene load_steps=39 format=3 uid="uid://c373pswu1flix"]
 
 [ext_resource type="PackedScene" uid="uid://bgum0vi5s3rqp" path="res://assets/blend/room.blend" id="1_bho1u"]
 [ext_resource type="Environment" uid="uid://c86oq6lqxe8bc" path="res://scenes/scene_environment.tres" id="2_erogr"]
@@ -12,8 +12,8 @@
 [ext_resource type="Material" uid="uid://cbaid0weva0qy" path="res://assets/materials/new_standard_material_3d.tres" id="10_4g573"]
 [ext_resource type="PackedScene" uid="uid://cci787cnsnmwo" path="res://prefab/entities/ent_physcube.tscn" id="12_61ufy"]
 [ext_resource type="PackedScene" uid="uid://yu158hdsh3kd" path="res://prefab/entities/ent_jump_pad_large.tscn" id="13_optfk"]
-[ext_resource type="Material" uid="uid://kft5p2trwepl" path="res://assets/materials/physCube.tres" id="13_thd0c"]
 [ext_resource type="PackedScene" uid="uid://bv2j27eby2edx" path="res://prefab/entities/ent_killplane.tscn" id="14_ch56x"]
+[ext_resource type="PackedScene" uid="uid://454nwwgiettn" path="res://prefab/entities/ent_physcube_small.tscn" id="15_4ljco"]
 [ext_resource type="PackedScene" uid="uid://d0knlfouhgvjm" path="res://prefab/entities/ent_jump_pad_directional.tscn" id="15_pi8h8"]
 [ext_resource type="PackedScene" uid="uid://c4qf2tfkg7vna" path="res://prefab/entities/ent_ladder-dev.tscn" id="17_m6ij2"]
 [ext_resource type="PackedScene" uid="uid://b80l747prf8k6" path="res://prefab/entities/ent_arena_box_01.tscn" id="17_y8oh4"]
@@ -54,13 +54,6 @@ _data = {
 "tilts": PackedFloat32Array(0, 0)
 }
 point_count = 2
-
-[sub_resource type="BoxMesh" id="BoxMesh_aa8v6"]
-material = ExtResource("13_thd0c")
-size = Vector3(0.5, 0.5, 0.5)
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_2712p"]
-size = Vector3(0.5, 0.5, 0.5)
 
 [sub_resource type="Gradient" id="Gradient_yvcns"]
 offsets = PackedFloat32Array(0.466877, 0.914827, 1)
@@ -261,84 +254,6 @@ transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 14.622
 [node name="ent_physcube2" parent="Entities" instance=ExtResource("12_61ufy")]
 transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 14.6229, 0.5, -8.47602)
 
-[node name="ent_physcube4" parent="Entities" instance=ExtResource("12_61ufy")]
-transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 14.6229, 0.25, -15.685)
-mass = 6.0
-
-[node name="MeshInstance3D" parent="Entities/ent_physcube4" index="0"]
-mesh = SubResource("BoxMesh_aa8v6")
-
-[node name="CollisionShape3D" parent="Entities/ent_physcube4" index="1"]
-shape = SubResource("BoxShape3D_2712p")
-
-[node name="Label3D" parent="Entities/ent_physcube4" index="2"]
-text = "5 KG"
-
-[node name="ent_physcube5" parent="Entities" instance=ExtResource("12_61ufy")]
-transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 14.6229, 0.25, -14.685)
-mass = 10.0
-
-[node name="MeshInstance3D" parent="Entities/ent_physcube5" index="0"]
-mesh = SubResource("BoxMesh_aa8v6")
-
-[node name="CollisionShape3D" parent="Entities/ent_physcube5" index="1"]
-shape = SubResource("BoxShape3D_2712p")
-
-[node name="Label3D" parent="Entities/ent_physcube5" index="2"]
-text = "10 KG"
-
-[node name="ent_physcube6" parent="Entities" instance=ExtResource("12_61ufy")]
-transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 14.6229, 0.25, -13.685)
-mass = 20.0
-
-[node name="MeshInstance3D" parent="Entities/ent_physcube6" index="0"]
-mesh = SubResource("BoxMesh_aa8v6")
-
-[node name="CollisionShape3D" parent="Entities/ent_physcube6" index="1"]
-shape = SubResource("BoxShape3D_2712p")
-
-[node name="Label3D" parent="Entities/ent_physcube6" index="2"]
-text = "20 KG"
-
-[node name="ent_physcube7" parent="Entities" instance=ExtResource("12_61ufy")]
-transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 14.6229, 0.25, -12.685)
-mass = 35.0
-
-[node name="MeshInstance3D" parent="Entities/ent_physcube7" index="0"]
-mesh = SubResource("BoxMesh_aa8v6")
-
-[node name="CollisionShape3D" parent="Entities/ent_physcube7" index="1"]
-shape = SubResource("BoxShape3D_2712p")
-
-[node name="Label3D" parent="Entities/ent_physcube7" index="2"]
-text = "35 KG"
-
-[node name="ent_physcube8" parent="Entities" instance=ExtResource("12_61ufy")]
-transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 14.6229, 0.25, -11.685)
-mass = 70.0
-
-[node name="MeshInstance3D" parent="Entities/ent_physcube8" index="0"]
-mesh = SubResource("BoxMesh_aa8v6")
-
-[node name="CollisionShape3D" parent="Entities/ent_physcube8" index="1"]
-shape = SubResource("BoxShape3D_2712p")
-
-[node name="Label3D" parent="Entities/ent_physcube8" index="2"]
-text = "70 KG"
-
-[node name="ent_physcube9" parent="Entities" instance=ExtResource("12_61ufy")]
-transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 14.623, 0.25, -10.685)
-mass = 80.0
-
-[node name="MeshInstance3D" parent="Entities/ent_physcube9" index="0"]
-mesh = SubResource("BoxMesh_aa8v6")
-
-[node name="CollisionShape3D" parent="Entities/ent_physcube9" index="1"]
-shape = SubResource("BoxShape3D_2712p")
-
-[node name="Label3D" parent="Entities/ent_physcube9" index="2"]
-text = "80 KG"
-
 [node name="ent_physcube3" parent="Entities" instance=ExtResource("12_61ufy")]
 transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 14.623, 1.5, -7.662)
 
@@ -353,6 +268,29 @@ transform = Transform3D(1.31134e-07, 0, 1, 0, 1, 0, -1, 0, 1.31134e-07, -12.0612
 
 [node name="ent_physorb" parent="Entities" groups=["Grabbable"] instance=ExtResource("20_eclcg")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.23284, -1.90735e-06, -12.3149)
+
+[node name="ent_physcube10" parent="Entities" instance=ExtResource("15_4ljco")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14.6, 0.3, -15.7)
+mass = 5.0
+
+[node name="ent_physcube11" parent="Entities" instance=ExtResource("15_4ljco")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14.6, 0.3, -14.7)
+mass = 10.0
+
+[node name="ent_physcube12" parent="Entities" instance=ExtResource("15_4ljco")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14.6, 0.3, -13.7)
+mass = 20.0
+
+[node name="ent_physcube13" parent="Entities" instance=ExtResource("15_4ljco")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14.6, 0.3, -12.7)
+
+[node name="ent_physcube14" parent="Entities" instance=ExtResource("15_4ljco")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14.6, 0.3, -11.7)
+mass = 70.0
+
+[node name="ent_physcube15" parent="Entities" instance=ExtResource("15_4ljco")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14.6, 0.3, -10.7)
+mass = 80.0
 
 [node name="Static Entities" type="Node" parent="."]
 
@@ -435,9 +373,9 @@ shape = SubResource("SphereShape3D_bumtn")
 [node name="reflection" type="Node" parent="Probes"]
 
 [node name="ReflectionProbe" type="ReflectionProbe" parent="Probes/reflection"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.57672, 3.74048, 0.617929)
-size = Vector3(46.847, 8, 58.7642)
-origin_offset = Vector3(-13.425, -0.74, 5.11)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.57672, 3.74048, 0.551448)
+size = Vector3(46.847, 8, 58.8972)
+origin_offset = Vector3(-13.425, -0.74, 19.315)
 
 [node name="light" type="Node" parent="Probes"]
 
@@ -527,10 +465,4 @@ texture = ExtResource("19_1jat0")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
 
-[editable path="Entities/ent_physcube4"]
-[editable path="Entities/ent_physcube5"]
-[editable path="Entities/ent_physcube6"]
-[editable path="Entities/ent_physcube7"]
-[editable path="Entities/ent_physcube8"]
-[editable path="Entities/ent_physcube9"]
 [editable path="Static Entities/ent_physorb2"]
