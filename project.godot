@@ -26,6 +26,7 @@ DebugGUi="*res://scripts/GUI/DebugGUi.cs"
 [display]
 
 window/stretch/aspect="expand"
+window/vsync/vsync_mode=0
 window/quality/msaa_3d=1
 
 [dotnet]

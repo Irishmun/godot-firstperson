@@ -1,9 +1,16 @@
-[gd_scene load_steps=5 format=3 uid="uid://djvu2ugfu3616"]
+[gd_scene load_steps=8 format=3 uid="uid://djvu2ugfu3616"]
 
 [ext_resource type="Script" path="res://scripts/GUI/FpsGui.cs" id="1_655k3"]
 [ext_resource type="Script" path="res://scripts/GUI/CrossHairs.cs" id="2_6ndfr"]
 [ext_resource type="Theme" uid="uid://cdbuv1cjfkx2d" path="res://assets/Themes/new_theme.tres" id="2_o5i88"]
 [ext_resource type="Script" path="res://scripts/GUI/ControlDisplay.cs" id="3_peoh2"]
+[ext_resource type="Texture2D" uid="uid://cbxysaiwxo77d" path="res://assets/sprites/fps_smiles.png" id="5_2kmt1"]
+[ext_resource type="Script" path="res://scripts/GUI/FpsFeel.cs" id="6_14q8b"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_l76vk"]
+atlas = ExtResource("5_2kmt1")
+region = Rect2(0, 0, 32, 32)
+filter_clip = true
 
 [node name="Gui" type="Control"]
 layout_mode = 3
@@ -139,3 +146,22 @@ offset_bottom = 20.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("2_6ndfr")
+
+[node name="TextureRect" type="TextureRect" parent="."]
+process_mode = 4
+visible = false
+texture_filter = 1
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -16.0
+offset_top = 8.0
+offset_right = 16.0
+offset_bottom = 40.0
+grow_horizontal = 2
+mouse_filter = 2
+texture = SubResource("AtlasTexture_l76vk")
+stretch_mode = 2
+script = ExtResource("6_14q8b")
