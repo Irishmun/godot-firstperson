@@ -87,6 +87,8 @@ public partial class Player : CharacterBody3D
         _baseFov = _camera.Fov;
         _sprintFov = _baseFov + fovIncrease;
         _jumpForce = CalcJumpForce();
+        _stairAheadRay.TargetPosition = Vector3.Down * (maxStepHeight + 0.1f);
+        _stairBelowRay.TargetPosition = Vector3.Down * (maxStepHeight + 0.1f);
         /*Vector3 pos = _headRay.Position;
         pos.Y = crouchHeight;
         _headRay.Position = pos;*/

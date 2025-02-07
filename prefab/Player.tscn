@@ -205,6 +205,7 @@ jumpBufferTime = 0.05
 
 [node name="Body" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.925, 0)
+visible = false
 shape = SubResource("CylinderShape3D_1xpml")
 disabled = true
 
@@ -247,13 +248,14 @@ bus = &"Exterior"
 script = ExtResource("7_upvhr")
 normalStepInterval = 0.375
 
-[node name="LedgeCast" type="Node3D" parent="." node_paths=PackedStringArray("wallRay", "floorRay", "ceilingRay", "edgeRay", "handContact")]
+[node name="LedgeCast" type="Node3D" parent="." node_paths=PackedStringArray("wallRay", "floorRay", "ceilingRay", "edgeRay", "mantleHit", "handContact")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.2, 0)
 script = ExtResource("8_vp37e")
 wallRay = NodePath("WallRay")
 floorRay = NodePath("FloorRay")
 ceilingRay = NodePath("CeilingRay")
 edgeRay = NodePath("EdgeRay")
+mantleHit = NodePath("Node3D")
 handContact = NodePath("hands")
 
 [node name="FloorRay" type="RayCast3D" parent="LedgeCast"]
@@ -273,7 +275,6 @@ target_position = Vector3(0, 0, 0.7)
 
 [node name="Node3D" type="Node3D" parent="LedgeCast"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -2.2, 0)
-visible = false
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="LedgeCast/Node3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.125, 0)

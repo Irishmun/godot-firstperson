@@ -1,4 +1,5 @@
 using Godot;
+//NOTE: Mantling EXPECTS that the mesh is not scaled AT ALL, it breaks otherwise
 
 public partial class Mantling : Node3D
 {
@@ -61,7 +62,7 @@ public partial class Mantling : Node3D
         mantlePos = edgeRay.GetCollisionPoint();// + ((edgeRay.GlobalBasis * edgeRay.TargetPosition).Normalized() * 0.1f);
         mantlePos.Y = floorRay.GetCollisionPoint().Y + 0.01f;
 
-
+        //set debug indicator position if it exists
         if (mantleHit != null) { mantleHit.GlobalPosition = mantlePos; }
         handContact.GlobalPosition = mantlePos;
         if (ApplyMantle == true)
@@ -72,18 +73,18 @@ public partial class Mantling : Node3D
             ceilingRay.TargetPosition = Vector3.Up * _player.StandingHeight;
             ceilingRay.ForceRaycastUpdate();
             GodotObject crouchHit = ceilingRay.GetCollider();
-            mantlePos -= ((Node3D)hit).GlobalPosition;
             EnableHandContacts(true);
-            MantleToPosition(mantlePos, (Node)hit, crouchHit.IsStaticOrCSG());
+            MantleToPosition(mantlePos, (Node3D)hit, crouchHit.IsStaticOrCSG());
         }
         //EnableRays(false);
         return true;
     }
 
-    public void MantleToPosition(Vector3 globalPosition, Node mantleObject, bool forceCrouch = false)
+    public void MantleToPosition(Vector3 mantlePosGlobalSpace, Node3D mantleObject, bool forceCrouch = false)
     {
         //GD.Print($"Mantling to: {globalPosition} on {mantleObject.Name}");
         _player.CanMove = false;
+        Vector3 mantlePosLocalSpace = mantleObject.ToLocal(mantlePosGlobalSpace);
         ReparentPlayer(mantleObject, _player.GetParent());
         ReparentMantle(mantleObject);
         ReparentHandContacts(mantleObject, false);
@@ -92,7 +93,7 @@ public partial class Mantling : Node3D
         if (forceCrouch == false)
         { _tween.SetTrans(Tween.TransitionType.Back); }
         _tween.Finished += Tween_Finished;
-        _tween.TweenProperty(_player, "position", globalPosition, mantleDuration);
+        _tween.TweenProperty(_player, "position", mantlePosLocalSpace, mantleDuration);
         if (forceCrouch)
         {
             _player.ForceCrouch();
@@ -102,6 +103,7 @@ public partial class Mantling : Node3D
     private void Tween_Finished()
     {
         _player.OverrideVelocity(Vector3.Zero);
+        //TODO: maybe always reparent back to (current) scene root instead
         ReparentPlayer(_playerBaseParent, _player.GetParent());
         EnableHandContacts(false);
         ReparentHandContacts(floorRay, true);
@@ -134,6 +136,7 @@ public partial class Mantling : Node3D
         mantleHit.GetParent()?.RemoveChild(mantleHit);
         newParrent.AddChild(mantleHit);
         mantleHit.GlobalPosition = mantlePos;
+        GD.Print("mantle new local: " + mantleHit.Position);
     }
 
     private void EnableRays(bool enabled)
