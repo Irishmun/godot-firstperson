@@ -20,7 +20,6 @@ shadow_bias = 0.02
 environment = ExtResource("1_p45bh")
 
 [node name="LightmapGI" type="LightmapGI" parent="."]
-visible = false
 quality = 3
 bounces = 10
 denoiser_strength = 0.2

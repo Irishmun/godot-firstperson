@@ -33,9 +33,17 @@ animation/import_rest_as_RESET=false
 import_script/path=""
 _subresources={
 "materials": {
+"building-ceiling": {
+"use_external/enabled": true,
+"use_external/path": "res://assets/blend/materials/building-ceiling.tres"
+},
 "exterior-floor": {
 "use_external/enabled": true,
 "use_external/path": "res://assets/blend/materials/exterior-floor.tres"
+},
+"exterior-roof": {
+"use_external/enabled": true,
+"use_external/path": "res://assets/blend/materials/exterior-roof.tres"
 },
 "exterior-wall": {
 "use_external/enabled": true,

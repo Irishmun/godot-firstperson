@@ -1,0 +1,18 @@
+[gd_resource type="StandardMaterial3D" load_steps=4 format=3 uid="uid://d2yw328kgm3do"]
+
+[ext_resource type="Texture2D" uid="uid://by6pqlg1oyju5" path="res://assets/blend/textures/concrete_floor_worn_001_diff_1k.png" id="1_uj5je"]
+[ext_resource type="Texture2D" uid="uid://c8w0semgnijfj" path="res://assets/blend/textures/concrete_floor_worn_001_arm_1k.png" id="2_tcbwq"]
+[ext_resource type="Texture2D" uid="uid://d4kivvh1twtjf" path="res://assets/blend/textures/concrete_floor_worn_001_nor_gl_1k.png" id="3_q7nsj"]
+
+[resource]
+resource_name = "building-ceiling"
+cull_mode = 2
+albedo_texture = ExtResource("1_uj5je")
+metallic_specular = 0.2
+metallic_texture_channel = 2
+roughness_texture = ExtResource("2_tcbwq")
+roughness_texture_channel = 1
+normal_enabled = true
+normal_texture = ExtResource("3_q7nsj")
+ao_enabled = true
+ao_texture = ExtResource("2_tcbwq")

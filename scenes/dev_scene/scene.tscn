@@ -1,7 +1,6 @@
-[gd_scene load_steps=39 format=3 uid="uid://c373pswu1flix"]
+[gd_scene load_steps=42 format=3 uid="uid://c373pswu1flix"]
 
 [ext_resource type="PackedScene" uid="uid://bgum0vi5s3rqp" path="res://assets/blend/room.blend" id="1_bho1u"]
-[ext_resource type="Environment" uid="uid://c86oq6lqxe8bc" path="res://scenes/scene_environment.tres" id="2_erogr"]
 [ext_resource type="PackedScene" uid="uid://cgm5nhqvbbne5" path="res://prefab/Player.tscn" id="2_gm5tn"]
 [ext_resource type="LightmapGIData" uid="uid://bi6icdb3gfd6n" path="res://scenes/dev_scene/scene.lmbake" id="3_enpko"]
 [ext_resource type="AudioStream" uid="uid://t1lxbhigjn1p" path="res://assets/audio/ambient/drone.mp3" id="4_wqwg3"]
@@ -20,6 +19,34 @@
 [ext_resource type="Texture2D" uid="uid://bvc6i6c2cl514" path="res://assets/sprites/wasd_poster_b2X256.png" id="19_1jat0"]
 [ext_resource type="PackedScene" uid="uid://bt15c643cdq0c" path="res://prefab/entities/ent_zipline.tscn" id="19_jdblr"]
 [ext_resource type="PackedScene" uid="uid://bhlao4ujo3nu" path="res://prefab/entities/ent_physorb.tscn" id="20_eclcg"]
+[ext_resource type="VoxelGIData" uid="uid://rfpsecpt5abo" path="res://scenes/dev_scene/scene.VoxelGI_data.res" id="21_t7asr"]
+
+[sub_resource type="PhysicalSkyMaterial" id="PhysicalSkyMaterial_v5x8p"]
+rayleigh_coefficient = 0.5
+rayleigh_color = Color(0.290196, 0.580392, 0.968627, 1)
+mie_coefficient = 0.07
+mie_eccentricity = -0.76
+mie_color = Color(0.592157, 0.698039, 0.976471, 1)
+ground_color = Color(0.101961, 0.101961, 0.101961, 1)
+energy_multiplier = 4.0
+
+[sub_resource type="Sky" id="Sky_3kd3w"]
+sky_material = SubResource("PhysicalSkyMaterial_v5x8p")
+
+[sub_resource type="Environment" id="Environment_qrlxh"]
+background_mode = 2
+sky = SubResource("Sky_3kd3w")
+tonemap_mode = 3
+tonemap_white = 16.0
+ssr_enabled = true
+ssao_enabled = true
+ssil_enabled = true
+glow_enabled = true
+glow_normalized = true
+glow_bloom = 1.0
+volumetric_fog_enabled = true
+volumetric_fog_density = 0.01
+volumetric_fog_sky_affect = 0.0
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_rw1ov"]
 size = Vector3(10, 1.1, 6.42141)
@@ -101,15 +128,16 @@ light_energy = 2.0
 light_bake_mode = 1
 shadow_enabled = true
 shadow_bias = 0.02
-directional_shadow_mode = 0
+directional_shadow_mode = 1
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
-environment = ExtResource("2_erogr")
+environment = SubResource("Environment_qrlxh")
 
 [node name="LightmapGI" type="LightmapGI" parent="."]
 quality = 3
 bounces = 10
 denoiser_strength = 0.2
+texel_scale = 4.0
 generate_probes_subdiv = 1
 light_data = ExtResource("3_enpko")
 
@@ -464,5 +492,10 @@ alpha_cut = 1
 texture = ExtResource("19_1jat0")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+
+[node name="VoxelGI" type="VoxelGI" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.0513, 9.37484, 0)
+size = Vector3(43.65, 20, 58.655)
+data = ExtResource("21_t7asr")
 
 [editable path="Static Entities/ent_physorb2"]

@@ -1,18 +1,20 @@
-[gd_resource type="StandardMaterial3D" load_steps=3 format=3 uid="uid://b65jvsr38108h"]
+[gd_resource type="StandardMaterial3D" load_steps=4 format=3 uid="uid://b65jvsr38108h"]
 
-[ext_resource type="Texture2D" uid="uid://bieeirqm45r86" path="res://assets/blend/textures/room_granular_concrete_diff_1k.png" id="1_8j7i6"]
-[ext_resource type="Texture2D" uid="uid://dwi5yti6pihbs" path="res://assets/blend/textures/room_granular_concrete_arm_1k.png" id="2_l5sgj"]
+[ext_resource type="Texture2D" uid="uid://bpdsvd3o5xwau" path="res://assets/blend/textures/floor_pavement_diff_1k.png" id="1_3ug7x"]
+[ext_resource type="Texture2D" uid="uid://thpyoesqndvr" path="res://assets/blend/textures/floor_pavement_arm_1k.png" id="2_fmriw"]
+[ext_resource type="Texture2D" uid="uid://dc6q5raa0ujcs" path="res://assets/blend/textures/floor_pavement_nor_gl_1k.png" id="3_vwjyn"]
 
 [resource]
 resource_name = "interior-floor"
 cull_mode = 2
-shading_mode = 2
 specular_mode = 2
-albedo_texture = ExtResource("1_8j7i6")
+albedo_texture = ExtResource("1_3ug7x")
 metallic_specular = 0.2
-metallic_texture = ExtResource("2_l5sgj")
+metallic_texture = ExtResource("2_fmriw")
 metallic_texture_channel = 2
-roughness_texture = ExtResource("2_l5sgj")
+roughness_texture = ExtResource("2_fmriw")
 roughness_texture_channel = 1
+normal_enabled = true
+normal_texture = ExtResource("3_vwjyn")
 ao_enabled = true
-ao_texture = ExtResource("2_l5sgj")
+ao_texture = ExtResource("2_fmriw")
